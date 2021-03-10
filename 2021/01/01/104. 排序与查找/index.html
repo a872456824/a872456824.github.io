@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lobster:300,300italic,400,400italic,700,700italic|Pacifico:300,300italic,400,400italic,700,700italic|Ma Shan Zheng:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="排序与查找排序 四象限原则：稳定&#x2F;非稳定、内部&#x2F;外部 稳定：相同元素在排序前后的相对位置不变 内部：需要将数据整个加载到内存中进行排序    【考虑从小到大排序】 稳定排序 插入（内部）  前：已排序区；后：待排序区   后面的数在前面找位置插空  一个一个比较、交换，实现【插入】的效果 不是直接和插入位置交换，这样会打乱已排序区的顺序 平均时间复杂度：O(N^2)   冒泡（内部）  前：待排序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="排序与查找">
+<meta property="og:url" content="http://example.com/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/index.html">
+<meta property="og:site_name" content="Alin&#39;s Blog">
+<meta property="og:description" content="排序与查找排序 四象限原则：稳定&#x2F;非稳定、内部&#x2F;外部 稳定：相同元素在排序前后的相对位置不变 内部：需要将数据整个加载到内存中进行排序    【考虑从小到大排序】 稳定排序 插入（内部）  前：已排序区；后：待排序区   后面的数在前面找位置插空  一个一个比较、交换，实现【插入】的效果 不是直接和插入位置交换，这样会打乱已排序区的顺序 平均时间复杂度：O(N^2)   冒泡（内部）  前：待排序">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095424.png">
+<meta property="og:image" content="https://gitee.com/doubleL3/blog-imgs/raw/master/img/QVxwRHT.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095931.png">
+<meta property="article:published_time" content="2021-01-01T03:32:25.000Z">
+<meta property="article:modified_time" content="2021-03-09T02:01:51.497Z">
+<meta property="article:author" content="Alin">
+<meta property="article:tag" content="手撕数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095424.png">
+
+<link rel="canonical" href="http://example.com/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>排序与查找 | Alin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js"></script>
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/a872456824" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alin's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-book fa-fw"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Alin">
+      <meta itemprop="description" content="你的坚持，终有回报的时候！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          排序与查找
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-01 11:32:25" itemprop="dateCreated datePublished" datetime="2021-01-01T11:32:25+08:00">2021-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-09 10:01:51" itemprop="dateModified" datetime="2021-03-09T10:01:51+08:00">2021-03-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">基础数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/" class="post-meta-item leancloud_visitors" data-flag-title="排序与查找" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="排序与查找"><a href="#排序与查找" class="headerlink" title="排序与查找"></a>排序与查找</h1><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><ul>
+<li>四象限原则：稳定/非稳定、内部/外部<ul>
+<li>稳定：相同元素在排序前后的相对位置不变</li>
+<li>内部：需要将数据整个加载到内存中进行排序</li>
+</ul>
+</li>
+</ul>
+<p>【考虑从小到大排序】</p>
+<h3 id="稳定排序"><a href="#稳定排序" class="headerlink" title="稳定排序"></a>稳定排序</h3><ul>
+<li><p>插入（内部）</p>
+<ul>
+<li>前：已排序区；后：待排序区</li>
+</ul>
+</li>
+<li><p>后面的数在前面找位置插空</p>
+<ul>
+<li>一个一个比较、交换，实现【插入】的效果</li>
+<li>不是直接和插入位置交换，这样会打乱已排序区的顺序</li>
+<li>平均时间复杂度：O(N^2)</li>
+</ul>
+</li>
+<li><p>冒泡（内部）</p>
+<ul>
+<li>前：待排序区；后：已排序区</li>
+</ul>
+</li>
+<li><p>从第一个元素向后驶进，找到一个最大元素放在已排序区最前、待排序区最后</p>
+<ul>
+<li>进行N - 1轮冒泡，每轮在已排序中增加一个元素<ul>
+<li>【优化】当某一轮冒泡过程没有进行交换操作，可以直接结束</li>
+</ul>
+</li>
+<li>平均时间复杂度：O(N^2)<ul>
+<li>最优时间复杂度：O(N)←已排序</li>
+<li>最坏时间复杂度：O(N^2)←完全逆序</li>
+</ul>
+</li>
+<li>插入排序可理解为反向冒泡</li>
+</ul>
+</li>
+<li><p>归并（外部）</p>
+<ul>
+<li>前言：两个有序的数组（长度分别为m、n）合并成一个有序的数组</li>
+<li>时间复杂度：O(m + n)</li>
+<li>先分治到两两可以比较大小，再把有序的数组两两合并</li>
+<li>时间复杂度（最优、最坏、平均都是）：O(NlogN)<ul>
+<li>共logN层，每层的合并时间为O(N)</li>
+</ul>
+</li>
+<li>【外部排序】2路归并(上述)、k路归并(多路归并，利用堆)<ul>
+<li>参考<a target="_blank" rel="noopener" href="https://www.wikiwand.com/zh-hans/%E5%A4%96%E6%8E%92%E5%BA%8F#/%E5%A4%96%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">外归并排序</a>-维基百科，每路的排序方法可以任意，最终归并</li>
+<li>其实这个外部排序与否取决于你想不想、需不需要，但它可以</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h4><ul>
+<li>要保证稳定排序的稳定性，注意==的情况，不能交换[或保证原有的顺序]！</li>
+<li>【注意】调用TEST宏时，后一个数组是num，它是在宏定义里拷贝arr得到的一个数组！</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    a ^= b; b ^= a; a ^= b;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(arr, n, func, args...) &#123;\</span></span><br><span class="line">    <span class="keyword">int</span> *num = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    <span class="built_in">memcpy</span>(num, arr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = &quot;</span>, <span class="meta">#func);\</span></span><br><span class="line">    func(args);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">free</span>(num);\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入排序</span></span><br><span class="line"><span class="keyword">void</span> insert_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; num[j] &lt; num[j - <span class="number">1</span>]; j--) &#123;</span><br><span class="line">            swap(num[j], num[j - <span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 冒泡排序</span></span><br><span class="line"><span class="keyword">void</span> bubble_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> times = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n &amp;&amp; times; i++) &#123;</span><br><span class="line">        times = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &lt;= num[j + <span class="number">1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">            swap(num[j], num[j + <span class="number">1</span>]);</span><br><span class="line">            times++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并排序</span></span><br><span class="line"><span class="keyword">void</span> merge_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="comment">// 递归出口，边界条件：剩余元素 &lt;= 2</span></span><br><span class="line">    <span class="keyword">if</span> (r - l &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (r - l == <span class="number">1</span> &amp;&amp; num[r] &lt; num[l]) &#123;</span><br><span class="line">            swap(num[r], num[l]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    merge_sort(num, l, mid);</span><br><span class="line">    merge_sort(num, mid + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">int</span> *temp = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (r - l + <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">int</span> p1 = l, p2 = mid + <span class="number">1</span>, k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (p1 &lt;= mid || p2 &lt;= r) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p2 &gt; r || (p1 &lt;= mid &amp;&amp; num[p1] &lt; num[p2])) &#123;</span><br><span class="line">            temp[k++] = num[p1++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            temp[k++] = num[p2++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 拷贝排好序的数目到目前归并的数据首地址 &amp;num[l], 共 r - l + 1个元素</span></span><br><span class="line">    <span class="built_in">memcpy</span>(num + l, temp, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (r - l + <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">free</span>(temp);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> randint(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">while</span> (n--) num[n] = rand() % <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> output(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; %d &quot;</span>, num[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 20</span></span><br><span class="line">    <span class="keyword">int</span> arr[max_n];</span><br><span class="line">    randint(arr, max_n);</span><br><span class="line">    TEST(arr, max_n, insert_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, bubble_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, merge_sort, num, <span class="number">0</span>, max_n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h3 id="不稳定排序"><a href="#不稳定排序" class="headerlink" title="不稳定排序"></a>不稳定排序</h3><ul>
+<li><p>选择（内部）</p>
+<ul>
+<li><p>前：已排序区；后：待排序区</p>
+</li>
+<li><p>每轮从待排序区中选择一个最小的元素与待排序区的第一个元素交换</p>
+<ul>
+<li>可能会有自身与自身交换的情况，所以交换函数不能用异或了</li>
+</ul>
+</li>
+<li><p>不稳定：例如22’1，在第一次交换后，2就跑到了2’的后面，即12’2</p>
+</li>
+<li><p>时间复杂度（最优、最坏、平均都是）：O(N^2)</p>
+</li>
+<li><p>一般情况下优于冒泡，两者比较次数差不多，但冒泡的交换太频繁</p>
+</li>
+</ul>
+</li>
+<li><p>快排（内部）</p>
+<ul>
+<li>【基准值、partition】</li>
+<li>拿出第1个元素作为基准值<ul>
+<li>【尾指针】先从后往前找小于基准值的元素，放到第1个元素位置(已为空)，【头指针】再从前往后找大于基准值的值，放到刚刚空出的位置，循环</li>
+<li>最后头尾指针重合，指向一个空位置，放入基准值</li>
+<li>再对基准值左右两部分分别进行以上操作</li>
+</ul>
+</li>
+<li>时间复杂度：O(NlogN)<ul>
+<li>逆序数列选第一个元素为基准值时，退化为选择排序，O(N^2)</li>
+</ul>
+</li>
+<li>【优化】<ul>
+<li>基准值随机选</li>
+<li>减少递归的使用，用循环做</li>
+<li>左右都找到一个要交换的值后，再交换</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h4><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(arr, n, func, args...) &#123;\</span></span><br><span class="line">    <span class="keyword">int</span> *num = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    <span class="built_in">memcpy</span>(num, arr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = &quot;</span>, <span class="meta">#func);\</span></span><br><span class="line">    func(args);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">free</span>(num);\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择排序</span></span><br><span class="line"><span class="keyword">void</span> select_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[ind] &gt; num[j]) ind = j;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(num[i], num[ind]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通快排</span></span><br><span class="line"><span class="keyword">void</span> quick_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> x = l, y = r, z = num[x];</span><br><span class="line">    <span class="keyword">while</span> (x &lt; y) &#123;</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; num[y] &gt; z) y--;</span><br><span class="line">        <span class="keyword">if</span> (x &lt; y) num[x++] = num[y];</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; num[x] &lt; z) x++;</span><br><span class="line">        <span class="keyword">if</span> (x &lt; y) num[y--] = num[x];</span><br><span class="line">    &#125;</span><br><span class="line">    num[x] = z;</span><br><span class="line">    quick_sort(num, l, x - <span class="number">1</span>);</span><br><span class="line">    quick_sort(num, x + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 优化版本快排</span></span><br><span class="line"><span class="keyword">void</span> quick_sort1(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> x = l, y = r, z = num[(l + r) &gt;&gt; <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (x &lt;= y &amp;&amp; num[x] &lt; z) x++;</span><br><span class="line">            <span class="keyword">while</span> (x &lt;= y &amp;&amp; num[y] &gt; z) y--;</span><br><span class="line">            <span class="keyword">if</span> (x &lt;= y) &#123;</span><br><span class="line">                swap(num[x], num[y]);</span><br><span class="line">                x++, y--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (x &lt;= y);</span><br><span class="line">        quick_sort1(num, x, r);</span><br><span class="line">        r = y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> randint(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">while</span> (n--) num[n] = rand() % <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> output(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, num[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 20</span></span><br><span class="line">    <span class="keyword">int</span> arr[max_n];</span><br><span class="line">    randint(arr, max_n);</span><br><span class="line">    TEST(arr, max_n, select_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, quick_sort, num, <span class="number">0</span>, max_n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>普通快排算法，有很多可优化点<ul>
+<li>【优化点】基准值选择、递归→循环、交换方式<ul>
+<li>注意几个边界的==：x &lt;= y、num[] &lt; z、num[] &gt; z</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><ul>
+<li><p>朴素二分</p>
+<ul>
+<li>前提：单调序列</li>
+<li>如果要查找的值在序列中重复存在，二分查找分辨不出找到的是哪一个</li>
+</ul>
+</li>
+<li><p>特殊二分</p>
+<ul>
+<li>11110000<ul>
+<li>引入虚拟头指针，索引为-1</li>
+<li>mid计算需要+1，避免死循环，比如10情况</li>
+</ul>
+</li>
+<li>00001111<ul>
+<li>引入虚拟尾指针，索引为n [数组范围为0 ~ n - 1]</li>
+</ul>
+</li>
+<li>这里比参考内容还增加一个<strong>虚拟指针</strong>的概念，通过更改查找的边界[-1 ~ n -1 或 0 ~ n]，可以<strong>反映找不到值时的情况</strong></li>
+</ul>
+</li>
+<li><p>三分查找</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095424.png" alt="图片"></li>
+<li>解决【求凹凸函数极值点】问题</li>
+<li>将原问题的规模分成三分之一</li>
+<li>更新策略：保留值小的元素与另一端的区间；停止条件：$ |m_1 - m_2|&lt; ESPL $</li>
+<li>时间复杂度：$ O(log_3N) $，比二分查找 $ O(log_2N) $稍慢</li>
+</ul>
+<h3 id="代码演示：-2"><a href="#代码演示：-2" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>虚拟指针的使用，可以避免没有答案时[000000]返回假答案[0或n - 1]的情况</li>
+<li>11110000的情况，在计算mid时要+1，避免陷入死循环，如10</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P(func) &#123;\</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = %d\n&quot;</span>, <span class="meta">#func, func);\</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search1(<span class="keyword">int</span> *num, <span class="keyword">int</span> n, <span class="keyword">int</span> x) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>, tail = n <span class="number">-1</span>, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt;= tail) &#123;</span><br><span class="line">        mid = (head + tail) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == x) <span class="keyword">return</span> mid;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] &lt; x) head = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> tail = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search2(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">-1</span>, tail = n - <span class="number">1</span>, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        mid = (head + tail + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == <span class="number">1</span>) head = mid;</span><br><span class="line">        <span class="keyword">else</span> tail = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search3(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>, tail = n, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        mid = (head + tail) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == <span class="number">1</span>) tail = mid;</span><br><span class="line">        <span class="keyword">else</span> head = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head == n ? <span class="number">-1</span> : head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">int</span> arr1[<span class="number">10</span>] = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">21</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> arr2[<span class="number">10</span>] = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> arr3[<span class="number">10</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">    P(binary_search1(arr1, <span class="number">10</span>, <span class="number">7</span>));</span><br><span class="line">    P(binary_search2(arr2, <span class="number">10</span>));</span><br><span class="line">    P(binary_search3(arr3, <span class="number">10</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+</div>
+
+</li>
+</ul>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><ul>
+<li>用于查找的【数据结构】</li>
+<li>结构定义<ul>
+<li>需要一片连续的空间，存储元素</li>
+<li>与顺序表一致，元素类型可变</li>
+</ul>
+</li>
+<li>结构操作<ul>
+<li>哈希函数：可以把任意类型元素映射成整型值[数组下标]<ul>
+<li>然后可以存储某值到对应的数组下标中</li>
+<li>数组下标只能是整型</li>
+</ul>
+</li>
+<li>冲突处理方法<ul>
+<li>开放定值【常用】：往后看看有没有空位，如二次探测法…但容易产生数据堆聚问题</li>
+<li>再哈希：又名散列法，使用多种哈希函数</li>
+<li>拉链法【常用】：用<strong>链表</strong>结构存储每个位置的元素</li>
+<li>建立公共溢出区：把冲突的元素统一放到一个特定区域</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>查找的时间复杂度：趋近于O(1)<ul>
+<li>其他耗时：哈希函数转换、拉链法[查找链表元素]或其他冲突处理方法导致的耗时</li>
+<li>只有数组、顺序表是O(1)的</li>
+</ul>
+</li>
+<li>哈希表的空间利用率一般是50~90%<ul>
+<li>哈希函数一定会存在冲突情况，开辟空间时需要预留</li>
+<li>当利用率可以达到70%时，它就可以在工业上使用了，冲突越少，利用率越高，哈希函数越优秀</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示：-3"><a href="#代码演示：-3" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>哈希函数：BKDR-Hash，冲突处理方法：拉链法</li>
+<li>插入值时使用的是头插法</li>
+<li>哈希表结构的利用率不可能达到100%，所以开辟的空间需要扩大，一倍</li>
+<li>calloc开辟哈希表空间，可以让每个位置的链表首地址置空，安全</li>
+<li>哈希函数可以自己设计</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *str;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">HashTable</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> size;</span><br><span class="line">&#125; HashTable;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">init_node</span><span class="params">(<span class="keyword">char</span> *str, Node *head)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;str = strdup(str);</span><br><span class="line">    p-&gt;next = head;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">HashTable *<span class="title">init_hashtable</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    HashTable *h = (HashTable *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(HashTable));</span><br><span class="line">    h-&gt;size = n &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    h-&gt;data = (Node **)<span class="built_in">calloc</span>(h-&gt;size, <span class="keyword">sizeof</span>(Node *));</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">BKDRHash</span><span class="params">(<span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> seed = <span class="number">31</span>, hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; str[i]; i++) hash = hash * seed + str[i];</span><br><span class="line">    <span class="keyword">return</span> hash &amp; <span class="number">0x7fffffff</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(HashTable *h, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = BKDRHash(str);</span><br><span class="line">    <span class="keyword">int</span> ind = hash % h-&gt;size;</span><br><span class="line">    h-&gt;data[ind] = init_node(str, h-&gt;data[ind]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">search</span><span class="params">(HashTable *h, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = BKDRHash(str);</span><br><span class="line">    <span class="keyword">int</span> ind = hash % h-&gt;size;</span><br><span class="line">    Node *p = h-&gt;data[ind];</span><br><span class="line">    <span class="keyword">while</span> (p &amp;&amp; <span class="built_in">strcmp</span>(p-&gt;str, str)) p-&gt;next;</span><br><span class="line">    <span class="keyword">return</span> p != <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    Node *p = node, *q;</span><br><span class="line">    <span class="keyword">while</span> (p) &#123;</span><br><span class="line">        q = p-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(p-&gt;str);</span><br><span class="line">        <span class="built_in">free</span>(p);</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_hashtable</span><span class="params">(HashTable *h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; h-&gt;size; i++) &#123;</span><br><span class="line">        clear_node(h-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(h-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(h);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> op;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 100</span></span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span> + <span class="number">5</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    HashTable *h = init_hashtable(max_n + <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%s&quot;</span>, &amp;op, str)) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %s to HashTable\n&quot;</span>, str);</span><br><span class="line">                insert(h, str);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;search %s from HashTable result = %d\n&quot;</span>, str, search(h, str));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_n</span></span><br><span class="line">    clear_hashtable(h);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
+<li>❓关于快速排序优化版中边界的思考<ul>
+<li><img src="https://gitee.com/doubleL3/blog-imgs/raw/master/img/QVxwRHT.png" alt="图片"></li>
+<li>同样按照普通版快排优化边界判断，下面优化的思路有问题，而在普通版均可实现<ul>
+<li>32 - 33行：num[] &lt; z 和 num[] &gt; z 分别改称 &lt;= 和 &gt;=，会出现【段错误或死循环】<ul>
+<li>对于num[] &lt;= z 【死循环】<ul>
+<li>举例：2 1 ，基准值为2，左指针x一直走到右端，出界，而右指针y不变，第27行while (l &lt; r)成立，x又回到l，变成了死循环</li>
+</ul>
+</li>
+<li>对于num[] &gt;= z 【段错误——爆栈】<ul>
+<li>举例：1 2，基准值为1，右指针y一直走到左端，变-1，而左指针x和r不变，第39行quick_sort(num, x, r)不断递归调用，最终爆栈</li>
+</ul>
+</li>
+<li>分析原因：普通版把基准值拿出来了，优化版基准值还在里面，需要考虑这个区别</li>
+</ul>
+</li>
+<li>32 - 34行：x &lt;= y 改成 x &lt; y，也会出现【段错误】<ul>
+<li>举例：2 3，基准值为2，此时x、y分别指向2、3，经过循环，x、y都指向2，而x和r都不变，第39行quick_sort(num, x, r)不断递归调用，最终爆栈</li>
+<li>分析原因：x、y要错开，不然有点像特殊二分111000不+1的情况</li>
+</ul>
+</li>
+<li><strong>小结</strong>：x、y都得动起来，x不动导致<strong>爆栈</strong>，y不动导致<strong>死循环</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095931.png" alt="图片" style="zoom:50%;"></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/onepixel/articles/7674659.html">十大经典排序算法(动图演示)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cxyxiaowu.com/2026.html">十大经典排序算法动画与解析，看我就够了</a></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+    </div>
+
+    
+    
+    
+
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Alin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/" title="排序与查找">http://example.com/2021/01/01/104. 排序与查找/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%89%8B%E6%92%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 手撕数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/01/105.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/" rel="prev" title="堆与优先队列">
+      <i class="fa fa-chevron-left"></i> 堆与优先队列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/01/103.%20%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="next" title="树与二叉树">
+      树与二叉树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE"><span class="nav-number">1.</span> <span class="nav-text">排序与查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.1.</span> <span class="nav-text">稳定排序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA%EF%BC%9A"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">代码演示：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E7%A8%B3%E5%AE%9A%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">不稳定排序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA%EF%BC%9A-1"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">代码演示：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE"><span class="nav-number">1.2.</span> <span class="nav-text">查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA%EF%BC%9A-2"><span class="nav-number">1.2.1.</span> <span class="nav-text">代码演示：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">1.3.</span> <span class="nav-text">哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA%EF%BC%9A-3"><span class="nav-number">1.3.1.</span> <span class="nav-text">代码演示：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">思考点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tips"><span class="nav-number">3.</span> <span class="nav-text">Tips</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Alin"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Alin</p>
+  <div class="site-description" itemprop="description">你的坚持，终有回报的时候！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021- – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-star"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alin</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>-->
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <!--<span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数 <span id="busuanzi_value_site_uv"></span> 人</span>
+    <span class="post-meta-divider">|</span>-->
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<!---->
+<!---->
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/gh/HCLonely/Valine@latest/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'oiaHYqQjE4QQBGP5H8XmxO8z-gzGzoHsz',
+      appKey     : 'xrK4f5nYeGyJ0MgOfkcC5cOD',
+      placeholder: "",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+</body>
+
+  <!-- require APlayer -->
+<div class="aplayer" 
+  data-id="486899256" 
+  data-server="netease" 
+  data-type="playlist" 
+  data-fixed="true" 
+  data-autoplay="true" 
+  data-order="random" 
+  data-volume="0.55" 
+  data-theme="#cc543a" 
+  data-preload="auto" >
+</div>
+
+</html>
