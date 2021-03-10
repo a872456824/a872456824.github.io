@@ -378,272 +378,6 @@
       </tags>
   </entry>
   <entry>
-    <title>排序与查找</title>
-    <url>/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="排序与查找"><a href="#排序与查找" class="headerlink" title="排序与查找"></a>排序与查找</h1><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><ul>
-<li>四象限原则：稳定/非稳定、内部/外部<ul>
-<li>稳定：相同元素在排序前后的相对位置不变</li>
-<li>内部：需要将数据整个加载到内存中进行排序</li>
-</ul>
-</li>
-</ul>
-<p>【考虑从小到大排序】</p>
-<h3 id="稳定排序"><a href="#稳定排序" class="headerlink" title="稳定排序"></a>稳定排序</h3><ul>
-<li><p>插入（内部）</p>
-<ul>
-<li>前：已排序区；后：待排序区</li>
-</ul>
-</li>
-<li><p>后面的数在前面找位置插空</p>
-<ul>
-<li>一个一个比较、交换，实现【插入】的效果</li>
-<li>不是直接和插入位置交换，这样会打乱已排序区的顺序</li>
-<li>平均时间复杂度：O(N^2)</li>
-</ul>
-</li>
-<li><p>冒泡（内部）</p>
-<ul>
-<li>前：待排序区；后：已排序区</li>
-</ul>
-</li>
-<li><p>从第一个元素向后驶进，找到一个最大元素放在已排序区最前、待排序区最后</p>
-<ul>
-<li>进行N - 1轮冒泡，每轮在已排序中增加一个元素<ul>
-<li>【优化】当某一轮冒泡过程没有进行交换操作，可以直接结束</li>
-</ul>
-</li>
-<li>平均时间复杂度：O(N^2)<ul>
-<li>最优时间复杂度：O(N)←已排序</li>
-<li>最坏时间复杂度：O(N^2)←完全逆序</li>
-</ul>
-</li>
-<li>插入排序可理解为反向冒泡</li>
-</ul>
-</li>
-<li><p>归并（外部）</p>
-<ul>
-<li>前言：两个有序的数组（长度分别为m、n）合并成一个有序的数组</li>
-<li>时间复杂度：O(m + n)</li>
-<li>先分治到两两可以比较大小，再把有序的数组两两合并</li>
-<li>时间复杂度（最优、最坏、平均都是）：O(NlogN)<ul>
-<li>共logN层，每层的合并时间为O(N)</li>
-</ul>
-</li>
-<li>【外部排序】2路归并(上述)、k路归并(多路归并，利用堆)<ul>
-<li>参考<a href="https://www.wikiwand.com/zh-hans/%E5%A4%96%E6%8E%92%E5%BA%8F#/%E5%A4%96%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">外归并排序</a>-维基百科，每路的排序方法可以任意，最终归并</li>
-<li>其实这个外部排序与否取决于你想不想、需不需要，但它可以</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h4><ul>
-<li>要保证稳定排序的稳定性，注意==的情况，不能交换[或保证原有的顺序]！</li>
-<li>【注意】调用TEST宏时，后一个数组是num，它是在宏定义里拷贝arr得到的一个数组！</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    a ^= b; b ^= a; a ^= b;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(arr, n, func, args...) &#123;\</span></span><br><span class="line">    <span class="keyword">int</span> *num = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    <span class="built_in">memcpy</span>(num, arr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = &quot;</span>, <span class="meta">#func);\</span></span><br><span class="line">    func(args);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">free</span>(num);\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入排序</span></span><br><span class="line"><span class="keyword">void</span> insert_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; num[j] &lt; num[j - <span class="number">1</span>]; j--) &#123;</span><br><span class="line">            swap(num[j], num[j - <span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 冒泡排序</span></span><br><span class="line"><span class="keyword">void</span> bubble_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> times = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n &amp;&amp; times; i++) &#123;</span><br><span class="line">        times = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &lt;= num[j + <span class="number">1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">            swap(num[j], num[j + <span class="number">1</span>]);</span><br><span class="line">            times++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并排序</span></span><br><span class="line"><span class="keyword">void</span> merge_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="comment">// 递归出口，边界条件：剩余元素 &lt;= 2</span></span><br><span class="line">    <span class="keyword">if</span> (r - l &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (r - l == <span class="number">1</span> &amp;&amp; num[r] &lt; num[l]) &#123;</span><br><span class="line">            swap(num[r], num[l]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    merge_sort(num, l, mid);</span><br><span class="line">    merge_sort(num, mid + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">int</span> *temp = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (r - l + <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">int</span> p1 = l, p2 = mid + <span class="number">1</span>, k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (p1 &lt;= mid || p2 &lt;= r) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p2 &gt; r || (p1 &lt;= mid &amp;&amp; num[p1] &lt; num[p2])) &#123;</span><br><span class="line">            temp[k++] = num[p1++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            temp[k++] = num[p2++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 拷贝排好序的数目到目前归并的数据首地址 &amp;num[l], 共 r - l + 1个元素</span></span><br><span class="line">    <span class="built_in">memcpy</span>(num + l, temp, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (r - l + <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">free</span>(temp);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> randint(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">while</span> (n--) num[n] = rand() % <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> output(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; %d &quot;</span>, num[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 20</span></span><br><span class="line">    <span class="keyword">int</span> arr[max_n];</span><br><span class="line">    randint(arr, max_n);</span><br><span class="line">    TEST(arr, max_n, insert_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, bubble_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, merge_sort, num, <span class="number">0</span>, max_n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h3 id="不稳定排序"><a href="#不稳定排序" class="headerlink" title="不稳定排序"></a>不稳定排序</h3><ul>
-<li><p>选择（内部）</p>
-<ul>
-<li><p>前：已排序区；后：待排序区</p>
-</li>
-<li><p>每轮从待排序区中选择一个最小的元素与待排序区的第一个元素交换</p>
-<ul>
-<li>可能会有自身与自身交换的情况，所以交换函数不能用异或了</li>
-</ul>
-</li>
-<li><p>不稳定：例如22’1，在第一次交换后，2就跑到了2’的后面，即12’2</p>
-</li>
-<li><p>时间复杂度（最优、最坏、平均都是）：O(N^2)</p>
-</li>
-<li><p>一般情况下优于冒泡，两者比较次数差不多，但冒泡的交换太频繁</p>
-</li>
-</ul>
-</li>
-<li><p>快排（内部）</p>
-<ul>
-<li>【基准值、partition】</li>
-<li>拿出第1个元素作为基准值<ul>
-<li>【尾指针】先从后往前找小于基准值的元素，放到第1个元素位置(已为空)，【头指针】再从前往后找大于基准值的值，放到刚刚空出的位置，循环</li>
-<li>最后头尾指针重合，指向一个空位置，放入基准值</li>
-<li>再对基准值左右两部分分别进行以上操作</li>
-</ul>
-</li>
-<li>时间复杂度：O(NlogN)<ul>
-<li>逆序数列选第一个元素为基准值时，退化为选择排序，O(N^2)</li>
-</ul>
-</li>
-<li>【优化】<ul>
-<li>基准值随机选</li>
-<li>减少递归的使用，用循环做</li>
-<li>左右都找到一个要交换的值后，再交换</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h4><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(arr, n, func, args...) &#123;\</span></span><br><span class="line">    <span class="keyword">int</span> *num = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    <span class="built_in">memcpy</span>(num, arr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = &quot;</span>, <span class="meta">#func);\</span></span><br><span class="line">    func(args);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">free</span>(num);\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择排序</span></span><br><span class="line"><span class="keyword">void</span> select_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[ind] &gt; num[j]) ind = j;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(num[i], num[ind]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通快排</span></span><br><span class="line"><span class="keyword">void</span> quick_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> x = l, y = r, z = num[x];</span><br><span class="line">    <span class="keyword">while</span> (x &lt; y) &#123;</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; num[y] &gt; z) y--;</span><br><span class="line">        <span class="keyword">if</span> (x &lt; y) num[x++] = num[y];</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; num[x] &lt; z) x++;</span><br><span class="line">        <span class="keyword">if</span> (x &lt; y) num[y--] = num[x];</span><br><span class="line">    &#125;</span><br><span class="line">    num[x] = z;</span><br><span class="line">    quick_sort(num, l, x - <span class="number">1</span>);</span><br><span class="line">    quick_sort(num, x + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 优化版本快排</span></span><br><span class="line"><span class="keyword">void</span> quick_sort1(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> x = l, y = r, z = num[(l + r) &gt;&gt; <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (x &lt;= y &amp;&amp; num[x] &lt; z) x++;</span><br><span class="line">            <span class="keyword">while</span> (x &lt;= y &amp;&amp; num[y] &gt; z) y--;</span><br><span class="line">            <span class="keyword">if</span> (x &lt;= y) &#123;</span><br><span class="line">                swap(num[x], num[y]);</span><br><span class="line">                x++, y--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (x &lt;= y);</span><br><span class="line">        quick_sort1(num, x, r);</span><br><span class="line">        r = y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> randint(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">while</span> (n--) num[n] = rand() % <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> output(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, num[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 20</span></span><br><span class="line">    <span class="keyword">int</span> arr[max_n];</span><br><span class="line">    randint(arr, max_n);</span><br><span class="line">    TEST(arr, max_n, select_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, quick_sort, num, <span class="number">0</span>, max_n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>普通快排算法，有很多可优化点<ul>
-<li>【优化点】基准值选择、递归→循环、交换方式<ul>
-<li>注意几个边界的==：x &lt;= y、num[] &lt; z、num[] &gt; z</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><ul>
-<li><p>朴素二分</p>
-<ul>
-<li>前提：单调序列</li>
-<li>如果要查找的值在序列中重复存在，二分查找分辨不出找到的是哪一个</li>
-</ul>
-</li>
-<li><p>特殊二分</p>
-<ul>
-<li>11110000<ul>
-<li>引入虚拟头指针，索引为-1</li>
-<li>mid计算需要+1，避免死循环，比如10情况</li>
-</ul>
-</li>
-<li>00001111<ul>
-<li>引入虚拟尾指针，索引为n [数组范围为0 ~ n - 1]</li>
-</ul>
-</li>
-<li>这里比参考内容还增加一个<strong>虚拟指针</strong>的概念，通过更改查找的边界[-1 ~ n -1 或 0 ~ n]，可以<strong>反映找不到值时的情况</strong></li>
-</ul>
-</li>
-<li><p>三分查找</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095424.png" alt="图片"></li>
-<li>解决【求凹凸函数极值点】问题</li>
-<li>将原问题的规模分成三分之一</li>
-<li>更新策略：保留值小的元素与另一端的区间；停止条件：$ |m_1 - m_2|&lt; ESPL $</li>
-<li>时间复杂度：$ O(log_3N) $，比二分查找 $ O(log_2N) $稍慢</li>
-</ul>
-<h3 id="代码演示：-2"><a href="#代码演示：-2" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>虚拟指针的使用，可以避免没有答案时[000000]返回假答案[0或n - 1]的情况</li>
-<li>11110000的情况，在计算mid时要+1，避免陷入死循环，如10</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P(func) &#123;\</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = %d\n&quot;</span>, <span class="meta">#func, func);\</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search1(<span class="keyword">int</span> *num, <span class="keyword">int</span> n, <span class="keyword">int</span> x) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>, tail = n <span class="number">-1</span>, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt;= tail) &#123;</span><br><span class="line">        mid = (head + tail) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == x) <span class="keyword">return</span> mid;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] &lt; x) head = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> tail = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search2(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">-1</span>, tail = n - <span class="number">1</span>, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        mid = (head + tail + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == <span class="number">1</span>) head = mid;</span><br><span class="line">        <span class="keyword">else</span> tail = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search3(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>, tail = n, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        mid = (head + tail) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == <span class="number">1</span>) tail = mid;</span><br><span class="line">        <span class="keyword">else</span> head = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head == n ? <span class="number">-1</span> : head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">int</span> arr1[<span class="number">10</span>] = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">21</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> arr2[<span class="number">10</span>] = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> arr3[<span class="number">10</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">    P(binary_search1(arr1, <span class="number">10</span>, <span class="number">7</span>));</span><br><span class="line">    P(binary_search2(arr2, <span class="number">10</span>));</span><br><span class="line">    P(binary_search3(arr3, <span class="number">10</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-    </div>
-</div>
-
-</li>
-</ul>
-<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><ul>
-<li>用于查找的【数据结构】</li>
-<li>结构定义<ul>
-<li>需要一片连续的空间，存储元素</li>
-<li>与顺序表一致，元素类型可变</li>
-</ul>
-</li>
-<li>结构操作<ul>
-<li>哈希函数：可以把任意类型元素映射成整型值[数组下标]<ul>
-<li>然后可以存储某值到对应的数组下标中</li>
-<li>数组下标只能是整型</li>
-</ul>
-</li>
-<li>冲突处理方法<ul>
-<li>开放定值【常用】：往后看看有没有空位，如二次探测法…但容易产生数据堆聚问题</li>
-<li>再哈希：又名散列法，使用多种哈希函数</li>
-<li>拉链法【常用】：用<strong>链表</strong>结构存储每个位置的元素</li>
-<li>建立公共溢出区：把冲突的元素统一放到一个特定区域</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>查找的时间复杂度：趋近于O(1)<ul>
-<li>其他耗时：哈希函数转换、拉链法[查找链表元素]或其他冲突处理方法导致的耗时</li>
-<li>只有数组、顺序表是O(1)的</li>
-</ul>
-</li>
-<li>哈希表的空间利用率一般是50~90%<ul>
-<li>哈希函数一定会存在冲突情况，开辟空间时需要预留</li>
-<li>当利用率可以达到70%时，它就可以在工业上使用了，冲突越少，利用率越高，哈希函数越优秀</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示：-3"><a href="#代码演示：-3" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>哈希函数：BKDR-Hash，冲突处理方法：拉链法</li>
-<li>插入值时使用的是头插法</li>
-<li>哈希表结构的利用率不可能达到100%，所以开辟的空间需要扩大，一倍</li>
-<li>calloc开辟哈希表空间，可以让每个位置的链表首地址置空，安全</li>
-<li>哈希函数可以自己设计</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *str;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">HashTable</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> size;</span><br><span class="line">&#125; HashTable;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">init_node</span><span class="params">(<span class="keyword">char</span> *str, Node *head)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;str = strdup(str);</span><br><span class="line">    p-&gt;next = head;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">HashTable *<span class="title">init_hashtable</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    HashTable *h = (HashTable *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(HashTable));</span><br><span class="line">    h-&gt;size = n &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    h-&gt;data = (Node **)<span class="built_in">calloc</span>(h-&gt;size, <span class="keyword">sizeof</span>(Node *));</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">BKDRHash</span><span class="params">(<span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> seed = <span class="number">31</span>, hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; str[i]; i++) hash = hash * seed + str[i];</span><br><span class="line">    <span class="keyword">return</span> hash &amp; <span class="number">0x7fffffff</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(HashTable *h, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = BKDRHash(str);</span><br><span class="line">    <span class="keyword">int</span> ind = hash % h-&gt;size;</span><br><span class="line">    h-&gt;data[ind] = init_node(str, h-&gt;data[ind]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">search</span><span class="params">(HashTable *h, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = BKDRHash(str);</span><br><span class="line">    <span class="keyword">int</span> ind = hash % h-&gt;size;</span><br><span class="line">    Node *p = h-&gt;data[ind];</span><br><span class="line">    <span class="keyword">while</span> (p &amp;&amp; <span class="built_in">strcmp</span>(p-&gt;str, str)) p-&gt;next;</span><br><span class="line">    <span class="keyword">return</span> p != <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    Node *p = node, *q;</span><br><span class="line">    <span class="keyword">while</span> (p) &#123;</span><br><span class="line">        q = p-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(p-&gt;str);</span><br><span class="line">        <span class="built_in">free</span>(p);</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_hashtable</span><span class="params">(HashTable *h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; h-&gt;size; i++) &#123;</span><br><span class="line">        clear_node(h-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(h-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(h);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> op;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 100</span></span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span> + <span class="number">5</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    HashTable *h = init_hashtable(max_n + <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%s&quot;</span>, &amp;op, str)) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %s to HashTable\n&quot;</span>, str);</span><br><span class="line">                insert(h, str);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;search %s from HashTable result = %d\n&quot;</span>, str, search(h, str));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_n</span></span><br><span class="line">    clear_hashtable(h);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
-<li>❓关于快速排序优化版中边界的思考<ul>
-<li><img src="https://gitee.com/doubleL3/blog-imgs/raw/master/img/QVxwRHT.png" alt="图片"></li>
-<li>同样按照普通版快排优化边界判断，下面优化的思路有问题，而在普通版均可实现<ul>
-<li>32 - 33行：num[] &lt; z 和 num[] &gt; z 分别改称 &lt;= 和 &gt;=，会出现【段错误或死循环】<ul>
-<li>对于num[] &lt;= z 【死循环】<ul>
-<li>举例：2 1 ，基准值为2，左指针x一直走到右端，出界，而右指针y不变，第27行while (l &lt; r)成立，x又回到l，变成了死循环</li>
-</ul>
-</li>
-<li>对于num[] &gt;= z 【段错误——爆栈】<ul>
-<li>举例：1 2，基准值为1，右指针y一直走到左端，变-1，而左指针x和r不变，第39行quick_sort(num, x, r)不断递归调用，最终爆栈</li>
-</ul>
-</li>
-<li>分析原因：普通版把基准值拿出来了，优化版基准值还在里面，需要考虑这个区别</li>
-</ul>
-</li>
-<li>32 - 34行：x &lt;= y 改成 x &lt; y，也会出现【段错误】<ul>
-<li>举例：2 3，基准值为2，此时x、y分别指向2、3，经过循环，x、y都指向2，而x和r都不变，第39行quick_sort(num, x, r)不断递归调用，最终爆栈</li>
-<li>分析原因：x、y要错开，不然有点像特殊二分111000不+1的情况</li>
-</ul>
-</li>
-<li><strong>小结</strong>：x、y都得动起来，x不动导致<strong>爆栈</strong>，y不动导致<strong>死循环</strong></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095931.png" alt="图片" style="zoom:50%;"></li>
-<li><a href="https://www.cnblogs.com/onepixel/articles/7674659.html">十大经典排序算法(动图演示)</a></li>
-<li><a href="https://www.cxyxiaowu.com/2026.html">十大经典排序算法动画与解析，看我就够了</a></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>堆与优先队列</title>
     <url>/2021/01/01/105.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
@@ -964,6 +698,272 @@
 
 <h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
 <li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095937.png" alt="image-20201202082334602"></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>排序与查找</title>
+    <url>/2021/01/01/104.%20%E6%8E%92%E5%BA%8F%E4%B8%8E%E6%9F%A5%E6%89%BE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="排序与查找"><a href="#排序与查找" class="headerlink" title="排序与查找"></a>排序与查找</h1><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><ul>
+<li>四象限原则：稳定/非稳定、内部/外部<ul>
+<li>稳定：相同元素在排序前后的相对位置不变</li>
+<li>内部：需要将数据整个加载到内存中进行排序</li>
+</ul>
+</li>
+</ul>
+<p>【考虑从小到大排序】</p>
+<h3 id="稳定排序"><a href="#稳定排序" class="headerlink" title="稳定排序"></a>稳定排序</h3><ul>
+<li><p>插入（内部）</p>
+<ul>
+<li>前：已排序区；后：待排序区</li>
+</ul>
+</li>
+<li><p>后面的数在前面找位置插空</p>
+<ul>
+<li>一个一个比较、交换，实现【插入】的效果</li>
+<li>不是直接和插入位置交换，这样会打乱已排序区的顺序</li>
+<li>平均时间复杂度：O(N^2)</li>
+</ul>
+</li>
+<li><p>冒泡（内部）</p>
+<ul>
+<li>前：待排序区；后：已排序区</li>
+</ul>
+</li>
+<li><p>从第一个元素向后驶进，找到一个最大元素放在已排序区最前、待排序区最后</p>
+<ul>
+<li>进行N - 1轮冒泡，每轮在已排序中增加一个元素<ul>
+<li>【优化】当某一轮冒泡过程没有进行交换操作，可以直接结束</li>
+</ul>
+</li>
+<li>平均时间复杂度：O(N^2)<ul>
+<li>最优时间复杂度：O(N)←已排序</li>
+<li>最坏时间复杂度：O(N^2)←完全逆序</li>
+</ul>
+</li>
+<li>插入排序可理解为反向冒泡</li>
+</ul>
+</li>
+<li><p>归并（外部）</p>
+<ul>
+<li>前言：两个有序的数组（长度分别为m、n）合并成一个有序的数组</li>
+<li>时间复杂度：O(m + n)</li>
+<li>先分治到两两可以比较大小，再把有序的数组两两合并</li>
+<li>时间复杂度（最优、最坏、平均都是）：O(NlogN)<ul>
+<li>共logN层，每层的合并时间为O(N)</li>
+</ul>
+</li>
+<li>【外部排序】2路归并(上述)、k路归并(多路归并，利用堆)<ul>
+<li>参考<a href="https://www.wikiwand.com/zh-hans/%E5%A4%96%E6%8E%92%E5%BA%8F#/%E5%A4%96%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">外归并排序</a>-维基百科，每路的排序方法可以任意，最终归并</li>
+<li>其实这个外部排序与否取决于你想不想、需不需要，但它可以</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h4><ul>
+<li>要保证稳定排序的稳定性，注意==的情况，不能交换[或保证原有的顺序]！</li>
+<li>【注意】调用TEST宏时，后一个数组是num，它是在宏定义里拷贝arr得到的一个数组！</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    a ^= b; b ^= a; a ^= b;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(arr, n, func, args...) &#123;\</span></span><br><span class="line">    <span class="keyword">int</span> *num = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    <span class="built_in">memcpy</span>(num, arr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = &quot;</span>, <span class="meta">#func);\</span></span><br><span class="line">    func(args);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">free</span>(num);\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入排序</span></span><br><span class="line"><span class="keyword">void</span> insert_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; num[j] &lt; num[j - <span class="number">1</span>]; j--) &#123;</span><br><span class="line">            swap(num[j], num[j - <span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 冒泡排序</span></span><br><span class="line"><span class="keyword">void</span> bubble_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> times = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n &amp;&amp; times; i++) &#123;</span><br><span class="line">        times = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[j] &lt;= num[j + <span class="number">1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">            swap(num[j], num[j + <span class="number">1</span>]);</span><br><span class="line">            times++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并排序</span></span><br><span class="line"><span class="keyword">void</span> merge_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="comment">// 递归出口，边界条件：剩余元素 &lt;= 2</span></span><br><span class="line">    <span class="keyword">if</span> (r - l &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (r - l == <span class="number">1</span> &amp;&amp; num[r] &lt; num[l]) &#123;</span><br><span class="line">            swap(num[r], num[l]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    merge_sort(num, l, mid);</span><br><span class="line">    merge_sort(num, mid + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">int</span> *temp = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (r - l + <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">int</span> p1 = l, p2 = mid + <span class="number">1</span>, k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (p1 &lt;= mid || p2 &lt;= r) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p2 &gt; r || (p1 &lt;= mid &amp;&amp; num[p1] &lt; num[p2])) &#123;</span><br><span class="line">            temp[k++] = num[p1++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            temp[k++] = num[p2++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 拷贝排好序的数目到目前归并的数据首地址 &amp;num[l], 共 r - l + 1个元素</span></span><br><span class="line">    <span class="built_in">memcpy</span>(num + l, temp, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (r - l + <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">free</span>(temp);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> randint(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">while</span> (n--) num[n] = rand() % <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> output(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; %d &quot;</span>, num[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 20</span></span><br><span class="line">    <span class="keyword">int</span> arr[max_n];</span><br><span class="line">    randint(arr, max_n);</span><br><span class="line">    TEST(arr, max_n, insert_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, bubble_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, merge_sort, num, <span class="number">0</span>, max_n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h3 id="不稳定排序"><a href="#不稳定排序" class="headerlink" title="不稳定排序"></a>不稳定排序</h3><ul>
+<li><p>选择（内部）</p>
+<ul>
+<li><p>前：已排序区；后：待排序区</p>
+</li>
+<li><p>每轮从待排序区中选择一个最小的元素与待排序区的第一个元素交换</p>
+<ul>
+<li>可能会有自身与自身交换的情况，所以交换函数不能用异或了</li>
+</ul>
+</li>
+<li><p>不稳定：例如22’1，在第一次交换后，2就跑到了2’的后面，即12’2</p>
+</li>
+<li><p>时间复杂度（最优、最坏、平均都是）：O(N^2)</p>
+</li>
+<li><p>一般情况下优于冒泡，两者比较次数差不多，但冒泡的交换太频繁</p>
+</li>
+</ul>
+</li>
+<li><p>快排（内部）</p>
+<ul>
+<li>【基准值、partition】</li>
+<li>拿出第1个元素作为基准值<ul>
+<li>【尾指针】先从后往前找小于基准值的元素，放到第1个元素位置(已为空)，【头指针】再从前往后找大于基准值的值，放到刚刚空出的位置，循环</li>
+<li>最后头尾指针重合，指向一个空位置，放入基准值</li>
+<li>再对基准值左右两部分分别进行以上操作</li>
+</ul>
+</li>
+<li>时间复杂度：O(NlogN)<ul>
+<li>逆序数列选第一个元素为基准值时，退化为选择排序，O(N^2)</li>
+</ul>
+</li>
+<li>【优化】<ul>
+<li>基准值随机选</li>
+<li>减少递归的使用，用循环做</li>
+<li>左右都找到一个要交换的值后，再交换</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h4><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TEST(arr, n, func, args...) &#123;\</span></span><br><span class="line">    <span class="keyword">int</span> *num = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    <span class="built_in">memcpy</span>(num, arr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = &quot;</span>, <span class="meta">#func);\</span></span><br><span class="line">    func(args);\</span><br><span class="line">    output(num, n);\</span><br><span class="line">    <span class="built_in">free</span>(num);\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择排序</span></span><br><span class="line"><span class="keyword">void</span> select_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num[ind] &gt; num[j]) ind = j;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(num[i], num[ind]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通快排</span></span><br><span class="line"><span class="keyword">void</span> quick_sort(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> x = l, y = r, z = num[x];</span><br><span class="line">    <span class="keyword">while</span> (x &lt; y) &#123;</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; num[y] &gt; z) y--;</span><br><span class="line">        <span class="keyword">if</span> (x &lt; y) num[x++] = num[y];</span><br><span class="line">        <span class="keyword">while</span> (x &lt; y &amp;&amp; num[x] &lt; z) x++;</span><br><span class="line">        <span class="keyword">if</span> (x &lt; y) num[y--] = num[x];</span><br><span class="line">    &#125;</span><br><span class="line">    num[x] = z;</span><br><span class="line">    quick_sort(num, l, x - <span class="number">1</span>);</span><br><span class="line">    quick_sort(num, x + <span class="number">1</span>, r);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 优化版本快排</span></span><br><span class="line"><span class="keyword">void</span> quick_sort1(<span class="keyword">int</span> *num, <span class="keyword">int</span> l, <span class="keyword">int</span> r) &#123;</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> x = l, y = r, z = num[(l + r) &gt;&gt; <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (x &lt;= y &amp;&amp; num[x] &lt; z) x++;</span><br><span class="line">            <span class="keyword">while</span> (x &lt;= y &amp;&amp; num[y] &gt; z) y--;</span><br><span class="line">            <span class="keyword">if</span> (x &lt;= y) &#123;</span><br><span class="line">                swap(num[x], num[y]);</span><br><span class="line">                x++, y--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (x &lt;= y);</span><br><span class="line">        quick_sort1(num, x, r);</span><br><span class="line">        r = y;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> randint(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">while</span> (n--) num[n] = rand() % <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> output(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, num[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 20</span></span><br><span class="line">    <span class="keyword">int</span> arr[max_n];</span><br><span class="line">    randint(arr, max_n);</span><br><span class="line">    TEST(arr, max_n, select_sort, num, max_n);</span><br><span class="line">    TEST(arr, max_n, quick_sort, num, <span class="number">0</span>, max_n - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>普通快排算法，有很多可优化点<ul>
+<li>【优化点】基准值选择、递归→循环、交换方式<ul>
+<li>注意几个边界的==：x &lt;= y、num[] &lt; z、num[] &gt; z</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><ul>
+<li><p>朴素二分</p>
+<ul>
+<li>前提：单调序列</li>
+<li>如果要查找的值在序列中重复存在，二分查找分辨不出找到的是哪一个</li>
+</ul>
+</li>
+<li><p>特殊二分</p>
+<ul>
+<li>11110000<ul>
+<li>引入虚拟头指针，索引为-1</li>
+<li>mid计算需要+1，避免死循环，比如10情况</li>
+</ul>
+</li>
+<li>00001111<ul>
+<li>引入虚拟尾指针，索引为n [数组范围为0 ~ n - 1]</li>
+</ul>
+</li>
+<li>这里比参考内容还增加一个<strong>虚拟指针</strong>的概念，通过更改查找的边界[-1 ~ n -1 或 0 ~ n]，可以<strong>反映找不到值时的情况</strong></li>
+</ul>
+</li>
+<li><p>三分查找</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095424.png" alt="图片"></li>
+<li>解决【求凹凸函数极值点】问题</li>
+<li>将原问题的规模分成三分之一</li>
+<li>更新策略：保留值小的元素与另一端的区间；停止条件：$ |m_1 - m_2|&lt; ESPL $</li>
+<li>时间复杂度：$ O(log_3N) $，比二分查找 $ O(log_2N) $稍慢</li>
+</ul>
+<h3 id="代码演示：-2"><a href="#代码演示：-2" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>虚拟指针的使用，可以避免没有答案时[000000]返回假答案[0或n - 1]的情况</li>
+<li>11110000的情况，在计算mid时要+1，避免陷入死循环，如10</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P(func) &#123;\</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s = %d\n&quot;</span>, <span class="meta">#func, func);\</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search1(<span class="keyword">int</span> *num, <span class="keyword">int</span> n, <span class="keyword">int</span> x) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>, tail = n <span class="number">-1</span>, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt;= tail) &#123;</span><br><span class="line">        mid = (head + tail) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == x) <span class="keyword">return</span> mid;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] &lt; x) head = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> tail = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search2(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">-1</span>, tail = n - <span class="number">1</span>, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        mid = (head + tail + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == <span class="number">1</span>) head = mid;</span><br><span class="line">        <span class="keyword">else</span> tail = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> binary_search3(<span class="keyword">int</span> *num, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>, tail = n, mid;</span><br><span class="line">    <span class="keyword">while</span> (head &lt; tail) &#123;</span><br><span class="line">        mid = (head + tail) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (num[mid] == <span class="number">1</span>) tail = mid;</span><br><span class="line">        <span class="keyword">else</span> head = mid + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head == n ? <span class="number">-1</span> : head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">int</span> arr1[<span class="number">10</span>] = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">21</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> arr2[<span class="number">10</span>] = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> arr3[<span class="number">10</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">    P(binary_search1(arr1, <span class="number">10</span>, <span class="number">7</span>));</span><br><span class="line">    P(binary_search2(arr2, <span class="number">10</span>));</span><br><span class="line">    P(binary_search3(arr3, <span class="number">10</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+</div>
+
+</li>
+</ul>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><ul>
+<li>用于查找的【数据结构】</li>
+<li>结构定义<ul>
+<li>需要一片连续的空间，存储元素</li>
+<li>与顺序表一致，元素类型可变</li>
+</ul>
+</li>
+<li>结构操作<ul>
+<li>哈希函数：可以把任意类型元素映射成整型值[数组下标]<ul>
+<li>然后可以存储某值到对应的数组下标中</li>
+<li>数组下标只能是整型</li>
+</ul>
+</li>
+<li>冲突处理方法<ul>
+<li>开放定值【常用】：往后看看有没有空位，如二次探测法…但容易产生数据堆聚问题</li>
+<li>再哈希：又名散列法，使用多种哈希函数</li>
+<li>拉链法【常用】：用<strong>链表</strong>结构存储每个位置的元素</li>
+<li>建立公共溢出区：把冲突的元素统一放到一个特定区域</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>查找的时间复杂度：趋近于O(1)<ul>
+<li>其他耗时：哈希函数转换、拉链法[查找链表元素]或其他冲突处理方法导致的耗时</li>
+<li>只有数组、顺序表是O(1)的</li>
+</ul>
+</li>
+<li>哈希表的空间利用率一般是50~90%<ul>
+<li>哈希函数一定会存在冲突情况，开辟空间时需要预留</li>
+<li>当利用率可以达到70%时，它就可以在工业上使用了，冲突越少，利用率越高，哈希函数越优秀</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示：-3"><a href="#代码演示：-3" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>哈希函数：BKDR-Hash，冲突处理方法：拉链法</li>
+<li>插入值时使用的是头插法</li>
+<li>哈希表结构的利用率不可能达到100%，所以开辟的空间需要扩大，一倍</li>
+<li>calloc开辟哈希表空间，可以让每个位置的链表首地址置空，安全</li>
+<li>哈希函数可以自己设计</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *str;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">HashTable</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> size;</span><br><span class="line">&#125; HashTable;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">init_node</span><span class="params">(<span class="keyword">char</span> *str, Node *head)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;str = strdup(str);</span><br><span class="line">    p-&gt;next = head;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">HashTable *<span class="title">init_hashtable</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    HashTable *h = (HashTable *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(HashTable));</span><br><span class="line">    h-&gt;size = n &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    h-&gt;data = (Node **)<span class="built_in">calloc</span>(h-&gt;size, <span class="keyword">sizeof</span>(Node *));</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">BKDRHash</span><span class="params">(<span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> seed = <span class="number">31</span>, hash = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; str[i]; i++) hash = hash * seed + str[i];</span><br><span class="line">    <span class="keyword">return</span> hash &amp; <span class="number">0x7fffffff</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(HashTable *h, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = BKDRHash(str);</span><br><span class="line">    <span class="keyword">int</span> ind = hash % h-&gt;size;</span><br><span class="line">    h-&gt;data[ind] = init_node(str, h-&gt;data[ind]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">search</span><span class="params">(HashTable *h, <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = BKDRHash(str);</span><br><span class="line">    <span class="keyword">int</span> ind = hash % h-&gt;size;</span><br><span class="line">    Node *p = h-&gt;data[ind];</span><br><span class="line">    <span class="keyword">while</span> (p &amp;&amp; <span class="built_in">strcmp</span>(p-&gt;str, str)) p-&gt;next;</span><br><span class="line">    <span class="keyword">return</span> p != <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    Node *p = node, *q;</span><br><span class="line">    <span class="keyword">while</span> (p) &#123;</span><br><span class="line">        q = p-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(p-&gt;str);</span><br><span class="line">        <span class="built_in">free</span>(p);</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_hashtable</span><span class="params">(HashTable *h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; h-&gt;size; i++) &#123;</span><br><span class="line">        clear_node(h-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(h-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(h);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> op;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_n 100</span></span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span> + <span class="number">5</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    HashTable *h = init_hashtable(max_n + <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">&quot;%d%s&quot;</span>, &amp;op, str)) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %s to HashTable\n&quot;</span>, str);</span><br><span class="line">                insert(h, str);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;search %s from HashTable result = %d\n&quot;</span>, str, search(h, str));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_n</span></span><br><span class="line">    clear_hashtable(h);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
+<li>❓关于快速排序优化版中边界的思考<ul>
+<li><img src="https://gitee.com/doubleL3/blog-imgs/raw/master/img/QVxwRHT.png" alt="图片"></li>
+<li>同样按照普通版快排优化边界判断，下面优化的思路有问题，而在普通版均可实现<ul>
+<li>32 - 33行：num[] &lt; z 和 num[] &gt; z 分别改称 &lt;= 和 &gt;=，会出现【段错误或死循环】<ul>
+<li>对于num[] &lt;= z 【死循环】<ul>
+<li>举例：2 1 ，基准值为2，左指针x一直走到右端，出界，而右指针y不变，第27行while (l &lt; r)成立，x又回到l，变成了死循环</li>
+</ul>
+</li>
+<li>对于num[] &gt;= z 【段错误——爆栈】<ul>
+<li>举例：1 2，基准值为1，右指针y一直走到左端，变-1，而左指针x和r不变，第39行quick_sort(num, x, r)不断递归调用，最终爆栈</li>
+</ul>
+</li>
+<li>分析原因：普通版把基准值拿出来了，优化版基准值还在里面，需要考虑这个区别</li>
+</ul>
+</li>
+<li>32 - 34行：x &lt;= y 改成 x &lt; y，也会出现【段错误】<ul>
+<li>举例：2 3，基准值为2，此时x、y分别指向2、3，经过循环，x、y都指向2，而x和r都不变，第39行quick_sort(num, x, r)不断递归调用，最终爆栈</li>
+<li>分析原因：x、y要错开，不然有点像特殊二分111000不+1的情况</li>
+</ul>
+</li>
+<li><strong>小结</strong>：x、y都得动起来，x不动导致<strong>爆栈</strong>，y不动导致<strong>死循环</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095931.png" alt="图片" style="zoom:50%;"></li>
+<li><a href="https://www.cnblogs.com/onepixel/articles/7674659.html">十大经典排序算法(动图演示)</a></li>
+<li><a href="https://www.cxyxiaowu.com/2026.html">十大经典排序算法动画与解析，看我就够了</a></li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
@@ -1933,149 +1933,6 @@
       </tags>
   </entry>
   <entry>
-    <title>阻塞与非阻塞IO</title>
-    <url>/2021/01/05/203.%20%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9EIO/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="阻塞与非阻塞IO"><a href="#阻塞与非阻塞IO" class="headerlink" title="阻塞与非阻塞IO"></a>阻塞与非阻塞IO</h1><blockquote>
-<p>多思考，诸如用阻塞IO的话，那能不能用非阻塞，哪个更优。</p>
-</blockquote>
-<h3 id="什么是阻塞"><a href="#什么是阻塞" class="headerlink" title="什么是阻塞"></a>什么是阻塞</h3><p>在运行过程中，有前提条件没完成，只能停止干等着不懂。</p>
-<h3 id="什么是非阻塞"><a href="#什么是非阻塞" class="headerlink" title="什么是非阻塞"></a>什么是非阻塞</h3><p>在运行过程中，哪怕有前提条件没完成，也不会干等着，可以干其他事。</p>
-<h3 id="读写文件时，阻塞与非阻塞的区别？"><a href="#读写文件时，阻塞与非阻塞的区别？" class="headerlink" title="读写文件时，阻塞与非阻塞的区别？"></a>读写文件时，阻塞与非阻塞的区别？</h3><ol>
-<li>打开文件</li>
-<li>把buf当作参数，用write系统调用，把数据传递给内核（用户态下沉到内核态），内核拿到数据，内核再把buf写到磁盘中（内核是快缓冲，这里主要以机械硬盘讨论），内核调动底层的IO设备管理，根据Inode与block放到磁盘的某一个位置。</li>
-<li>阻塞：没写进去就等着，啥也不干</li>
-<li>非阻塞：只通知，不管有没有写进去，继续做其他事</li>
-</ol>
-<h3 id="fcbtl：可以把一个文件变成非阻塞或者阻塞"><a href="#fcbtl：可以把一个文件变成非阻塞或者阻塞" class="headerlink" title="fcbtl：可以把一个文件变成非阻塞或者阻塞"></a>fcbtl：可以把一个文件变成非阻塞或者阻塞</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ... <span class="comment">/* arg */</span> )</span></span>;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<p>操作文件描述符，</p>
-<ul>
-<li><code>fd</code> ：文件描述符</li>
-<li><code>cmd</code> ：操作命令</li>
-<li><code>arg</code> ：变参列表，<code>cmd</code> 的参数，存在的情况下，大多数是<code>int</code></li>
-</ul>
-<p>操作（cmd）：</p>
-<ul>
-<li>复制一个文件描述符</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106190405728.png" alt="image-20210106190405728"></li>
-<li>文件描述符标志</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213937.png" alt="image-20210106190534232"></li>
-<li>文件状态标志</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213928.png" alt="image-20210106190511674"></li>
-</ul>
-<blockquote>
-<p>把文件变成阻塞或者非阻塞，用到的<code>cmd</code>就是<code>F_SETFL</code>以及里面的<code>O_NONBLOCK</code></p>
-</blockquote>
-<p>返回值 ：</p>
-<ul>
-<li>成功返回</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213945.png" alt="image-20210106190804916"></li>
-</ul>
-<blockquote>
-<p>头文件的引入顺序有关联！！！尽量把自己写的头文件放在最后！！！</p>
-</blockquote>
-<h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li> <code>O_NONBLOCK </code>是位掩码，它的每个比特都有含义，如果用<code>F_SETFL</code>设置一个确定的值，如果这样做，会破坏之前的<code>flag</code>，比如一个文件的权限是 <code>110</code>唯独没有<code>O_NONBLOCK </code>的权限，那这样操作（相当于赋值等于操作），就会直接<code>抹除</code>前面的权限，只留下<code>O_NONBLOCK </code>的权限，即<code>001</code>！！修改如下：</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="comment">//考虑是否会出错</span></span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag |= O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_block</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag &amp;= ~O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>先用<code>F_GETFL</code>获得文件当前的状态（同时判断是否会出错），然后用<code>或操作</code>加上<code>O_NONBLOCK</code>，再把这个<code>flag</code>当成<code>F_SETFL</code>的参数。</li>
-<li>如果变成<code>阻塞IO</code>的话，就先对<code>O_NONBLOCK</code>取反，再跟<code>flag</code>与操作。</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试程序，用 0， 1， 2来测试</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> age;</span><br><span class="line">    make_nonblock(<span class="number">0</span>);</span><br><span class="line">    sleep(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;age);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Alin is %d years old! &lt;%d&gt;\n&quot;</span>, age, ret);</span><br><span class="line">    perror(<span class="string">&quot;scanf&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li><code>0</code>号文件是<code>标准输入文件</code>，正常的话会等待用户输入，才不会阻塞，而改成了<code>非阻塞</code>之后，<code>scanf</code>看一眼<code>0</code>文件没有东西，就直接走人，瞬间结束，而输出的内容则是一个<code>未定义的变量</code></li>
-<li><code>scanf </code>与 <code>标准输入流有没有打开</code>没有多大的联系。</li>
-<li>用<code>sleep</code>让当前的程序睡眠（阻塞），什么都不做，这个时候<code>输入内容</code>，数据就可以到达<code>scanf</code>家门口，静静等待<code>scanf</code>读取。</li>
-</ul>
-<blockquote>
-<p>每次打开程序，系统都会自动打开0，1，2文件，这三个文件不是凭空产生的，而是从其父亲<code>继承</code>过来的！！</p>
-<p>C语言中所有大写的单词都是宏定义！</p>
-<p><code>sleep</code>操作，类似于等数据来了，主动通知<code>scanf</code>多久之后开门迎接它！！（也可以不睡觉，去干其他事！而这，就是后面的<code>select</code>操作）。</p>
-</blockquote>
-<h3 id="select-：-IO多路复用，就是“影分身”同时干多件事"><a href="#select-：-IO多路复用，就是“影分身”同时干多件事" class="headerlink" title="select ： IO多路复用，就是“影分身”同时干多件事"></a>select ： IO多路复用，就是“影分身”同时干多件事</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int select(int nfds, fd_set *readfds, fd_set *writefds,</span><br><span class="line">                  fd_set *exceptfds, struct timeval *timeout);</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<p><code>监控多个文件</code>（数量必须小于系统一开始设定的数量，正常的话应该是1024），直到文件准备就绪，可执行相对应的IO操作。</p>
-<ul>
-<li><code>nfds</code> ：文件描述符数量，等于数字最大的文件描述符 + 1；</li>
-<li><code>fd_set</code>：自定义类型，文件描述符集合，这个函数包括，<code>可读文件集合，可写文件结合，异常文件集合</code></li>
-</ul>
-<blockquote>
-<p>集合操作 ：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set *<span class="built_in">set</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<ul>
-<li><code>struct timeval *timeout</code>时间结构体，超时。代表多久后算超时，超时就直接返回。</li>
-<li>返回值 ：</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106201938667.png" alt="image-20210106201938667"></li>
-</ul>
-<h4 id="例子：-1"><a href="#例子：-1" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    fd_set rfds;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">    <span class="keyword">int</span> retval;</span><br><span class="line">    <span class="comment">/* Watch stdin (fd 0) to see when it has input. */</span></span><br><span class="line">	<span class="comment">//清空</span></span><br><span class="line">    FD_ZERO(&amp;rfds);</span><br><span class="line">    <span class="comment">//把监控文件加入</span></span><br><span class="line">    FD_SET(<span class="number">0</span>, &amp;rfds);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait up to five seconds. */</span></span><br><span class="line">	<span class="comment">//睡眠时间</span></span><br><span class="line">    tv.tv_sec = <span class="number">5</span>;</span><br><span class="line">    tv.tv_usec = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//监控一次</span></span><br><span class="line">    retval = select(<span class="number">1</span>, &amp;rfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv);</span><br><span class="line">    <span class="comment">/* Don&#x27;t rely on the value of tv now! */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (retval == <span class="number">-1</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;select()&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (retval) &#123;</span><br><span class="line">        <span class="keyword">char</span> buff[<span class="number">512</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Data is available now.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//scanf(&quot;%s&quot;, buff);</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;No data within five seconds.\n&quot;</span>);  <span class="comment">/* FD_ISSET(0, &amp;rfds) will be true. 超时的时候执行的程序*/</span></span><br><span class="line">    <span class="built_in">exit</span>(EXIT_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202346199.png" alt="image-20210106202346199"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202605831.png" alt="image-20210106202605831"></p>
-<ul>
-<li>对 <code>0</code>文件进行监控，当有输入的时候，<code>./a.out</code>感知到了输入（<code>IO感知，最开始想实现的目标</code>），直接运行输入的命令，如果命令存在，则运行该命令，如果命令不存在，会被父进程<code>zsh</code>收走</li>
-</ul>
-<blockquote>
-<p>如果最后加上<code>scanf(&quot;%s&quot;, buff);</code>则<code>./a.out</code>感知到的命令如果运行不成功，会被程序自己收走，而不是被系统<code>zsh</code>收走。</p>
-<p>超时操作，相当于设置了一个定时任务，超过了，就直接结束返回。</p>
-</blockquote>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>文件及目录</title>
     <url>/2021/01/03/202.%20%E6%96%87%E4%BB%B6%E5%8F%8A%E7%9B%AE%E5%BD%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="文件及目录"><a href="#文件及目录" class="headerlink" title="文件及目录"></a>文件及目录</h1><blockquote>
@@ -2381,6 +2238,149 @@
 </ul>
 </li>
 </ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>阻塞与非阻塞IO</title>
+    <url>/2021/01/05/203.%20%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9EIO/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="阻塞与非阻塞IO"><a href="#阻塞与非阻塞IO" class="headerlink" title="阻塞与非阻塞IO"></a>阻塞与非阻塞IO</h1><blockquote>
+<p>多思考，诸如用阻塞IO的话，那能不能用非阻塞，哪个更优。</p>
+</blockquote>
+<h3 id="什么是阻塞"><a href="#什么是阻塞" class="headerlink" title="什么是阻塞"></a>什么是阻塞</h3><p>在运行过程中，有前提条件没完成，只能停止干等着不懂。</p>
+<h3 id="什么是非阻塞"><a href="#什么是非阻塞" class="headerlink" title="什么是非阻塞"></a>什么是非阻塞</h3><p>在运行过程中，哪怕有前提条件没完成，也不会干等着，可以干其他事。</p>
+<h3 id="读写文件时，阻塞与非阻塞的区别？"><a href="#读写文件时，阻塞与非阻塞的区别？" class="headerlink" title="读写文件时，阻塞与非阻塞的区别？"></a>读写文件时，阻塞与非阻塞的区别？</h3><ol>
+<li>打开文件</li>
+<li>把buf当作参数，用write系统调用，把数据传递给内核（用户态下沉到内核态），内核拿到数据，内核再把buf写到磁盘中（内核是快缓冲，这里主要以机械硬盘讨论），内核调动底层的IO设备管理，根据Inode与block放到磁盘的某一个位置。</li>
+<li>阻塞：没写进去就等着，啥也不干</li>
+<li>非阻塞：只通知，不管有没有写进去，继续做其他事</li>
+</ol>
+<h3 id="fcbtl：可以把一个文件变成非阻塞或者阻塞"><a href="#fcbtl：可以把一个文件变成非阻塞或者阻塞" class="headerlink" title="fcbtl：可以把一个文件变成非阻塞或者阻塞"></a>fcbtl：可以把一个文件变成非阻塞或者阻塞</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ... <span class="comment">/* arg */</span> )</span></span>;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<p>操作文件描述符，</p>
+<ul>
+<li><code>fd</code> ：文件描述符</li>
+<li><code>cmd</code> ：操作命令</li>
+<li><code>arg</code> ：变参列表，<code>cmd</code> 的参数，存在的情况下，大多数是<code>int</code></li>
+</ul>
+<p>操作（cmd）：</p>
+<ul>
+<li>复制一个文件描述符</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106190405728.png" alt="image-20210106190405728"></li>
+<li>文件描述符标志</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213937.png" alt="image-20210106190534232"></li>
+<li>文件状态标志</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213928.png" alt="image-20210106190511674"></li>
+</ul>
+<blockquote>
+<p>把文件变成阻塞或者非阻塞，用到的<code>cmd</code>就是<code>F_SETFL</code>以及里面的<code>O_NONBLOCK</code></p>
+</blockquote>
+<p>返回值 ：</p>
+<ul>
+<li>成功返回</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213945.png" alt="image-20210106190804916"></li>
+</ul>
+<blockquote>
+<p>头文件的引入顺序有关联！！！尽量把自己写的头文件放在最后！！！</p>
+</blockquote>
+<h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li> <code>O_NONBLOCK </code>是位掩码，它的每个比特都有含义，如果用<code>F_SETFL</code>设置一个确定的值，如果这样做，会破坏之前的<code>flag</code>，比如一个文件的权限是 <code>110</code>唯独没有<code>O_NONBLOCK </code>的权限，那这样操作（相当于赋值等于操作），就会直接<code>抹除</code>前面的权限，只留下<code>O_NONBLOCK </code>的权限，即<code>001</code>！！修改如下：</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="comment">//考虑是否会出错</span></span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag |= O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_block</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag &amp;= ~O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>先用<code>F_GETFL</code>获得文件当前的状态（同时判断是否会出错），然后用<code>或操作</code>加上<code>O_NONBLOCK</code>，再把这个<code>flag</code>当成<code>F_SETFL</code>的参数。</li>
+<li>如果变成<code>阻塞IO</code>的话，就先对<code>O_NONBLOCK</code>取反，再跟<code>flag</code>与操作。</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试程序，用 0， 1， 2来测试</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> age;</span><br><span class="line">    make_nonblock(<span class="number">0</span>);</span><br><span class="line">    sleep(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;age);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Alin is %d years old! &lt;%d&gt;\n&quot;</span>, age, ret);</span><br><span class="line">    perror(<span class="string">&quot;scanf&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li><code>0</code>号文件是<code>标准输入文件</code>，正常的话会等待用户输入，才不会阻塞，而改成了<code>非阻塞</code>之后，<code>scanf</code>看一眼<code>0</code>文件没有东西，就直接走人，瞬间结束，而输出的内容则是一个<code>未定义的变量</code></li>
+<li><code>scanf </code>与 <code>标准输入流有没有打开</code>没有多大的联系。</li>
+<li>用<code>sleep</code>让当前的程序睡眠（阻塞），什么都不做，这个时候<code>输入内容</code>，数据就可以到达<code>scanf</code>家门口，静静等待<code>scanf</code>读取。</li>
+</ul>
+<blockquote>
+<p>每次打开程序，系统都会自动打开0，1，2文件，这三个文件不是凭空产生的，而是从其父亲<code>继承</code>过来的！！</p>
+<p>C语言中所有大写的单词都是宏定义！</p>
+<p><code>sleep</code>操作，类似于等数据来了，主动通知<code>scanf</code>多久之后开门迎接它！！（也可以不睡觉，去干其他事！而这，就是后面的<code>select</code>操作）。</p>
+</blockquote>
+<h3 id="select-：-IO多路复用，就是“影分身”同时干多件事"><a href="#select-：-IO多路复用，就是“影分身”同时干多件事" class="headerlink" title="select ： IO多路复用，就是“影分身”同时干多件事"></a>select ： IO多路复用，就是“影分身”同时干多件事</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int select(int nfds, fd_set *readfds, fd_set *writefds,</span><br><span class="line">                  fd_set *exceptfds, struct timeval *timeout);</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<p><code>监控多个文件</code>（数量必须小于系统一开始设定的数量，正常的话应该是1024），直到文件准备就绪，可执行相对应的IO操作。</p>
+<ul>
+<li><code>nfds</code> ：文件描述符数量，等于数字最大的文件描述符 + 1；</li>
+<li><code>fd_set</code>：自定义类型，文件描述符集合，这个函数包括，<code>可读文件集合，可写文件结合，异常文件集合</code></li>
+</ul>
+<blockquote>
+<p>集合操作 ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set *<span class="built_in">set</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ul>
+<li><code>struct timeval *timeout</code>时间结构体，超时。代表多久后算超时，超时就直接返回。</li>
+<li>返回值 ：</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106201938667.png" alt="image-20210106201938667"></li>
+</ul>
+<h4 id="例子：-1"><a href="#例子：-1" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    fd_set rfds;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">    <span class="keyword">int</span> retval;</span><br><span class="line">    <span class="comment">/* Watch stdin (fd 0) to see when it has input. */</span></span><br><span class="line">	<span class="comment">//清空</span></span><br><span class="line">    FD_ZERO(&amp;rfds);</span><br><span class="line">    <span class="comment">//把监控文件加入</span></span><br><span class="line">    FD_SET(<span class="number">0</span>, &amp;rfds);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait up to five seconds. */</span></span><br><span class="line">	<span class="comment">//睡眠时间</span></span><br><span class="line">    tv.tv_sec = <span class="number">5</span>;</span><br><span class="line">    tv.tv_usec = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//监控一次</span></span><br><span class="line">    retval = select(<span class="number">1</span>, &amp;rfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv);</span><br><span class="line">    <span class="comment">/* Don&#x27;t rely on the value of tv now! */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (retval == <span class="number">-1</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;select()&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (retval) &#123;</span><br><span class="line">        <span class="keyword">char</span> buff[<span class="number">512</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Data is available now.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//scanf(&quot;%s&quot;, buff);</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;No data within five seconds.\n&quot;</span>);  <span class="comment">/* FD_ISSET(0, &amp;rfds) will be true. 超时的时候执行的程序*/</span></span><br><span class="line">    <span class="built_in">exit</span>(EXIT_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202346199.png" alt="image-20210106202346199"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202605831.png" alt="image-20210106202605831"></p>
+<ul>
+<li>对 <code>0</code>文件进行监控，当有输入的时候，<code>./a.out</code>感知到了输入（<code>IO感知，最开始想实现的目标</code>），直接运行输入的命令，如果命令存在，则运行该命令，如果命令不存在，会被父进程<code>zsh</code>收走</li>
+</ul>
+<blockquote>
+<p>如果最后加上<code>scanf(&quot;%s&quot;, buff);</code>则<code>./a.out</code>感知到的命令如果运行不成功，会被程序自己收走，而不是被系统<code>zsh</code>收走。</p>
+<p>超时操作，相当于设置了一个定时任务，超过了，就直接结束返回。</p>
+</blockquote>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -3535,6 +3535,185 @@
       </tags>
   </entry>
   <entry>
+    <title>数据链路层</title>
+    <url>/2021/01/07/214.%20%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h1><h2 id="网络设配器（链路层最常见的设备）"><a href="#网络设配器（链路层最常见的设备）" class="headerlink" title="网络设配器（链路层最常见的设备）"></a>网络设配器（链路层最常见的设备）</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085205.png" alt="image-20210302223703487" style="zoom:50%;">
+
+<h2 id="链路层提供的服务"><a href="#链路层提供的服务" class="headerlink" title="链路层提供的服务"></a>链路层提供的服务</h2><ul>
+<li><p>成帧（数据传输单元）</p>
+</li>
+<li><p>链路接入</p>
+<blockquote>
+<p>MAC：媒体访问，硬件地址</p>
+</blockquote>
+</li>
+<li><p>可靠交付</p>
+<blockquote>
+<p>如果链路层可靠了，应用层等都一定可靠，因为底层可靠，上层一定可靠。所以为什么不在链路层实现可靠交付？</p>
+<ul>
+<li>因为数据出错的可能性较小，如果为了小概率的出错，而在数据链路层实现可靠交付，做到需要对方确认、超时重传等，这个成本就会变得特别大，而且效率会降低</li>
+</ul>
+</blockquote>
+</li>
+<li><p>差错检测和纠正</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085211.png" alt="image-20210302224604140" style="zoom:50%;">
+</li>
+<li><p>检测差错的三种技术：</p>
+<ul>
+<li><p>奇偶校验（常用，高效）</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085253.png" alt="image-20210306085252264" style="zoom: 67%;">
+</li>
+<li><p>大部分是一维的，如果是二维的，就可以直接定位是哪里出错从而直接纠正</p>
+<blockquote>
+<p>检测错误较为简单，而纠正则比较麻烦，需要纠正码等，所以通常只要发现错误，就直接丢掉数据报，等待重传。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>检验和</p>
+</li>
+<li><p>循环冗余检测</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085302.png" alt="image-20210302225014932" style="zoom:50%;">
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="链路层协议集（在链路层的协议描述了什么）"><a href="#链路层协议集（在链路层的协议描述了什么）" class="headerlink" title="链路层协议集（在链路层的协议描述了什么）"></a>链路层协议集（在链路层的协议描述了什么）</h2><ul>
+<li>给每个人一个讲话的机会</li>
+<li>该你讲话时才讲话</li>
+<li>不要一个人独占整个谈话</li>
+<li>如果有问题请举手</li>
+<li>当有人讲话时不要打断</li>
+<li>当其他人讲话时不要睡觉</li>
+</ul>
+<h3 id="信道划分协议-TDMA（时分复用）、FDMA（频分复用）"><a href="#信道划分协议-TDMA（时分复用）、FDMA（频分复用）" class="headerlink" title="信道划分协议 TDMA（时分复用）、FDMA（频分复用）"></a>信道划分协议 TDMA（时分复用）、FDMA（频分复用）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085307.png" alt="image-20210303082938152" style="zoom:50%;">
+
+<ul>
+<li><p>时分复用：按时间段分割</p>
+<blockquote>
+<p>并发、并行</p>
+<p>时分复用到底是增加了并发性还是并行性呢？</p>
+</blockquote>
+</li>
+<li><p>频分复用：按频率分割</p>
+</li>
+</ul>
+<h3 id="信道划分协议-CDMA（重要）"><a href="#信道划分协议-CDMA（重要）" class="headerlink" title="信道划分协议 CDMA（重要）"></a>信道划分协议 CDMA（重要）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085312.png" alt="image-20210303084215553" style="zoom:50%;">
+
+<ul>
+<li><p>wify、手机信号都是基于该信号</p>
+</li>
+<li><p>现在手机跟电脑都在用无线网络，两者共用的是一个信道，其电磁波在空间中传递。这两种电磁波会相互影响，而<code>CDMA</code>协议就是为了解决如果在不互相影响的情况下，两者并行，同时工作</p>
+</li>
+<li><p>以一个发送者为例：</p>
+<ol>
+<li>发送发：发送code两个比特（slot1、slot0）的信息，一个高电位（$ d_0 $）、一个低电位（$ d_1 $），为了方便计算，设置$ d_1 = -1 $（原本是低位0，高位1，但为了方便计算，才这么设置，因为负负得正，算起来比较容易），通过 $ Z_{i,m} = d_i * c_m $计算得到一个信道传输的真实数据</li>
+<li>接收方：收到发送方的<code>信道传输的真实数据</code>，同时接收方需要知道发送方的<code>code</code>， 通过$ D_i = \frac{\sum_{m=1}^{n}{Z_{i,m}*c_m}}{b} $ 获得真实的两个比特信息</li>
+<li>缺陷：原本只需传递两比特的数据，现在需要变成传递code的16比特信息，数据量上升了.</li>
+</ol>
+</li>
+<li><p>两个发送者就需要由两个不同的<code>code</code></p>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085358.png" alt="image-20210306085356113" style="zoom: 67%;">
+</li>
+<li><p>所以，如果想要保证很多的用户在同一个网络空间中去发送自己的信息的话，编码（code）的长度应该足够，因为用户一多，每个用户的code都不同，使得code长度增加，同时处理的效率也会降低。</p>
+</li>
+</ul>
+<h3 id="随时接入协议-时隙ALOHA（看成是总线型，时分复用）"><a href="#随时接入协议-时隙ALOHA（看成是总线型，时分复用）" class="headerlink" title="随时接入协议 时隙ALOHA（看成是总线型，时分复用）"></a>随时接入协议 时隙ALOHA（看成是总线型，时分复用）</h3><ul>
+<li>所有帧 由L比特组成</li>
+<li>时间被划分为长度为L/R秒的时隙（R为信道全部的速率）</li>
+<li>结点只在时隙起点开始传输帧</li>
+<li>结点是同步的，每个结点都知道时隙何时开始</li>
+<li>如果时隙中有两个或者多个帧碰撞，则所有结点在该时隙结束之前检测到该碰撞事件</li>
+<li>令p是一个概率，在每个结点中，时隙ALOHA的操作是：<ul>
+<li>当结点有一个新帧要发送时，它等到下一个时隙开始并在该时隙传输整个帧</li>
+<li>如果没有碰撞，该结点成功传输它的帧</li>
+<li>如果有碰撞，该结点在时隙结束之前检测到该碰撞事件。该节点在后续的时隙中以p的概率重传这个帧，直到成功重传 </li>
+</ul>
+</li>
+<li>发送的数据的真实情况<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085414.png" alt="image-20210303092352707" style="zoom:50%;">
+- 为了在碰撞的情况下还能成功发送，在三个结点传输三个数据的时候，在这种随机的情况下，需要发送很多次才能成功发送。
+- 结点少的时候已经这样，如果结点一多，肯定网络延迟，差评！
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="载波侦听多路访问-CSMA-CD"><a href="#载波侦听多路访问-CSMA-CD" class="headerlink" title="载波侦听多路访问 CSMA/CD"></a>载波侦听多路访问 CSMA/CD</h3><ul>
+<li><p>说话之前先听（载波侦听）</p>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085420.png" alt="image-20210303093104299" style="zoom:50%;">
+</li>
+<li><p>如果与他人同时开始说话，停止说话（碰撞检测）</p>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085426.png" alt="image-20210303093132969" style="zoom:50%;">
+
+</li>
+</ul>
+<h3 id="轮流协议、轮询协议"><a href="#轮流协议、轮询协议" class="headerlink" title="轮流协议、轮询协议"></a>轮流协议、轮询协议</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085431.png" alt="image-20210303093236399" style="zoom:50%;">
+
+<ul>
+<li>slaves发起请求，master才发送数据</li>
+<li>缺点：单点故障，只要master端断了，则立马出故障</li>
+</ul>
+<h3 id="轮流协议、令牌传递协议"><a href="#轮流协议、令牌传递协议" class="headerlink" title="轮流协议、令牌传递协议"></a>轮流协议、令牌传递协议</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085436.png" alt="image-20210303093416313" style="zoom:50%;">
+
+<ul>
+<li>请求循环一周，谁需要谁发送</li>
+</ul>
+<h3 id="以太网技术、以太网帧结构"><a href="#以太网技术、以太网帧结构" class="headerlink" title="以太网技术、以太网帧结构"></a>以太网技术、以太网帧结构</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085441.png" alt="image-20210303093510394" style="zoom:50%;">
+
+<ul>
+<li>前同步码：网卡感知到这个的时候，就会知道这是一个正经的数据，才会接收</li>
+<li>目的地址：MAC地址，如果是<code>FFFFFF</code>就是广播地址</li>
+</ul>
+<h3 id="交换机表"><a href="#交换机表" class="headerlink" title="交换机表"></a>交换机表</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085445.png" alt="image-20210303093800569" style="zoom:50%;">
+
+<ul>
+<li><p>交换机工作在二层（一层是物理层，三层是IP层）</p>
+<blockquote>
+<p> 三层交换机（有点路由器的作用）、多层交换机，通常说的交换机指的是数据链路层交换机</p>
+</blockquote>
+</li>
+<li><p>地址：MAC地址</p>
+</li>
+<li><p>接口：交换机连接的机器是谁</p>
+</li>
+<li><p>总线连接网络，主机一多，就容易发生碰撞。<code>hub集线器</code>只起到了信号的加强，多个设备通过<code>hub集线器</code>连接在一起，势必会发生冲突，这个时候，就需要交换机了！</p>
+<blockquote>
+<p><code>hub集线器</code>：把多个设备连接在一起。</p>
+</blockquote>
+</li>
+<li><p>交换机：本质上就是解决碰撞问题，通过检测信息目的地，然后直接传给接收方，而不是用广播，从而减少冲突。</p>
+</li>
+<li><p>过滤：去除不是信息接收方的主机，减少冲突</p>
+</li>
+<li><p>交换机的自学习：</p>
+<ul>
+<li>问题：停电了，在来电的那一刻，整个局域网发生了什么事情？</li>
+<li>来电的时候，交换机、wify等各种设备都已经苏醒了（以有线网络为例子），交换机检测到链路正常，此时它检测自己缺一个IP地址，否则无法跟其他人通讯，所以会通过<code>DHCP</code>协议由网络中申请一个<code>IP地址</code>，通过广播寻找<code>DHCP服务器</code>，这是应用层，最终数据报会落到数据链路层， 然后再交给交换机，交换机会得知该服务器的地址，最终交换机会得到一个IP地址。</li>
+<li>此时有一台主机如果访问百度，首先会先做DNS解析，如果本地由house文件，会直接从house文件中解析出百度的网址，如果没有，就会使用DNS；DNS的来源是在一开始申请IP地址时的DHCP服务器。这个时候就是跟DHCP服务器进行通讯，DHCP拿到的可能是一个外网IP。通过子网掩码判断是不是在通过局域网，如果不是，则需要前往网关（路由器），但路由器无法直接访问，则需要前往交换机，加入交换机不知道路由器在哪，则会通过广播得到百度的IP地址，然后再经过同样的请求，发起一个http请求（底层tcp）。</li>
+<li>tcp层面贴上目标端口——IP层（网络层）贴上目标IP地址——本地网络通过子网掩码判断IP地址是在外网——数据链路层贴报文头部（真头部，网关地址）——通过ARP协议找到网关——通过有线连接直接到达交换机的某一个口，这个口只跟该主机相连接——交换机通过查询得知目标地址在交换机的某个结点上，把数据包直接转到对应的路由器——路由器通过判断，再经由链路层转发到目的地</li>
+<li>到达百度服务器后，假设到机房，路由器收到数据检测目的地之后，交给交换机，再经由交换机转发给目标主机，目标主机检测收到的数据报后，会看到目的地址就是他自己，源地址是发送方的<code>公网IP地址以及端口</code>，处理后再交给运输层，再交给http服务器，检测请求之后（比如访问首页），就会读取自己的磁盘（更多的时候是在缓存中），拿到数据后，重新封装，贴上头部信息等再交给网络层，再交给数据链路层，逐步回到发送方的NAT服务器，NAT服务器检测后就一层一层传回到发送方的手上，这个时候百度的主页就显示在浏览器中。</li>
+</ul>
+</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IO多路复用</title>
     <url>/2021/01/07/215.%20IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h1><h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">select, pselect, FD_CLR, FD_ISSET, FD_SET, FD_ZERO</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds,</span></span></span><br><span class="line"><span class="function"><span class="params">           fd_set *exceptfds, struct timeval *timeout)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pselect</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *exceptfds, <span class="keyword">const</span> struct timespec *timeout,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">const</span> <span class="keyword">sigset_t</span> *sigmask)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span>    tv_sec;         <span class="comment">/* seconds */</span></span><br><span class="line">    <span class="keyword">long</span>    tv_usec;        <span class="comment">/* microseconds */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span>    tv_sec;         <span class="comment">/* seconds */</span></span><br><span class="line">    <span class="keyword">long</span>    tv_nsec;        <span class="comment">/* nanoseconds */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -3728,185 +3907,6 @@
         <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_EVENTS 10</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> server_listen, sockfd, port, epollfd;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> <span class="title">ev</span>, <span class="title">events</span>[<span class="title">MAX_EVENTS</span>];</span></span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s port!\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    port = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">if</span> ((server_listen = socket_create(port)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;socket_create&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((epollfd = epoll_create(<span class="number">1</span>)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;epoll_create&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ev.events = EPOLLIN;</span><br><span class="line">    ev.data.fd = server_listen;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (epoll_ctl(epollfd, EPOLL_CTL_ADD, server_listen, &amp;ev) &lt;<span class="number">0</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;epoll_ctl&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> nfds = epoll_wait(epollfd, events, MAX_EVENTS, <span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">if</span> (nfds &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            perror(<span class="string">&quot;epoll_wait&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nfds; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (events[i].data.fd == server_listen) &#123;</span><br><span class="line">                <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">client</span>;</span></span><br><span class="line">                <span class="keyword">socklen_t</span> len = <span class="keyword">sizeof</span>(client);</span><br><span class="line">                <span class="keyword">if</span> ((sockfd = accept(server_listen, (struct sockaddr *)&amp;client, &amp;len)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                    perror(<span class="string">&quot;accept&quot;</span>);</span><br><span class="line">                    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;&lt;LogIn&gt; : %s login...\n&quot;</span>, inet_ntoa(client.sin_addr));</span><br><span class="line">                make_nonblock(sockfd);</span><br><span class="line">                ev.events = EPOLLIN | EPOLLET;</span><br><span class="line">                ev.data.fd = sockfd;</span><br><span class="line">                <span class="keyword">if</span> (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &amp;ev) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                    perror(<span class="string">&quot;epoll_ctl&quot;</span>);</span><br><span class="line">                    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//do_use_fd(events[i].data.fd);</span></span><br><span class="line">                <span class="keyword">char</span> buff[<span class="number">1024</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">                <span class="keyword">int</span> rsize = <span class="number">0</span>, fd = events[i].data.fd;</span><br><span class="line">                <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">client</span>;</span></span><br><span class="line">                <span class="keyword">socklen_t</span> len = <span class="keyword">sizeof</span>(client);</span><br><span class="line">                getpeername(fd, (struct sockaddr *)&amp;client, &amp;len);</span><br><span class="line">                <span class="keyword">if</span> ((rsize = recv(fd, buff, <span class="keyword">sizeof</span>(buff), <span class="number">0</span>)) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;&lt;LogOut&gt; : %s logout...\n&quot;</span>, inet_ntoa(client.sin_addr));</span><br><span class="line">                    epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, <span class="literal">NULL</span>);</span><br><span class="line">                    close(fd);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;&lt;%s&gt; : %s \n&quot;</span>, inet_ntoa(client.sin_addr), buff);</span><br><span class="line">                    send(fd, buff, <span class="built_in">strlen</span>(buff), <span class="number">0</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 </div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据链路层</title>
-    <url>/2021/01/07/214.%20%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h1><h2 id="网络设配器（链路层最常见的设备）"><a href="#网络设配器（链路层最常见的设备）" class="headerlink" title="网络设配器（链路层最常见的设备）"></a>网络设配器（链路层最常见的设备）</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085205.png" alt="image-20210302223703487" style="zoom:50%;">
-
-<h2 id="链路层提供的服务"><a href="#链路层提供的服务" class="headerlink" title="链路层提供的服务"></a>链路层提供的服务</h2><ul>
-<li><p>成帧（数据传输单元）</p>
-</li>
-<li><p>链路接入</p>
-<blockquote>
-<p>MAC：媒体访问，硬件地址</p>
-</blockquote>
-</li>
-<li><p>可靠交付</p>
-<blockquote>
-<p>如果链路层可靠了，应用层等都一定可靠，因为底层可靠，上层一定可靠。所以为什么不在链路层实现可靠交付？</p>
-<ul>
-<li>因为数据出错的可能性较小，如果为了小概率的出错，而在数据链路层实现可靠交付，做到需要对方确认、超时重传等，这个成本就会变得特别大，而且效率会降低</li>
-</ul>
-</blockquote>
-</li>
-<li><p>差错检测和纠正</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085211.png" alt="image-20210302224604140" style="zoom:50%;">
-</li>
-<li><p>检测差错的三种技术：</p>
-<ul>
-<li><p>奇偶校验（常用，高效）</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085253.png" alt="image-20210306085252264" style="zoom: 67%;">
-</li>
-<li><p>大部分是一维的，如果是二维的，就可以直接定位是哪里出错从而直接纠正</p>
-<blockquote>
-<p>检测错误较为简单，而纠正则比较麻烦，需要纠正码等，所以通常只要发现错误，就直接丢掉数据报，等待重传。</p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li><p>检验和</p>
-</li>
-<li><p>循环冗余检测</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085302.png" alt="image-20210302225014932" style="zoom:50%;">
-
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="链路层协议集（在链路层的协议描述了什么）"><a href="#链路层协议集（在链路层的协议描述了什么）" class="headerlink" title="链路层协议集（在链路层的协议描述了什么）"></a>链路层协议集（在链路层的协议描述了什么）</h2><ul>
-<li>给每个人一个讲话的机会</li>
-<li>该你讲话时才讲话</li>
-<li>不要一个人独占整个谈话</li>
-<li>如果有问题请举手</li>
-<li>当有人讲话时不要打断</li>
-<li>当其他人讲话时不要睡觉</li>
-</ul>
-<h3 id="信道划分协议-TDMA（时分复用）、FDMA（频分复用）"><a href="#信道划分协议-TDMA（时分复用）、FDMA（频分复用）" class="headerlink" title="信道划分协议 TDMA（时分复用）、FDMA（频分复用）"></a>信道划分协议 TDMA（时分复用）、FDMA（频分复用）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085307.png" alt="image-20210303082938152" style="zoom:50%;">
-
-<ul>
-<li><p>时分复用：按时间段分割</p>
-<blockquote>
-<p>并发、并行</p>
-<p>时分复用到底是增加了并发性还是并行性呢？</p>
-</blockquote>
-</li>
-<li><p>频分复用：按频率分割</p>
-</li>
-</ul>
-<h3 id="信道划分协议-CDMA（重要）"><a href="#信道划分协议-CDMA（重要）" class="headerlink" title="信道划分协议 CDMA（重要）"></a>信道划分协议 CDMA（重要）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085312.png" alt="image-20210303084215553" style="zoom:50%;">
-
-<ul>
-<li><p>wify、手机信号都是基于该信号</p>
-</li>
-<li><p>现在手机跟电脑都在用无线网络，两者共用的是一个信道，其电磁波在空间中传递。这两种电磁波会相互影响，而<code>CDMA</code>协议就是为了解决如果在不互相影响的情况下，两者并行，同时工作</p>
-</li>
-<li><p>以一个发送者为例：</p>
-<ol>
-<li>发送发：发送code两个比特（slot1、slot0）的信息，一个高电位（$ d_0 $）、一个低电位（$ d_1 $），为了方便计算，设置$ d_1 = -1 $（原本是低位0，高位1，但为了方便计算，才这么设置，因为负负得正，算起来比较容易），通过 $ Z_{i,m} = d_i * c_m $计算得到一个信道传输的真实数据</li>
-<li>接收方：收到发送方的<code>信道传输的真实数据</code>，同时接收方需要知道发送方的<code>code</code>， 通过$ D_i = \frac{\sum_{m=1}^{n}{Z_{i,m}*c_m}}{b} $ 获得真实的两个比特信息</li>
-<li>缺陷：原本只需传递两比特的数据，现在需要变成传递code的16比特信息，数据量上升了.</li>
-</ol>
-</li>
-<li><p>两个发送者就需要由两个不同的<code>code</code></p>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085358.png" alt="image-20210306085356113" style="zoom: 67%;">
-</li>
-<li><p>所以，如果想要保证很多的用户在同一个网络空间中去发送自己的信息的话，编码（code）的长度应该足够，因为用户一多，每个用户的code都不同，使得code长度增加，同时处理的效率也会降低。</p>
-</li>
-</ul>
-<h3 id="随时接入协议-时隙ALOHA（看成是总线型，时分复用）"><a href="#随时接入协议-时隙ALOHA（看成是总线型，时分复用）" class="headerlink" title="随时接入协议 时隙ALOHA（看成是总线型，时分复用）"></a>随时接入协议 时隙ALOHA（看成是总线型，时分复用）</h3><ul>
-<li>所有帧 由L比特组成</li>
-<li>时间被划分为长度为L/R秒的时隙（R为信道全部的速率）</li>
-<li>结点只在时隙起点开始传输帧</li>
-<li>结点是同步的，每个结点都知道时隙何时开始</li>
-<li>如果时隙中有两个或者多个帧碰撞，则所有结点在该时隙结束之前检测到该碰撞事件</li>
-<li>令p是一个概率，在每个结点中，时隙ALOHA的操作是：<ul>
-<li>当结点有一个新帧要发送时，它等到下一个时隙开始并在该时隙传输整个帧</li>
-<li>如果没有碰撞，该结点成功传输它的帧</li>
-<li>如果有碰撞，该结点在时隙结束之前检测到该碰撞事件。该节点在后续的时隙中以p的概率重传这个帧，直到成功重传 </li>
-</ul>
-</li>
-<li>发送的数据的真实情况<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085414.png" alt="image-20210303092352707" style="zoom:50%;">
-- 为了在碰撞的情况下还能成功发送，在三个结点传输三个数据的时候，在这种随机的情况下，需要发送很多次才能成功发送。
-- 结点少的时候已经这样，如果结点一多，肯定网络延迟，差评！
-
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="载波侦听多路访问-CSMA-CD"><a href="#载波侦听多路访问-CSMA-CD" class="headerlink" title="载波侦听多路访问 CSMA/CD"></a>载波侦听多路访问 CSMA/CD</h3><ul>
-<li><p>说话之前先听（载波侦听）</p>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085420.png" alt="image-20210303093104299" style="zoom:50%;">
-</li>
-<li><p>如果与他人同时开始说话，停止说话（碰撞检测）</p>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085426.png" alt="image-20210303093132969" style="zoom:50%;">
-
-</li>
-</ul>
-<h3 id="轮流协议、轮询协议"><a href="#轮流协议、轮询协议" class="headerlink" title="轮流协议、轮询协议"></a>轮流协议、轮询协议</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085431.png" alt="image-20210303093236399" style="zoom:50%;">
-
-<ul>
-<li>slaves发起请求，master才发送数据</li>
-<li>缺点：单点故障，只要master端断了，则立马出故障</li>
-</ul>
-<h3 id="轮流协议、令牌传递协议"><a href="#轮流协议、令牌传递协议" class="headerlink" title="轮流协议、令牌传递协议"></a>轮流协议、令牌传递协议</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085436.png" alt="image-20210303093416313" style="zoom:50%;">
-
-<ul>
-<li>请求循环一周，谁需要谁发送</li>
-</ul>
-<h3 id="以太网技术、以太网帧结构"><a href="#以太网技术、以太网帧结构" class="headerlink" title="以太网技术、以太网帧结构"></a>以太网技术、以太网帧结构</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085441.png" alt="image-20210303093510394" style="zoom:50%;">
-
-<ul>
-<li>前同步码：网卡感知到这个的时候，就会知道这是一个正经的数据，才会接收</li>
-<li>目的地址：MAC地址，如果是<code>FFFFFF</code>就是广播地址</li>
-</ul>
-<h3 id="交换机表"><a href="#交换机表" class="headerlink" title="交换机表"></a>交换机表</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306085445.png" alt="image-20210303093800569" style="zoom:50%;">
-
-<ul>
-<li><p>交换机工作在二层（一层是物理层，三层是IP层）</p>
-<blockquote>
-<p> 三层交换机（有点路由器的作用）、多层交换机，通常说的交换机指的是数据链路层交换机</p>
-</blockquote>
-</li>
-<li><p>地址：MAC地址</p>
-</li>
-<li><p>接口：交换机连接的机器是谁</p>
-</li>
-<li><p>总线连接网络，主机一多，就容易发生碰撞。<code>hub集线器</code>只起到了信号的加强，多个设备通过<code>hub集线器</code>连接在一起，势必会发生冲突，这个时候，就需要交换机了！</p>
-<blockquote>
-<p><code>hub集线器</code>：把多个设备连接在一起。</p>
-</blockquote>
-</li>
-<li><p>交换机：本质上就是解决碰撞问题，通过检测信息目的地，然后直接传给接收方，而不是用广播，从而减少冲突。</p>
-</li>
-<li><p>过滤：去除不是信息接收方的主机，减少冲突</p>
-</li>
-<li><p>交换机的自学习：</p>
-<ul>
-<li>问题：停电了，在来电的那一刻，整个局域网发生了什么事情？</li>
-<li>来电的时候，交换机、wify等各种设备都已经苏醒了（以有线网络为例子），交换机检测到链路正常，此时它检测自己缺一个IP地址，否则无法跟其他人通讯，所以会通过<code>DHCP</code>协议由网络中申请一个<code>IP地址</code>，通过广播寻找<code>DHCP服务器</code>，这是应用层，最终数据报会落到数据链路层， 然后再交给交换机，交换机会得知该服务器的地址，最终交换机会得到一个IP地址。</li>
-<li>此时有一台主机如果访问百度，首先会先做DNS解析，如果本地由house文件，会直接从house文件中解析出百度的网址，如果没有，就会使用DNS；DNS的来源是在一开始申请IP地址时的DHCP服务器。这个时候就是跟DHCP服务器进行通讯，DHCP拿到的可能是一个外网IP。通过子网掩码判断是不是在通过局域网，如果不是，则需要前往网关（路由器），但路由器无法直接访问，则需要前往交换机，加入交换机不知道路由器在哪，则会通过广播得到百度的IP地址，然后再经过同样的请求，发起一个http请求（底层tcp）。</li>
-<li>tcp层面贴上目标端口——IP层（网络层）贴上目标IP地址——本地网络通过子网掩码判断IP地址是在外网——数据链路层贴报文头部（真头部，网关地址）——通过ARP协议找到网关——通过有线连接直接到达交换机的某一个口，这个口只跟该主机相连接——交换机通过查询得知目标地址在交换机的某个结点上，把数据包直接转到对应的路由器——路由器通过判断，再经由链路层转发到目的地</li>
-<li>到达百度服务器后，假设到机房，路由器收到数据检测目的地之后，交给交换机，再经由交换机转发给目标主机，目标主机检测收到的数据报后，会看到目的地址就是他自己，源地址是发送方的<code>公网IP地址以及端口</code>，处理后再交给运输层，再交给http服务器，检测请求之后（比如访问首页），就会读取自己的磁盘（更多的时候是在缓存中），拿到数据后，重新封装，贴上头部信息等再交给网络层，再交给数据链路层，逐步回到发送方的NAT服务器，NAT服务器检测后就一层一层传回到发送方的手上，这个时候百度的主页就显示在浏览器中。</li>
-</ul>
-</li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
         <category>系统编程与网络编程</category>
@@ -6254,7 +6254,9 @@
 
 <ul>
 <li><pre><code class="c++">sort(arr.begin(), arr.end(), CMP(2));
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- 比如可以增加一个整型变量z，用来判断是从大到小排序，还是从小到大排序，图中默认从小到大。这种操作用普通的比较函数是做不到的。</span><br><span class="line"></span><br><span class="line">#### 实现自己的 sort 函数</span><br><span class="line"></span><br><span class="line">&#96;function&lt;bool(int, int)&gt; cmp&#96;：function 可以看作是一种高级的函数指针变量，普通的函数指针变量只能指向函数，而这个指针变量定义的对象可以指向任意的对象，包括仿函数、函数、lambda表达式都行！！！</span><br><span class="line"></span><br><span class="line">&gt; &#96;function&lt;bool(int, int)&gt; cmp&#96;：高级函数指针变量，返回的是 bool 类型，传入的是两个整型参数</span><br><span class="line"></span><br><span class="line">##### 代码演示：</span><br><span class="line"></span><br><span class="line">&#123;% spoiler &quot;打不开请刷新一下页面&quot; %&#125;</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;c++</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">ostream &amp;operator&lt;&lt;(ostream &amp;out, const vector&lt;int&gt; &amp;a) &#123;</span><br><span class="line">    for (auto x : a) &#123;</span><br><span class="line">        out &lt;&lt; x &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    return out;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool cmp1(int a, int b) &#123;</span><br><span class="line">    return a &lt; b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">namespace haizei &#123;</span><br><span class="line">    class CMP &#123;</span><br><span class="line">    public :</span><br><span class="line">        CMP(int z &#x3D; 0) : z(z) &#123;&#125; &#x2F;&#x2F; z &#x3D; 0 less， z &#x3D; 1 greater</span><br><span class="line">        bool operator()(int a, int b) &#123;</span><br><span class="line">            return (a &lt; b) ^ !!(z);</span><br><span class="line">        &#125;</span><br><span class="line">        int z;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    void sort(int *arr, int l, int r, function&lt;bool(int, int)&gt; cmp &#x3D; CMP()) &#123;</span><br><span class="line">        if (l &gt;&#x3D; r) return;</span><br><span class="line">        int x &#x3D; l, y &#x3D; r, z &#x3D; arr[(l + r) &gt;&gt; 1];</span><br><span class="line">        do &#123;</span><br><span class="line">            &#x2F;&#x2F; 系统中的排序规则就是把cmp函数替换到小于号的位置</span><br><span class="line">            while (cmp(arr[x], z)) x++;</span><br><span class="line">            while (cmp(z, arr[y])) y--;</span><br><span class="line">            if (x &lt;&#x3D; y) &#123;</span><br><span class="line">                swap(arr[x], arr[y]);</span><br><span class="line">                x++, y--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; while (x &lt;&#x3D; y);</span><br><span class="line">        sort(arr, l, y, cmp);</span><br><span class="line">        sort(arr, x, r, cmp);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    vector&lt;int&gt; arr;</span><br><span class="line">    int n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    while (n--) &#123;</span><br><span class="line">        int a;</span><br><span class="line">        cin &gt;&gt; a;</span><br><span class="line">        arr.push_back(a);</span><br><span class="line">    &#125;</span><br><span class="line">    sort(arr.begin(), arr.end(), haizei::CMP());</span><br><span class="line">    cout &lt;&lt; arr &lt;&lt; endl;</span><br><span class="line">    int arr2[5] &#x3D; &#123;6, 8, 4, 5, 1&#125;;</span><br><span class="line">    haizei::sort(arr2, 0, 4);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    haizei::sort(arr2, 0, 4, cmp1);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    haizei::sort(arr2, 0, 4);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    haizei::sort(arr2, 0, 4, haizei::CMP(1));</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- 比如可以增加一个整型变量z，用来判断是从大到小排序，还是从小到大排序，图中默认从小到大。这种操作用普通的比较函数是做不到的。</span><br><span class="line"></span><br><span class="line">#### 实现自己的 sort 函数</span><br><span class="line"></span><br><span class="line">&#96;function&lt;bool(int, int)&gt; cmp&#96;：function 可以看作是一种高级的函数指针变量，普通的函数指针变量只能指向函数，而这个指针变量定义的对象可以指向任意的对象，包括仿函数、函数、lambda表达式都行！！！</span><br><span class="line"></span><br><span class="line">&gt; &#96;function&lt;bool(int, int)&gt; cmp&#96;：高级函数指针变量，返回的是 bool 类型，传入的是两个整型参数</span><br><span class="line"></span><br><span class="line">##### 代码演示：</span><br><span class="line"></span><br><span class="line">&#123;% spoiler &quot;打不开请刷新一下页面&quot; %&#125;</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;c++</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;functional&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">ostream &amp;operator&lt;&lt;(ostream &amp;out, const vector&lt;int&gt; &amp;a) &#123;</span><br><span class="line">    for (auto x : a) &#123;</span><br><span class="line">        out &lt;&lt; x &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    return out;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool cmp1(int a, int b) &#123;</span><br><span class="line">    return a &lt; b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">namespace haizei &#123;</span><br><span class="line">    class CMP &#123;</span><br><span class="line">    public :</span><br><span class="line">        CMP(int z &#x3D; 0) : z(z) &#123;&#125; &#x2F;&#x2F; z &#x3D; 0 less， z &#x3D; 1 greater</span><br><span class="line">        bool operator()(int a, int b) &#123;</span><br><span class="line">            return (a &lt; b) ^ !!(z);</span><br><span class="line">        &#125;</span><br><span class="line">        int z;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    void sort(int *arr, int l, int r, function&lt;bool(int, int)&gt; cmp &#x3D; CMP()) &#123;</span><br><span class="line">        if (l &gt;&#x3D; r) return;</span><br><span class="line">        int x &#x3D; l, y &#x3D; r, z &#x3D; arr[(l + r) &gt;&gt; 1];</span><br><span class="line">        do &#123;</span><br><span class="line">            &#x2F;&#x2F; 系统中的排序规则就是把cmp函数替换到小于号的位置</span><br><span class="line">            while (cmp(arr[x], z)) x++;</span><br><span class="line">            while (cmp(z, arr[y])) y--;</span><br><span class="line">            if (x &lt;&#x3D; y) &#123;</span><br><span class="line">                swap(arr[x], arr[y]);</span><br><span class="line">                x++, y--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; while (x &lt;&#x3D; y);</span><br><span class="line">        sort(arr, l, y, cmp);</span><br><span class="line">        sort(arr, x, r, cmp);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    vector&lt;int&gt; arr;</span><br><span class="line">    int n;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    while (n--) &#123;</span><br><span class="line">        int a;</span><br><span class="line">        cin &gt;&gt; a;</span><br><span class="line">        arr.push_back(a);</span><br><span class="line">    &#125;</span><br><span class="line">    sort(arr.begin(), arr.end(), haizei::CMP());</span><br><span class="line">    cout &lt;&lt; arr &lt;&lt; endl;</span><br><span class="line">    int arr2[5] &#x3D; &#123;6, 8, 4, 5, 1&#125;;</span><br><span class="line">    haizei::sort(arr2, 0, 4);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    haizei::sort(arr2, 0, 4, cmp1);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    haizei::sort(arr2, 0, 4);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    haizei::sort(arr2, 0, 4, haizei::CMP(1));</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 5; i++) &#123;</span><br><span class="line">        cout &lt;&lt; arr2[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+&#123;% endspoiler %&#125;
+</code></pre>
 </li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
