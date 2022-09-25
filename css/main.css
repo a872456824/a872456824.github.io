@@ -1211,7 +1211,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #be44df;
+  background: #1716ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2480,7 +2480,6 @@ article h7,
 a,
 strong {
   font-family: 'Ma Shan Zheng', 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
-  color: rgba(0,0,0,0) 0;
 }
 .index h1.site-title {
   font-family: 'Ma Shan Zheng', 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
@@ -2496,7 +2495,7 @@ strong {
 .content.index.posts-expand {
   border-radius: 30px;
   margin-top: 60px;
-  background: #fff none repeat scroll !important;
+  background: rgba(255,255,255,0) none repeat scroll !important;
   padding: 10px;
 }
 article p {
