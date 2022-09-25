@@ -1211,7 +1211,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #eebff1;
+  background: #8affb4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2501,8 +2501,8 @@ strong {
 article p {
   font-family: 'Ma Shan Zheng', 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
   font-size: 16px;
-  background: #00f none repeat scroll !important;
-  color: #fff;
+  background: rgba(255,255,255,0.3) none repeat scroll !important;
+  color: #000;
   font-weight: 400;
   line-height: 26px;
   margin: 0 0 16px;
