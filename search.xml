@@ -229,163 +229,6 @@
       </tags>
   </entry>
   <entry>
-    <title>堆与优先队列</title>
-    <url>/2021/01/05/0006.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
-
-<ul>
-<li><p>完全二叉树默认从1开始编号</p>
-<ul>
-<li>这样可以保证左孩子、右孩子编号简洁</li>
-<li>[否则] 左孩子编号需为2 * i + 1，右孩子编号需为2 * i + 2</li>
-</ul>
-</li>
-<li><p>可编号的性质→可用顺序结构存储，而不需要保存下一个结点的地址</p>
-<ul>
-<li><img src="https://i.loli.net/2020/12/02/DnX8VaTRLbd7mox.png" alt="图片" style="zoom:50%;"></li>
-</ul>
-</li>
-<li><p>二叉树→数组的转换</p>
-<ul>
-<li>按层序遍历的顺序存储在数组中，每一层的结点存储是连续的</li>
-</ul>
-</li>
-</ul>
-<h2 id="堆-优先队列"><a href="#堆-优先队列" class="headerlink" title="堆[优先队列]"></a>堆[优先队列]</h2><p>优先队列是堆的一个别名；堆是在<strong>完全二叉树</strong>的基础上维护的</p>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
-<li>结构与完全二叉树一样，但多维护了一种性质<ul>
-<li>大顶堆：对于任意三元组，根结点值最大</li>
-<li>小顶堆：对于任意三元组，根结点值最小</li>
-</ul>
-</li>
-</ul>
-<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><p>一切操作都要维护自己的性质！</p>
-<ul>
-<li>尾部插入【+调整】<ul>
-<li>在尾部插入该元素，再自下向上调整，最远调整到根结点<ul>
-<li>在三元组里不断调整，依次与父结点比较，只要交换了就不停止，直到到达根结点</li>
-<li>交换时只会改变交换元素的相对大小，整个结构的相对大小关系不变</li>
-</ul>
-</li>
-<li>比较的编号其实就是i 与 i / 2</li>
-<li>时间复杂度：$ O(log_2N) $，即树高</li>
-</ul>
-</li>
-<li>头部弹出【+调整】<ul>
-<li>将最后一个元素拿到堆顶，再自上向下调整，直到该元素没有子结点<ul>
-<li>在三元组里不断调整，依次与孩子结点比较，只要交换了就不停止，直到没有孩子</li>
-<li>为什么选择最后一个元素放到堆顶？</li>
-<li>因为，如果拿其他位置的元素，谁来补这个元素的缺口呢</li>
-</ul>
-</li>
-<li>比较的编号其实就是i、2 * i 与 2 * i + 1</li>
-<li>时间复杂度：同为树高</li>
-</ul>
-</li>
-<li>[PS]<ul>
-<li>大顶堆：方便查找第1大和第2大的元素 [根结点、第二层中]<ul>
-<li>找第3大、第4大…就不那么简单，不方便确定所在层数</li>
-</ul>
-</li>
-<li>上面这个过程<ul>
-<li>队尾进元素，队首出元素-&gt;同队列</li>
-<li>而出队的元素是最值-&gt;又名优先队列</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">priority_queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> cnt, size;</span><br><span class="line">&#125; <span class="built_in">priority_queue</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">priority_queue</span> *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">priority_queue</span> *q = (<span class="built_in">priority_queue</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="built_in">priority_queue</span>));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    q-&gt;cnt = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;cnt == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(<span class="built_in">priority_queue</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;cnt == q-&gt;size) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[++(q-&gt;cnt)] = val;</span><br><span class="line">    <span class="keyword">int</span> ind = q-&gt;cnt;</span><br><span class="line">    <span class="keyword">while</span> (ind &gt;&gt; <span class="number">1</span> &amp;&amp; q-&gt;data[ind] &gt; q-&gt;data[ind &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[ind &gt;&gt; <span class="number">1</span>]);</span><br><span class="line">        ind &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[<span class="number">1</span>] = q-&gt;data[q-&gt;cnt--];</span><br><span class="line">    <span class="keyword">int</span> ind = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((ind &lt;&lt; <span class="number">1</span>) &lt;= q-&gt;cnt) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = ind, l = ind &lt;&lt; <span class="number">1</span>, r = ind &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;data[l] &gt; q-&gt;data[temp]) temp = l;</span><br><span class="line">        <span class="keyword">if</span> (r &lt;= q-&gt;cnt &amp;&amp; q-&gt;data[r] &gt; q-&gt;data[temp]) temp = r;</span><br><span class="line">        <span class="keyword">if</span> (temp == ind) <span class="keyword">break</span>;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[temp]);</span><br><span class="line">        ind = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    <span class="built_in">priority_queue</span>*q = init(max_op);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        push(q, val);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;insert %d to the priority_queue.\n&quot;</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, top(q));</span><br><span class="line">        pop(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
-<li>根据其性质，全部弹出，将得到一个排好序的序列</li>
-<li>思维转变：堆顶元素的弹出操作 ==&gt; 堆顶元素与堆尾元素交换<ul>
-<li><strong>大顶堆</strong>的元素全部弹出：<strong>原数组</strong>存储了一个<strong>从小到大</strong>的排序序列</li>
-<li>[至此，从大顶堆，得到一个特殊的小顶堆]</li>
-</ul>
-</li>
-<li>时间复杂度：$ O(NlogN) $<ul>
-<li>消耗的时间在于调整操作，每次调整的时间复杂度是 $ O(logN) $，共N个元素，需调整N - 1次</li>
-<li>弹出操作的时间复杂度是O(1)的</li>
-<li>时间效率一定不会退化</li>
-</ul>
-</li>
-</ul>
-<h3 id="建堆"><a href="#建堆" class="headerlink" title="建堆"></a>建堆</h3><ul>
-<li>若要使用堆排序，首先需要维护一个堆，也就是用普通的序列<strong>建堆</strong>，下面有2种思路</li>
-</ul>
-<h4 id="1-插入建堆法"><a href="#1-插入建堆法" class="headerlink" title="1. 插入建堆法"></a>1. 插入建堆法</h4><ul>
-<li>按照前述尾部插入的调整方法：自下向上<ul>
-<li>从第0层 [默认根结点在第0层] 开始，计算每一层的最多调整次数：</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100309.png" alt="图片" style="zoom:50%;"></li>
-<li>第 i 层元素的调整次数为 i，第 i 层的结点数为2 ^ i→ 第 i 层的总调整次数为 $ i * (2 ^ i) $</li>
-</ul>
-</li>
-<li>最坏的建堆时间复杂度O(NlogN)，计算过程如下：<ul>
-<li>总的调整次数 $ S = (n - 1) * 2 ^ {n + 1}+ 1 $，过程如下：<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100428.png" alt="图片"></li>
-<li>利用裂项相消法</li>
-</ul>
-</li>
-<li>上面的n对应层数 - 1 [从第0层开始的]，若令总的结点数为N，则 $ n ≈ log_2N $</li>
-<li>【层数n→结点数N的换算】将 $ n ≈ log_2N $代入S，得到 $ S ≈ Nlog_2N $</li>
-<li>即最坏的时间复杂度为：$ O(NlogN) $</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-线性建堆"><a href="#2-线性建堆" class="headerlink" title="2. 线性建堆"></a>2. 线性建堆</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100544.png" alt="图片"></p>
-<ul>
-<li><p>如图所示</p>
-<ul>
-<li>常规思路：越到下面层，需要的调整次数越多，也就是权重越大</li>
-<li>那是否可以思维反转，把大权重放到前面，让下面结点数多的层的权重减小</li>
-<li>线性思路：可以！从倒数第二层开始排，【自上向下】调整</li>
-</ul>
-</li>
-<li><p>最坏的建堆时间复杂度O(N)</p>
-<ul>
-<li>同样利用裂项相消法得到总的调整次数 $ S = 2 ^ {n + 1} - 2 - n $</li>
-<li>把层数n换算到结点数N，得到 $ S ≈ 2N - 2 - log_2N $</li>
-<li>即最坏的时间复杂度为：O(N)</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>线性建堆</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define swap(a, b) &#123;\</span><br><span class="line">    __typeof(a) __temp &#x3D; a;\</span><br><span class="line">    a &#x3D; b; b &#x3D; __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void downUpdate(int *arr, int n, int ind) &#123;</span><br><span class="line">    while ((ind &lt;&lt; 1) &lt;&#x3D; n) &#123;</span><br><span class="line">        int temp &#x3D; ind, l &#x3D; ind &lt;&lt; 1, r &#x3D; ind &lt;&lt; 1 | 1;</span><br><span class="line">        if (arr[l] &gt; arr[temp]) temp &#x3D; l;</span><br><span class="line">        if (r &lt;&#x3D; n &amp;&amp; arr[r] &gt; arr[temp]) temp &#x3D; r;</span><br><span class="line">        if (ind &#x3D;&#x3D; temp) break;</span><br><span class="line">        swap(arr[temp], arr[ind]);</span><br><span class="line">        ind &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void heap_sort(int *arr, int n) &#123;</span><br><span class="line">    arr -&#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n &gt;&gt; 1; i &gt;&#x3D; 1; i--) &#123;</span><br><span class="line">        downUpdate(arr, n, i);</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; n; i &gt; 1; i--) &#123;</span><br><span class="line">        swap(arr[i], arr[1]);</span><br><span class="line">        downUpdate(arr, i - 1, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void output(int *arr, int n) &#123;</span><br><span class="line">    printf(&quot;[&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        printf(&quot;%d &quot;, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;]&quot;);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    srand(time(0));</span><br><span class="line">    #define max_n 20</span><br><span class="line">    int *arr &#x3D; (int *)malloc(sizeof(int) * max_n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; max_n; i++) &#123;</span><br><span class="line">        arr[i] &#x3D; rand() % 100;</span><br><span class="line">    &#125;</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    heap_sort(arr,max_n);</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    free(arr);</span><br><span class="line">    #undef max_n</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>这里的【堆排序】考虑了【建堆】+【排序】: $ O(N) + O(NlogN) = O(NlogN)$</li>
-<li>没有定义堆结构，用数组模拟堆</li>
-</ul>
-<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100859.png" alt="img"></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>栈与队列</title>
     <url>/2021/01/02/0003.%20%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h1><h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><ul>
@@ -524,180 +367,6 @@
 </ul>
 <h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
 <li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093445.png" alt="图片" style="zoom:50%;"></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>树与二叉树</title>
-    <url>/2021/01/03/0004.%20%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="树与二叉树"><a href="#树与二叉树" class="headerlink" title="树与二叉树"></a>树与二叉树</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><ul>
-<li>树的组成：结点 + 边<ul>
-<li>结点 ：集合；边 ： 关系</li>
-<li>根结点：全集；子结点：子集<ul>
-<li>根结点的所有子结点的集合并集 = 全集</li>
-<li>【思想】大问题抽象为树，小问题抽象为子结点</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><p>【结点 + 边】</p>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093517.png" alt="图片" style="zoom: 67%;">
-
-<ul>
-<li>一叉树是链表结构，只有一个分支的树形结构</li>
-<li>对于三叉树，则将链表的next指针变成next[3]数组即可</li>
-</ul>
-<h3 id="属性、性质"><a href="#属性、性质" class="headerlink" title="属性、性质"></a>属性、性质</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093534.png" alt="图片" style="zoom: 33%;">
-
-<ul>
-<li>深度、高度<ul>
-<li>树的深度和高度是一个值：最大层数</li>
-<li>结点的深度和高度不一样<ul>
-<li>深度：从根结点往下数，该结点是第几层</li>
-<li>高度：从最深的层数往上数，该结点是第几层</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>度：有几个子孩子</li>
-<li>【重要公式】结点数 = 边数 + 1</li>
-</ul>
-<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
-<li><p>二进制可以转换成任何进制，二叉树同理</p>
-<ul>
-<li>首先简单</li>
-<li>且可以表示所有的树形结构<ul>
-<li>方法：左孩子、右兄弟法，又称十字链表法</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093557.png" alt="图片" style="zoom:50%;"></li>
-<li>从上往下，从左往右，结点的孩子放在左边，结点的相邻兄弟放在右边</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>对于n叉树，n不确定，而二叉树是确定的</p>
-<ul>
-<li>n叉树可以用二叉树来实现</li>
-<li>所以，利用二叉树可以将非确定性问题 → 计算机能解决的确定性问题</li>
-</ul>
-</li>
-<li><p>【重要公式】二叉树中，度为0的结点比度为2的结点多1个</p>
-<ul>
-<li>利用另一重要公式：结点数 = 边数 + 1</li>
-<li>令 $ n_i $ 表示度为i的结点个数</li>
-<li>则：$ [结点数] n_0 + n_1 + n_2 = n_1 + 2 * n_2 + 1 [边数 + 1] $</li>
-<li>得：$ n_0 = n_2 + 1 $</li>
-</ul>
-</li>
-<li><p>遍历方式：取决于什么时候[最先、中间、最后]访问根节点</p>
-<ul>
-<li>前序遍历：根 左 右</li>
-<li>中序遍历：左 根 右</li>
-<li>后序遍历：左 右 根</li>
-<li>遍历时的左、右可以分别代表左、右子树</li>
-<li>左右的相对顺序一直是左在前，右在后</li>
-</ul>
-</li>
-<li><p>二叉树分类（国际版）</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093615.png" alt="图片"></li>
-</ul>
-</li>
-<li><p>完全二叉树：除了最后一层最右边可以缺少若干结点，其他地方都满满当当</p>
-<ul>
-<li>满二叉树：度为0或2即可</li>
-</ul>
-</li>
-<li><p>完美二叉树：度均为2，所有叶结点在同一层</p>
-<ul>
-<li>PS：中国版只分完全二叉树和满二叉树，满二叉树的定义同国际版的完美二叉树</li>
-</ul>
-</li>
-<li><p>完全二叉树的特点 [完美二叉树同样满足]</p>
-<ul>
-<li>编号为 i 的结点的左右孩子编号分别是2 * i、2 * i + 1</li>
-<li>可以用连续空间（数组）存储，用于算法优化：记录式-&gt;计算式<ul>
-<li>不再需要用结构体存储孩子结点的地址，直接通过公式可计算其在数组中的索引</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>广义表：树的字符串化</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093853.png" alt="图片"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093841.png" alt="图片"></li>
-<li>有很多种表示方法，一般怎么简单怎么来，见上图红框：方式一、方式二</li>
-</ul>
-</li>
-<li><p>对于二叉搜索树，中序遍历是顺序的</p>
-</li>
-<li><p>根据两种遍历可得第三种遍历结果</p>
-<ul>
-<li>前序遍历/后序遍历可得根结点，中序遍历可得左右孩子的位置</li>
-<li>【必须】要有中序遍历，只有它才能确定孩子的左右</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h3><ul>
-<li>二叉搜索树</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clearNode</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(node-&gt;lchild);</span><br><span class="line">    clearNode(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">insert_node</span><span class="params">(Node *root, <span class="keyword">int</span> val, <span class="keyword">int</span> *flag)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *flag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> getNewNode(val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;data == val) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span>(val &lt; root-&gt;data) root-&gt;lchild = insert_node(root-&gt;lchild, val, flag);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;rchild = insert_node(root-&gt;rchild, val, flag);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Tree *tree, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    tree-&gt;root = insert_node(tree-&gt;root, val, &amp;flag);</span><br><span class="line">    tree-&gt;n += flag;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    pre_order_node(node-&gt;lchild);</span><br><span class="line">    pre_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(node-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    in_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(node-&gt;lchild);</span><br><span class="line">    post_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output_node</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;lchild == <span class="literal">NULL</span> &amp;&amp; root-&gt;rchild == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">    output_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;,&quot;</span>);</span><br><span class="line">    output_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;tree(%d) : &quot;</span>, tree-&gt;n);</span><br><span class="line">    output_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 10</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        insert(tree, val);</span><br><span class="line">    &#125;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    output(tree);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>广义表还原二叉树</li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306094107.png" alt="图片" style="zoom:50%;">
-
-<ul>
-<li>具有完全包含关系的问题，使用栈</li>
-<li>栈里存储结点地址[Node *]：把广义表中的字符看成结点</li>
-<li>转换过程</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center"><strong>(</strong></th>
-<th align="center"><strong>,</strong></th>
-<th align="center"><strong>)</strong></th>
-<th align="center"><strong>其他字符【字母】</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">【将元素入栈】 下一个’,’前的元素为左孩子</td>
-<td align="center">决定下一个字符封装的元素为【右孩子】</td>
-<td align="center">记录栈顶，【将元素弹栈】</td>
-<td align="center">①将字符【封装】成结点指针类型，作为栈的元素 ②【关系确定】如果栈不为空，则根据该字符相对于’,’的位置，成为栈顶元素的左孩子或右孩子</td>
-</tr>
-</tbody></table>
-<ul>
-<li>结构定义、操作定义：栈、二叉树</li>
-<li>【关键】转换的匹配规则</li>
-</ul>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> top, size;</span><br><span class="line">&#125; Stack;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">char</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Stack *<span class="title">init_stack</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Stack *s = (Stack *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    s-&gt;data = (Node **)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node *) * n);</span><br><span class="line">    s-&gt;top = <span class="number">-1</span>;</span><br><span class="line">    s-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">top</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;data[s-&gt;top];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;top == <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Stack *s, Node *val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(s-&gt;top == s-&gt;size - <span class="number">1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;data[++(s-&gt;top)] = val;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(empty(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;top -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_stack</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(s-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(node-&gt;lchild);</span><br><span class="line">    clear_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_tree</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">build</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">int</span> *node_num)</span> </span>&#123;</span><br><span class="line">    Stack *s = init_stack(<span class="built_in">strlen</span>(str));</span><br><span class="line">    Node *temp = <span class="literal">NULL</span>, *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (str[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(str[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;(&#x27;</span>: &#123;</span><br><span class="line">                push(s, temp);</span><br><span class="line">                flag = <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;)&#x27;</span>: &#123;</span><br><span class="line">                p = top(s);</span><br><span class="line">                pop(s);</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;,&#x27;</span>: &#123;</span><br><span class="line">                flag = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27; &#x27;</span>: <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                temp = getNewNode(str[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">0</span>) &#123;</span><br><span class="line">                top(s)-&gt;lchild = temp;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">1</span>) &#123;</span><br><span class="line">                top(s)-&gt;rchild = temp;</span><br><span class="line">            &#125;</span><br><span class="line">            ++(*node_num);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ++str;</span><br><span class="line">    &#125;</span><br><span class="line">    clear_stack(s);</span><br><span class="line">    <span class="keyword">if</span> (temp &amp;&amp; !p) p = temp;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    pre_order_node(root-&gt;lchild);</span><br><span class="line">    pre_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    in_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(root-&gt;lchild);</span><br><span class="line">    post_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;post_order : &quot;</span>);</span><br><span class="line">    post_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> node_num = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%[^\n]s&quot;</span>, str);</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    tree-&gt;root = build(str, &amp;node_num);</span><br><span class="line">    tree-&gt;n = node_num;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    clear_tree(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095937.png" alt="image-20201202082334602"></li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
@@ -964,6 +633,337 @@
 <li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095931.png" alt="图片" style="zoom:50%;"></li>
 <li><a href="https://www.cnblogs.com/onepixel/articles/7674659.html">十大经典排序算法(动图演示)</a></li>
 <li><a href="https://www.cxyxiaowu.com/2026.html">十大经典排序算法动画与解析，看我就够了</a></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>树与二叉树</title>
+    <url>/2021/01/03/0004.%20%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="树与二叉树"><a href="#树与二叉树" class="headerlink" title="树与二叉树"></a>树与二叉树</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><ul>
+<li>树的组成：结点 + 边<ul>
+<li>结点 ：集合；边 ： 关系</li>
+<li>根结点：全集；子结点：子集<ul>
+<li>根结点的所有子结点的集合并集 = 全集</li>
+<li>【思想】大问题抽象为树，小问题抽象为子结点</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><p>【结点 + 边】</p>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093517.png" alt="图片" style="zoom: 67%;">
+
+<ul>
+<li>一叉树是链表结构，只有一个分支的树形结构</li>
+<li>对于三叉树，则将链表的next指针变成next[3]数组即可</li>
+</ul>
+<h3 id="属性、性质"><a href="#属性、性质" class="headerlink" title="属性、性质"></a>属性、性质</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093534.png" alt="图片" style="zoom: 33%;">
+
+<ul>
+<li>深度、高度<ul>
+<li>树的深度和高度是一个值：最大层数</li>
+<li>结点的深度和高度不一样<ul>
+<li>深度：从根结点往下数，该结点是第几层</li>
+<li>高度：从最深的层数往上数，该结点是第几层</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>度：有几个子孩子</li>
+<li>【重要公式】结点数 = 边数 + 1</li>
+</ul>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
+<li><p>二进制可以转换成任何进制，二叉树同理</p>
+<ul>
+<li>首先简单</li>
+<li>且可以表示所有的树形结构<ul>
+<li>方法：左孩子、右兄弟法，又称十字链表法</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093557.png" alt="图片" style="zoom:50%;"></li>
+<li>从上往下，从左往右，结点的孩子放在左边，结点的相邻兄弟放在右边</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>对于n叉树，n不确定，而二叉树是确定的</p>
+<ul>
+<li>n叉树可以用二叉树来实现</li>
+<li>所以，利用二叉树可以将非确定性问题 → 计算机能解决的确定性问题</li>
+</ul>
+</li>
+<li><p>【重要公式】二叉树中，度为0的结点比度为2的结点多1个</p>
+<ul>
+<li>利用另一重要公式：结点数 = 边数 + 1</li>
+<li>令 $ n_i $ 表示度为i的结点个数</li>
+<li>则：$ [结点数] n_0 + n_1 + n_2 = n_1 + 2 * n_2 + 1 [边数 + 1] $</li>
+<li>得：$ n_0 = n_2 + 1 $</li>
+</ul>
+</li>
+<li><p>遍历方式：取决于什么时候[最先、中间、最后]访问根节点</p>
+<ul>
+<li>前序遍历：根 左 右</li>
+<li>中序遍历：左 根 右</li>
+<li>后序遍历：左 右 根</li>
+<li>遍历时的左、右可以分别代表左、右子树</li>
+<li>左右的相对顺序一直是左在前，右在后</li>
+</ul>
+</li>
+<li><p>二叉树分类（国际版）</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093615.png" alt="图片"></li>
+</ul>
+</li>
+<li><p>完全二叉树：除了最后一层最右边可以缺少若干结点，其他地方都满满当当</p>
+<ul>
+<li>满二叉树：度为0或2即可</li>
+</ul>
+</li>
+<li><p>完美二叉树：度均为2，所有叶结点在同一层</p>
+<ul>
+<li>PS：中国版只分完全二叉树和满二叉树，满二叉树的定义同国际版的完美二叉树</li>
+</ul>
+</li>
+<li><p>完全二叉树的特点 [完美二叉树同样满足]</p>
+<ul>
+<li>编号为 i 的结点的左右孩子编号分别是2 * i、2 * i + 1</li>
+<li>可以用连续空间（数组）存储，用于算法优化：记录式-&gt;计算式<ul>
+<li>不再需要用结构体存储孩子结点的地址，直接通过公式可计算其在数组中的索引</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>广义表：树的字符串化</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093853.png" alt="图片"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093841.png" alt="图片"></li>
+<li>有很多种表示方法，一般怎么简单怎么来，见上图红框：方式一、方式二</li>
+</ul>
+</li>
+<li><p>对于二叉搜索树，中序遍历是顺序的</p>
+</li>
+<li><p>根据两种遍历可得第三种遍历结果</p>
+<ul>
+<li>前序遍历/后序遍历可得根结点，中序遍历可得左右孩子的位置</li>
+<li>【必须】要有中序遍历，只有它才能确定孩子的左右</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h3><ul>
+<li>二叉搜索树</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clearNode</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(node-&gt;lchild);</span><br><span class="line">    clearNode(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">insert_node</span><span class="params">(Node *root, <span class="keyword">int</span> val, <span class="keyword">int</span> *flag)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *flag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> getNewNode(val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;data == val) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span>(val &lt; root-&gt;data) root-&gt;lchild = insert_node(root-&gt;lchild, val, flag);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;rchild = insert_node(root-&gt;rchild, val, flag);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Tree *tree, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    tree-&gt;root = insert_node(tree-&gt;root, val, &amp;flag);</span><br><span class="line">    tree-&gt;n += flag;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    pre_order_node(node-&gt;lchild);</span><br><span class="line">    pre_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(node-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    in_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(node-&gt;lchild);</span><br><span class="line">    post_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output_node</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;lchild == <span class="literal">NULL</span> &amp;&amp; root-&gt;rchild == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">    output_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;,&quot;</span>);</span><br><span class="line">    output_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;tree(%d) : &quot;</span>, tree-&gt;n);</span><br><span class="line">    output_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 10</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        insert(tree, val);</span><br><span class="line">    &#125;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    output(tree);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>广义表还原二叉树</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306094107.png" alt="图片" style="zoom:50%;">
+
+<ul>
+<li>具有完全包含关系的问题，使用栈</li>
+<li>栈里存储结点地址[Node *]：把广义表中的字符看成结点</li>
+<li>转换过程</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>(</strong></th>
+<th align="center"><strong>,</strong></th>
+<th align="center"><strong>)</strong></th>
+<th align="center"><strong>其他字符【字母】</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">【将元素入栈】 下一个’,’前的元素为左孩子</td>
+<td align="center">决定下一个字符封装的元素为【右孩子】</td>
+<td align="center">记录栈顶，【将元素弹栈】</td>
+<td align="center">①将字符【封装】成结点指针类型，作为栈的元素 ②【关系确定】如果栈不为空，则根据该字符相对于’,’的位置，成为栈顶元素的左孩子或右孩子</td>
+</tr>
+</tbody></table>
+<ul>
+<li>结构定义、操作定义：栈、二叉树</li>
+<li>【关键】转换的匹配规则</li>
+</ul>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> top, size;</span><br><span class="line">&#125; Stack;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">char</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Stack *<span class="title">init_stack</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Stack *s = (Stack *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    s-&gt;data = (Node **)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node *) * n);</span><br><span class="line">    s-&gt;top = <span class="number">-1</span>;</span><br><span class="line">    s-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">top</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;data[s-&gt;top];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;top == <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Stack *s, Node *val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(s-&gt;top == s-&gt;size - <span class="number">1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;data[++(s-&gt;top)] = val;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(empty(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;top -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_stack</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(s-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(node-&gt;lchild);</span><br><span class="line">    clear_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_tree</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">build</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">int</span> *node_num)</span> </span>&#123;</span><br><span class="line">    Stack *s = init_stack(<span class="built_in">strlen</span>(str));</span><br><span class="line">    Node *temp = <span class="literal">NULL</span>, *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (str[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(str[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;(&#x27;</span>: &#123;</span><br><span class="line">                push(s, temp);</span><br><span class="line">                flag = <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;)&#x27;</span>: &#123;</span><br><span class="line">                p = top(s);</span><br><span class="line">                pop(s);</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;,&#x27;</span>: &#123;</span><br><span class="line">                flag = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27; &#x27;</span>: <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                temp = getNewNode(str[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">0</span>) &#123;</span><br><span class="line">                top(s)-&gt;lchild = temp;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">1</span>) &#123;</span><br><span class="line">                top(s)-&gt;rchild = temp;</span><br><span class="line">            &#125;</span><br><span class="line">            ++(*node_num);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ++str;</span><br><span class="line">    &#125;</span><br><span class="line">    clear_stack(s);</span><br><span class="line">    <span class="keyword">if</span> (temp &amp;&amp; !p) p = temp;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    pre_order_node(root-&gt;lchild);</span><br><span class="line">    pre_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    in_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(root-&gt;lchild);</span><br><span class="line">    post_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;post_order : &quot;</span>);</span><br><span class="line">    post_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> node_num = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%[^\n]s&quot;</span>, str);</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    tree-&gt;root = build(str, &amp;node_num);</span><br><span class="line">    tree-&gt;n = node_num;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    clear_tree(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095937.png" alt="image-20201202082334602"></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆与优先队列</title>
+    <url>/2021/01/05/0006.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
+
+<ul>
+<li><p>完全二叉树默认从1开始编号</p>
+<ul>
+<li>这样可以保证左孩子、右孩子编号简洁</li>
+<li>[否则] 左孩子编号需为2 * i + 1，右孩子编号需为2 * i + 2</li>
+</ul>
+</li>
+<li><p>可编号的性质→可用顺序结构存储，而不需要保存下一个结点的地址</p>
+<ul>
+<li><img src="https://i.loli.net/2020/12/02/DnX8VaTRLbd7mox.png" alt="图片" style="zoom:50%;"></li>
+</ul>
+</li>
+<li><p>二叉树→数组的转换</p>
+<ul>
+<li>按层序遍历的顺序存储在数组中，每一层的结点存储是连续的</li>
+</ul>
+</li>
+</ul>
+<h2 id="堆-优先队列"><a href="#堆-优先队列" class="headerlink" title="堆[优先队列]"></a>堆[优先队列]</h2><p>优先队列是堆的一个别名；堆是在<strong>完全二叉树</strong>的基础上维护的</p>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
+<li>结构与完全二叉树一样，但多维护了一种性质<ul>
+<li>大顶堆：对于任意三元组，根结点值最大</li>
+<li>小顶堆：对于任意三元组，根结点值最小</li>
+</ul>
+</li>
+</ul>
+<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><p>一切操作都要维护自己的性质！</p>
+<ul>
+<li>尾部插入【+调整】<ul>
+<li>在尾部插入该元素，再自下向上调整，最远调整到根结点<ul>
+<li>在三元组里不断调整，依次与父结点比较，只要交换了就不停止，直到到达根结点</li>
+<li>交换时只会改变交换元素的相对大小，整个结构的相对大小关系不变</li>
+</ul>
+</li>
+<li>比较的编号其实就是i 与 i / 2</li>
+<li>时间复杂度：$ O(log_2N) $，即树高</li>
+</ul>
+</li>
+<li>头部弹出【+调整】<ul>
+<li>将最后一个元素拿到堆顶，再自上向下调整，直到该元素没有子结点<ul>
+<li>在三元组里不断调整，依次与孩子结点比较，只要交换了就不停止，直到没有孩子</li>
+<li>为什么选择最后一个元素放到堆顶？</li>
+<li>因为，如果拿其他位置的元素，谁来补这个元素的缺口呢</li>
+</ul>
+</li>
+<li>比较的编号其实就是i、2 * i 与 2 * i + 1</li>
+<li>时间复杂度：同为树高</li>
+</ul>
+</li>
+<li>[PS]<ul>
+<li>大顶堆：方便查找第1大和第2大的元素 [根结点、第二层中]<ul>
+<li>找第3大、第4大…就不那么简单，不方便确定所在层数</li>
+</ul>
+</li>
+<li>上面这个过程<ul>
+<li>队尾进元素，队首出元素-&gt;同队列</li>
+<li>而出队的元素是最值-&gt;又名优先队列</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">priority_queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> cnt, size;</span><br><span class="line">&#125; <span class="built_in">priority_queue</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">priority_queue</span> *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">priority_queue</span> *q = (<span class="built_in">priority_queue</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="built_in">priority_queue</span>));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    q-&gt;cnt = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;cnt == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(<span class="built_in">priority_queue</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;cnt == q-&gt;size) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[++(q-&gt;cnt)] = val;</span><br><span class="line">    <span class="keyword">int</span> ind = q-&gt;cnt;</span><br><span class="line">    <span class="keyword">while</span> (ind &gt;&gt; <span class="number">1</span> &amp;&amp; q-&gt;data[ind] &gt; q-&gt;data[ind &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[ind &gt;&gt; <span class="number">1</span>]);</span><br><span class="line">        ind &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[<span class="number">1</span>] = q-&gt;data[q-&gt;cnt--];</span><br><span class="line">    <span class="keyword">int</span> ind = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((ind &lt;&lt; <span class="number">1</span>) &lt;= q-&gt;cnt) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = ind, l = ind &lt;&lt; <span class="number">1</span>, r = ind &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;data[l] &gt; q-&gt;data[temp]) temp = l;</span><br><span class="line">        <span class="keyword">if</span> (r &lt;= q-&gt;cnt &amp;&amp; q-&gt;data[r] &gt; q-&gt;data[temp]) temp = r;</span><br><span class="line">        <span class="keyword">if</span> (temp == ind) <span class="keyword">break</span>;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[temp]);</span><br><span class="line">        ind = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    <span class="built_in">priority_queue</span>*q = init(max_op);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        push(q, val);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;insert %d to the priority_queue.\n&quot;</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, top(q));</span><br><span class="line">        pop(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
+<li>根据其性质，全部弹出，将得到一个排好序的序列</li>
+<li>思维转变：堆顶元素的弹出操作 ==&gt; 堆顶元素与堆尾元素交换<ul>
+<li><strong>大顶堆</strong>的元素全部弹出：<strong>原数组</strong>存储了一个<strong>从小到大</strong>的排序序列</li>
+<li>[至此，从大顶堆，得到一个特殊的小顶堆]</li>
+</ul>
+</li>
+<li>时间复杂度：$ O(NlogN) $<ul>
+<li>消耗的时间在于调整操作，每次调整的时间复杂度是 $ O(logN) $，共N个元素，需调整N - 1次</li>
+<li>弹出操作的时间复杂度是O(1)的</li>
+<li>时间效率一定不会退化</li>
+</ul>
+</li>
+</ul>
+<h3 id="建堆"><a href="#建堆" class="headerlink" title="建堆"></a>建堆</h3><ul>
+<li>若要使用堆排序，首先需要维护一个堆，也就是用普通的序列<strong>建堆</strong>，下面有2种思路</li>
+</ul>
+<h4 id="1-插入建堆法"><a href="#1-插入建堆法" class="headerlink" title="1. 插入建堆法"></a>1. 插入建堆法</h4><ul>
+<li>按照前述尾部插入的调整方法：自下向上<ul>
+<li>从第0层 [默认根结点在第0层] 开始，计算每一层的最多调整次数：</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100309.png" alt="图片" style="zoom:50%;"></li>
+<li>第 i 层元素的调整次数为 i，第 i 层的结点数为2 ^ i→ 第 i 层的总调整次数为 $ i * (2 ^ i) $</li>
+</ul>
+</li>
+<li>最坏的建堆时间复杂度O(NlogN)，计算过程如下：<ul>
+<li>总的调整次数 $ S = (n - 1) * 2 ^ {n + 1}+ 1 $，过程如下：<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100428.png" alt="图片"></li>
+<li>利用裂项相消法</li>
+</ul>
+</li>
+<li>上面的n对应层数 - 1 [从第0层开始的]，若令总的结点数为N，则 $ n ≈ log_2N $</li>
+<li>【层数n→结点数N的换算】将 $ n ≈ log_2N $代入S，得到 $ S ≈ Nlog_2N $</li>
+<li>即最坏的时间复杂度为：$ O(NlogN) $</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-线性建堆"><a href="#2-线性建堆" class="headerlink" title="2. 线性建堆"></a>2. 线性建堆</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100544.png" alt="图片"></p>
+<ul>
+<li><p>如图所示</p>
+<ul>
+<li>常规思路：越到下面层，需要的调整次数越多，也就是权重越大</li>
+<li>那是否可以思维反转，把大权重放到前面，让下面结点数多的层的权重减小</li>
+<li>线性思路：可以！从倒数第二层开始排，【自上向下】调整</li>
+</ul>
+</li>
+<li><p>最坏的建堆时间复杂度O(N)</p>
+<ul>
+<li>同样利用裂项相消法得到总的调整次数 $ S = 2 ^ {n + 1} - 2 - n $</li>
+<li>把层数n换算到结点数N，得到 $ S ≈ 2N - 2 - log_2N $</li>
+<li>即最坏的时间复杂度为：O(N)</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>线性建堆</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define swap(a, b) &#123;\</span><br><span class="line">    __typeof(a) __temp &#x3D; a;\</span><br><span class="line">    a &#x3D; b; b &#x3D; __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void downUpdate(int *arr, int n, int ind) &#123;</span><br><span class="line">    while ((ind &lt;&lt; 1) &lt;&#x3D; n) &#123;</span><br><span class="line">        int temp &#x3D; ind, l &#x3D; ind &lt;&lt; 1, r &#x3D; ind &lt;&lt; 1 | 1;</span><br><span class="line">        if (arr[l] &gt; arr[temp]) temp &#x3D; l;</span><br><span class="line">        if (r &lt;&#x3D; n &amp;&amp; arr[r] &gt; arr[temp]) temp &#x3D; r;</span><br><span class="line">        if (ind &#x3D;&#x3D; temp) break;</span><br><span class="line">        swap(arr[temp], arr[ind]);</span><br><span class="line">        ind &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void heap_sort(int *arr, int n) &#123;</span><br><span class="line">    arr -&#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n &gt;&gt; 1; i &gt;&#x3D; 1; i--) &#123;</span><br><span class="line">        downUpdate(arr, n, i);</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; n; i &gt; 1; i--) &#123;</span><br><span class="line">        swap(arr[i], arr[1]);</span><br><span class="line">        downUpdate(arr, i - 1, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void output(int *arr, int n) &#123;</span><br><span class="line">    printf(&quot;[&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        printf(&quot;%d &quot;, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;]&quot;);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    srand(time(0));</span><br><span class="line">    #define max_n 20</span><br><span class="line">    int *arr &#x3D; (int *)malloc(sizeof(int) * max_n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; max_n; i++) &#123;</span><br><span class="line">        arr[i] &#x3D; rand() % 100;</span><br><span class="line">    &#125;</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    heap_sort(arr,max_n);</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    free(arr);</span><br><span class="line">    #undef max_n</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>这里的【堆排序】考虑了【建堆】+【排序】: $ O(N) + O(NlogN) = O(NlogN)$</li>
+<li>没有定义堆结构，用数组模拟堆</li>
+</ul>
+<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100859.png" alt="img"></li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
@@ -1460,6 +1460,53 @@
       </tags>
   </entry>
   <entry>
+    <title>字典树</title>
+    <url>/2021/01/12/0013.%20%E5%AD%97%E5%85%B8%E6%A0%91/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="字典树"><a href="#字典树" class="headerlink" title="字典树"></a>字典树</h1><h2 id="字典树结构"><a href="#字典树结构" class="headerlink" title="字典树结构"></a>字典树结构</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210115202810.png" alt="image-20210115202809011" style="zoom:50%;">
+
+<ol>
+<li>也叫做：前缀索引树</li>
+<li>把每个字符串按照前缀的顺序插入到树形结构中</li>
+<li>字典树可以用于字符串的排序，时间复杂度 $O(n)$</li>
+</ol>
+<blockquote>
+<p>白色：当前节点不独立成词；</p>
+<p>红色：当前节点独立成词。</p>
+</blockquote>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BASE 26</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">next</span>[<span class="title">BASE</span>];</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;flag = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(p-&gt;next, <span class="number">0</span>, <span class="keyword">sizeof</span>(p-&gt;next));</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Node *p, <span class="keyword">const</span> <span class="keyword">char</span> *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; s[i]; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = s[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;next[ind] == <span class="literal">NULL</span>) p-&gt;next[ind] = getNewNode();</span><br><span class="line">        p = p-&gt;next[ind];</span><br><span class="line">    &#125;</span><br><span class="line">    p-&gt;flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; BASE; i++) &#123;</span><br><span class="line">        clear(root-&gt;next[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(root);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Node *root, <span class="keyword">int</span> k, <span class="keyword">char</span> *s)</span> </span>&#123; <span class="comment">// k 是指当前在第几层</span></span><br><span class="line">    s[k] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;flag) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; BASE; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;next[i] == <span class="literal">NULL</span>) <span class="keyword">continue</span>;</span><br><span class="line">        s[k] = <span class="string">&#x27;a&#x27;</span> + i;</span><br><span class="line">        output(root-&gt;next[i], k + <span class="number">1</span>, s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    Node *root = getNewNode();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, str);</span><br><span class="line">        insert(root, str);</span><br><span class="line">    &#125;</span><br><span class="line">    output(root, <span class="number">0</span>, str);</span><br><span class="line">    clear(root);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h2 id="七、海贼-OJ-282-最大异或和"><a href="#七、海贼-OJ-282-最大异或和" class="headerlink" title="七、海贼 OJ-282-最大异或和"></a>七、海贼 OJ-282-最大异或和</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309153645.png" alt="image-20210309153637692" style="zoom:50%;">
+
+<ol>
+<li>思考：如何使得异或结果尽可能大</li>
+<li>结论：参与异或运算的两个数字，参与异或运算的每一位尽可能不同</li>
+<li>问题转换为：确定一个数字的情况下，找到从高为到低位与当前数字尽量不同的另外一个数字</li>
+<li>把每个数字看成一个二进制字符串，插入到字符串中，采用贪心策略进行选择</li>
+</ol>
+<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_N 100000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BASE 31</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">    Node *next[<span class="number">2</span>];</span><br><span class="line">&#125; tree[MAX_N * BASE + <span class="number">5</span>];</span><br><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="function">Node *<span class="title">getNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;tree[cnt++];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Node *root, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">30</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = !!(x &amp; (<span class="number">1</span> &lt;&lt; i));</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;next[ind] == <span class="literal">NULL</span>) root-&gt;next[ind] = getNode();</span><br><span class="line">        root = root-&gt;next[ind];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(Node *root, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">30</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = !(x &amp; (<span class="number">1</span> &lt;&lt; i));</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;next[ind]) &#123;</span><br><span class="line">            ans |= (<span class="number">1</span> &lt;&lt; i);</span><br><span class="line">            root = root-&gt;next[ind];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            root = root-&gt;next[!ind];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> val[MAX_N + <span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, a;</span><br><span class="line">    Node *root = getNode();</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; a, n--;</span><br><span class="line">    insert(root, a);</span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a;</span><br><span class="line">        ans = max(query(root, a), ans);</span><br><span class="line">        insert(root, a);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>高级数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>字符串匹配算法（多种、单模）</title>
     <url>/2021/01/11/0012.%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="字符串的匹配算法"><a href="#字符串的匹配算法" class="headerlink" title="字符串的匹配算法"></a>字符串的匹配算法</h1><h2 id="一、暴力匹配算法（单模匹配）"><a href="#一、暴力匹配算法（单模匹配）" class="headerlink" title="一、暴力匹配算法（单模匹配）"></a>一、暴力匹配算法（单模匹配）</h2><ol>
@@ -1659,53 +1706,6 @@
       </tags>
   </entry>
   <entry>
-    <title>字典树</title>
-    <url>/2021/01/12/0013.%20%E5%AD%97%E5%85%B8%E6%A0%91/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="字典树"><a href="#字典树" class="headerlink" title="字典树"></a>字典树</h1><h2 id="字典树结构"><a href="#字典树结构" class="headerlink" title="字典树结构"></a>字典树结构</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210115202810.png" alt="image-20210115202809011" style="zoom:50%;">
-
-<ol>
-<li>也叫做：前缀索引树</li>
-<li>把每个字符串按照前缀的顺序插入到树形结构中</li>
-<li>字典树可以用于字符串的排序，时间复杂度 $O(n)$</li>
-</ol>
-<blockquote>
-<p>白色：当前节点不独立成词；</p>
-<p>红色：当前节点独立成词。</p>
-</blockquote>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BASE 26</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">next</span>[<span class="title">BASE</span>];</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;flag = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(p-&gt;next, <span class="number">0</span>, <span class="keyword">sizeof</span>(p-&gt;next));</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Node *p, <span class="keyword">const</span> <span class="keyword">char</span> *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; s[i]; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = s[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;next[ind] == <span class="literal">NULL</span>) p-&gt;next[ind] = getNewNode();</span><br><span class="line">        p = p-&gt;next[ind];</span><br><span class="line">    &#125;</span><br><span class="line">    p-&gt;flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; BASE; i++) &#123;</span><br><span class="line">        clear(root-&gt;next[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(root);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Node *root, <span class="keyword">int</span> k, <span class="keyword">char</span> *s)</span> </span>&#123; <span class="comment">// k 是指当前在第几层</span></span><br><span class="line">    s[k] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;flag) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; BASE; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;next[i] == <span class="literal">NULL</span>) <span class="keyword">continue</span>;</span><br><span class="line">        s[k] = <span class="string">&#x27;a&#x27;</span> + i;</span><br><span class="line">        output(root-&gt;next[i], k + <span class="number">1</span>, s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    Node *root = getNewNode();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, str);</span><br><span class="line">        insert(root, str);</span><br><span class="line">    &#125;</span><br><span class="line">    output(root, <span class="number">0</span>, str);</span><br><span class="line">    clear(root);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h2 id="七、海贼-OJ-282-最大异或和"><a href="#七、海贼-OJ-282-最大异或和" class="headerlink" title="七、海贼 OJ-282-最大异或和"></a>七、海贼 OJ-282-最大异或和</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309153645.png" alt="image-20210309153637692" style="zoom:50%;">
-
-<ol>
-<li>思考：如何使得异或结果尽可能大</li>
-<li>结论：参与异或运算的两个数字，参与异或运算的每一位尽可能不同</li>
-<li>问题转换为：确定一个数字的情况下，找到从高为到低位与当前数字尽量不同的另外一个数字</li>
-<li>把每个数字看成一个二进制字符串，插入到字符串中，采用贪心策略进行选择</li>
-</ol>
-<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_N 100000</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BASE 31</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">    Node *next[<span class="number">2</span>];</span><br><span class="line">&#125; tree[MAX_N * BASE + <span class="number">5</span>];</span><br><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="function">Node *<span class="title">getNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;tree[cnt++];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Node *root, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">30</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = !!(x &amp; (<span class="number">1</span> &lt;&lt; i));</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;next[ind] == <span class="literal">NULL</span>) root-&gt;next[ind] = getNode();</span><br><span class="line">        root = root-&gt;next[ind];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(Node *root, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">30</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> ind = !(x &amp; (<span class="number">1</span> &lt;&lt; i));</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;next[ind]) &#123;</span><br><span class="line">            ans |= (<span class="number">1</span> &lt;&lt; i);</span><br><span class="line">            root = root-&gt;next[ind];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            root = root-&gt;next[!ind];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> val[MAX_N + <span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, a;</span><br><span class="line">    Node *root = getNode();</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; a, n--;</span><br><span class="line">    insert(root, a);</span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a;</span><br><span class="line">        ans = max(query(root, a), ans);</span><br><span class="line">        insert(root, a);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>高级数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>AC自动机</title>
     <url>/2021/01/13/0014.%20AC%E8%87%AA%E5%8A%A8%E6%9C%BA%20/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="AC自动机（多模匹配下的效率问题）"><a href="#AC自动机（多模匹配下的效率问题）" class="headerlink" title="AC自动机（多模匹配下的效率问题）"></a>AC自动机（多模匹配下的效率问题）</h1><h2 id="多模匹配问题"><a href="#多模匹配问题" class="headerlink" title="多模匹配问题"></a>多模匹配问题</h2><ol>
@@ -1796,57 +1796,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Linux 命令行解析</title>
-    <url>/2021/01/01/0016.%20Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Linux-命令行解析"><a href="#Linux-命令行解析" class="headerlink" title="Linux 命令行解析"></a>Linux 命令行解析</h1><h2 id="getopt函数"><a href="#getopt函数" class="headerlink" title="getopt函数"></a>getopt函数</h2><h4 id="getopt-函数-：命令行解析函数"><a href="#getopt-函数-：命令行解析函数" class="headerlink" title="getopt 函数 ：命令行解析函数"></a>getopt 函数 ：命令行解析函数</h4><ul>
-<li>头文件 ： &lt;unistd.h&gt;</li>
-<li>原型 ： <code>int</code> getopt(int argc, char * const argv[], const char *optstring);</li>
-</ul>
-<blockquote>
-<p>看到<code>int</code>很自然就可以想到是返回 成功 0，失败 -1， 或者返回个数</p>
-</blockquote>
-<ul>
-<li>argc argv：由 <code>main 函数</code>的参数<code>直接传递</code>而来</li>
-<li>optstring：一个包含准确选项字符的字符串</li>
-<li>返回值：返回下一个选项</li>
-</ul>
-<blockquote>
-<p>用 man 手册查询认识相关命令时，注重你要找的参数，不要过多的关注其变种。</p>
-</blockquote>
-<h4 id="getopt设置的一些全局变量"><a href="#getopt设置的一些全局变量" class="headerlink" title="getopt设置的一些全局变量"></a>getopt设置的一些全局变量</h4><ul>
-<li>char *optarg ：指向当前选项参数（如果有）的指针</li>
-<li>int optind  ：再次调用getopt()时的下一个argv 指针索引</li>
-<li>int optopt() ： 最有一个已知选项</li>
-<li>int opterr()  ：这个变量非零时，向stderr打印错误。默认为1。 </li>
-</ul>
-<h4 id="参数-optstring-详解"><a href="#参数-optstring-详解" class="headerlink" title="参数 optstring 详解"></a>参数 optstring 详解</h4><h5 id="getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。"><a href="#getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。" class="headerlink" title="getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。"></a>getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。</h5><ol>
-<li><code>单个</code>字符，表示<code>选项</code></li>
-<li>单个字符后加<code>一个冒号</code>“：”，表示该选项后<code>必须跟一个参数值</code>。参数<code>紧跟</code>在选项后或者<code>以空格</code>隔开。该参数的指针<code>赋给 optarg</code>。</li>
-<li>单个字符后跟<code>两个冒号</code>“：：”，表示该选项后<code>可以带</code>参数<code>也可以不带</code>参数。但参数<code>必须紧跟</code>在选项后不能以空格隔开。该参数的指针赋给optarg。</li>
-</ol>
-<p>例子： “<code>xy:z::</code>”表示 <code>x</code> 选项没有选项参数，<code>y</code> 选项必须有参数，中间可有空格可没，<code>z</code> 参数可有参数选项。也可没有参数选项，但是如果有选项参数的话必须紧跟在选项之后不能有空格。 </p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210101223051229.png" alt="image-20210101223051229"></p>
-<ol>
-<li><code>getopt</code> 内部有一个 <code>opt index</code> 指针（索引）的位置，指针会从 <code>0</code> 开始往后面扫描，<code>getopt</code> 每次会返回一个，直到找到最后一个的时候。会返回一个 <code>-1.</code></li>
-<li>当 <code>!= -1</code>的时候，返回的是一个<code>int</code> 型的选项字符，通过选项字符判断</li>
-</ol>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>双数组字典树</title>
     <url>/2021/01/14/0015.%20%E5%8F%8C%E6%95%B0%E7%BB%84%E5%AD%97%E5%85%B8%E6%A0%91/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="双数组字典树"><a href="#双数组字典树" class="headerlink" title="双数组字典树"></a>双数组字典树</h1><h2 id="传统字典树的缺点"><a href="#传统字典树的缺点" class="headerlink" title="传统字典树的缺点"></a>传统字典树的缺点</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309181251.png" alt="image-20210124153235264" style="zoom:50%;">
@@ -1929,6 +1878,57 @@
       </categories>
       <tags>
         <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux 命令行解析</title>
+    <url>/2021/01/01/0016.%20Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Linux-命令行解析"><a href="#Linux-命令行解析" class="headerlink" title="Linux 命令行解析"></a>Linux 命令行解析</h1><h2 id="getopt函数"><a href="#getopt函数" class="headerlink" title="getopt函数"></a>getopt函数</h2><h4 id="getopt-函数-：命令行解析函数"><a href="#getopt-函数-：命令行解析函数" class="headerlink" title="getopt 函数 ：命令行解析函数"></a>getopt 函数 ：命令行解析函数</h4><ul>
+<li>头文件 ： &lt;unistd.h&gt;</li>
+<li>原型 ： <code>int</code> getopt(int argc, char * const argv[], const char *optstring);</li>
+</ul>
+<blockquote>
+<p>看到<code>int</code>很自然就可以想到是返回 成功 0，失败 -1， 或者返回个数</p>
+</blockquote>
+<ul>
+<li>argc argv：由 <code>main 函数</code>的参数<code>直接传递</code>而来</li>
+<li>optstring：一个包含准确选项字符的字符串</li>
+<li>返回值：返回下一个选项</li>
+</ul>
+<blockquote>
+<p>用 man 手册查询认识相关命令时，注重你要找的参数，不要过多的关注其变种。</p>
+</blockquote>
+<h4 id="getopt设置的一些全局变量"><a href="#getopt设置的一些全局变量" class="headerlink" title="getopt设置的一些全局变量"></a>getopt设置的一些全局变量</h4><ul>
+<li>char *optarg ：指向当前选项参数（如果有）的指针</li>
+<li>int optind  ：再次调用getopt()时的下一个argv 指针索引</li>
+<li>int optopt() ： 最有一个已知选项</li>
+<li>int opterr()  ：这个变量非零时，向stderr打印错误。默认为1。 </li>
+</ul>
+<h4 id="参数-optstring-详解"><a href="#参数-optstring-详解" class="headerlink" title="参数 optstring 详解"></a>参数 optstring 详解</h4><h5 id="getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。"><a href="#getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。" class="headerlink" title="getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。"></a>getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。</h5><ol>
+<li><code>单个</code>字符，表示<code>选项</code></li>
+<li>单个字符后加<code>一个冒号</code>“：”，表示该选项后<code>必须跟一个参数值</code>。参数<code>紧跟</code>在选项后或者<code>以空格</code>隔开。该参数的指针<code>赋给 optarg</code>。</li>
+<li>单个字符后跟<code>两个冒号</code>“：：”，表示该选项后<code>可以带</code>参数<code>也可以不带</code>参数。但参数<code>必须紧跟</code>在选项后不能以空格隔开。该参数的指针赋给optarg。</li>
+</ol>
+<p>例子： “<code>xy:z::</code>”表示 <code>x</code> 选项没有选项参数，<code>y</code> 选项必须有参数，中间可有空格可没，<code>z</code> 参数可有参数选项。也可没有参数选项，但是如果有选项参数的话必须紧跟在选项之后不能有空格。 </p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210101223051229.png" alt="image-20210101223051229"></p>
+<ol>
+<li><code>getopt</code> 内部有一个 <code>opt index</code> 指针（索引）的位置，指针会从 <code>0</code> 开始往后面扫描，<code>getopt</code> 每次会返回一个，直到找到最后一个的时候。会返回一个 <code>-1.</code></li>
+<li>当 <code>!= -1</code>的时候，返回的是一个<code>int</code> 型的选项字符，通过选项字符判断</li>
+</ol>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -4132,6 +4132,31 @@
       </tags>
   </entry>
   <entry>
+    <title>死锁</title>
+    <url>/2021/01/20/0035.%20%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h2 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h2><ul>
+<li>当两个线程相互等待对方释放资源时，就会发生死锁。</li>
+<li>一旦出现死锁，整个程序既不会发生任何异常，也不会给出任何提示，只是所有线程都处于阻塞状态，无法继续。</li>
+<li>死锁是很容易发生的，尤其是在系统中出现多个同步监视器的情况下，</li>
+<li>比如：主线程保持着 A 对象的锁，等待对 B 对象加锁，而副线程保持着 B对象的锁，等待对 A 对象加锁，两个线程互相等待对方先释放锁，所以就出现了死锁。</li>
+</ul>
+<h2 id="怎么避免死锁？"><a href="#怎么避免死锁？" class="headerlink" title="怎么避免死锁？"></a>怎么避免死锁？</h2><p>死锁是不应该在程序中出现的，在编写程序时应该尽量避免出现死锁。下面有几种常见的方式用来解决死锁问题：</p>
+<ol>
+<li>避免多次锁定。尽量避免同一个线程对多个 Lock 进行锁定。例如上面的死锁程序，主线程要对 A、B 两个对象的 Lock 进行锁定，副线程也要对 A、B 两个对象的 Lock 进行锁定，这就埋下了导致死锁的隐患。</li>
+<li>具有相同的加锁顺序。如果多个线程需要对多个 Lock 进行锁定，则应该保证它们以相同的顺序请求加锁。比如上面的死锁程序，主线程先对 A 对象的 Lock 加锁，再对 B 对象的 Lock 加锁；而副线程则先对 B 对象的 Lock 加锁，再对 A 对象的 Lock 加锁。这种加锁顺序很容易形成嵌套锁定，进而导致死锁。如果让主线程、副线程按照相同的顺序加锁，就可以避免这个问题。</li>
+<li>使用定时锁。程序在调用 acquire() 方法加锁时可指定 timeout 参数，该参数指定超过 timeout 秒后会自动释放对 Lock 的锁定，这样就可以解开死锁了。</li>
+<li>死锁检测。死锁检测是一种依靠算法机制来实现的死锁预防机制，它主要是针对那些不可能实现按序加锁，也不能使用定时锁的场景的。</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>TCP/IP协议栈</title>
     <url>/2021/01/19/0034.TCP%E3%80%81IP%E5%8D%8F%E8%AE%AE%E6%A0%88/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="深入浅出-TCP-IP-协议栈"><a href="#深入浅出-TCP-IP-协议栈" class="headerlink" title="深入浅出 TCP/IP 协议栈"></a>深入浅出 TCP/IP 协议栈</h1><p>TCP/IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP/IP 协议采用4层结构，分别是<strong>应用层、传输层、网络层和链路层</strong>，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复杂庞大，入门门槛高，因此很难搞清楚TCP/IP的工作原理，通俗一点讲就是，<strong>一个主机的数据要经过哪些过程才能发送到对方的主机上</strong>。 接下来，我们就来探索一下这个过程。</p>
@@ -4202,31 +4227,6 @@
 <p>当你输入一个网址并按下回车键的时候，首先，应用层协议对该请求包做了格式定义；紧接着传输层协议加上了双方的端口号，确认了双方通信的应用程序；然后网络协议加上了双方的IP地址，确认了双方的网络位置；最后链路层协议加上了双方的MAC地址，确认了双方的物理位置，同时将数据进行分组，形成数据帧，采用广播方式，通过传输介质发送给对方主机。而对于不同网段，该数据包首先会转发给网关路由器，经过多次转发后，最终被发送到目标主机。目标机接收到数据包后，采用对应的协议，对帧数据进行组装，然后再通过一层一层的协议进行解析，最终被应用层的协议解析并交给服务器处理。</p>
 </blockquote>
 <h3 id="6、总结"><a href="#6、总结" class="headerlink" title="6、总结"></a>6、总结</h3><p>以上内容是对TCP/IP四层模型做了简单的介绍，而实际上每一层模型都有很多协议，每个协议要做的事情也很多，但我们首先得有一个清晰的脉络结构，掌握每一层模型最基本的作用，然后再去丰富细枝末节的东西，也许会更容易理解。</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>死锁</title>
-    <url>/2021/01/20/0035.%20%E6%AD%BB%E9%94%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h2 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h2><ul>
-<li>当两个线程相互等待对方释放资源时，就会发生死锁。</li>
-<li>一旦出现死锁，整个程序既不会发生任何异常，也不会给出任何提示，只是所有线程都处于阻塞状态，无法继续。</li>
-<li>死锁是很容易发生的，尤其是在系统中出现多个同步监视器的情况下，</li>
-<li>比如：主线程保持着 A 对象的锁，等待对 B 对象加锁，而副线程保持着 B对象的锁，等待对 A 对象加锁，两个线程互相等待对方先释放锁，所以就出现了死锁。</li>
-</ul>
-<h2 id="怎么避免死锁？"><a href="#怎么避免死锁？" class="headerlink" title="怎么避免死锁？"></a>怎么避免死锁？</h2><p>死锁是不应该在程序中出现的，在编写程序时应该尽量避免出现死锁。下面有几种常见的方式用来解决死锁问题：</p>
-<ol>
-<li>避免多次锁定。尽量避免同一个线程对多个 Lock 进行锁定。例如上面的死锁程序，主线程要对 A、B 两个对象的 Lock 进行锁定，副线程也要对 A、B 两个对象的 Lock 进行锁定，这就埋下了导致死锁的隐患。</li>
-<li>具有相同的加锁顺序。如果多个线程需要对多个 Lock 进行锁定，则应该保证它们以相同的顺序请求加锁。比如上面的死锁程序，主线程先对 A 对象的 Lock 加锁，再对 B 对象的 Lock 加锁；而副线程则先对 B 对象的 Lock 加锁，再对 A 对象的 Lock 加锁。这种加锁顺序很容易形成嵌套锁定，进而导致死锁。如果让主线程、副线程按照相同的顺序加锁，就可以避免这个问题。</li>
-<li>使用定时锁。程序在调用 acquire() 方法加锁时可指定 timeout 参数，该参数指定超过 timeout 秒后会自动释放对 Lock 的锁定，这样就可以解开死锁了。</li>
-<li>死锁检测。死锁检测是一种依靠算法机制来实现的死锁预防机制，它主要是针对那些不可能实现按序加锁，也不能使用定时锁的场景的。</li>
-</ol>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -6413,6 +6413,192 @@
       </tags>
   </entry>
   <entry>
+    <title>从Linux 进程调度到 Android 线程管理</title>
+    <url>/2022/09/23/0044.%E4%BB%8ELinux%20%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%88%B0%20Android%20%E7%BA%BF%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="Linux-进程与Android-线程"><a href="#Linux-进程与Android-线程" class="headerlink" title="Linux 进程与Android 线程"></a>Linux 进程与Android 线程</h2><h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>进程是资源管理的最小单位，线程是程序执行的最小单位。在操作系统设计上，从进程演化出线程，最主要的目的就是更好的支持SMP以及减小（进程/线程）上下文切换开销。</p>
+<p>无论按照怎样的分法，一个进程至少需要一个线程作为它的指令执行体，进程管理着资源（比如cpu、内存、文件等等），而将线程分配到某个cpu上执行。一个进程当然可以拥有多个线程，此时，如果进程运行在SMP机器上，它就可以同时使用多个cpu来执行各个线程，达到最大程度的并行，以提高效率；同时，即使是在单cpu的机器上，采用多线程模型来设计程序，正如当年采用多进程模型代替单进程模型一样，使设计更简洁、功能更完备，程序的执行效率也更高，例如采用多个线程响应多个输入，而此时多线程模型所实现的功能实际上也可以用多进程模型来实现，而与后者相比，线程的上下文切换开销就比进程要小多了，从语义上来说，同时响应多个输入这样的功能，实际上就是共享了除cpu以外的所有资源的。</p>
+<p>针对线程模型的两大意义，分别开发出了核心级线程和用户级线程两种线程模型，分类的标准主要是线程的调度者在核内还是在核外。前者更利于并发使用多处理器的资源，而后者则更多考虑的是上下文切换开销。</p>
+<h3 id="内核线程与用户线程"><a href="#内核线程与用户线程" class="headerlink" title="内核线程与用户线程"></a>内核线程与用户线程</h3><p>需要理解 Linux 进程与 Android 线程的关系，需要先解释清楚 Linux 中内核线程、用户线程的关系，在 内核线程、轻量级进程、用户线程的区别和联系 中有比较清晰的阐述。可以总结为几点:</p>
+<ul>
+<li><p>内核线程只运行在内核态，不受用户态上下文的拖累。</p>
+</li>
+<li><p>用户线程是完全建立在用户空间的线程库，用户线程的创建、调度、同步和销毁全由库函数在用户空间完成，不需要内核的帮助。因此这种线程是极其低消耗和高效的。</p>
+</li>
+<li><p>轻量级进程(LWP)是建立在内核之上并由内核支持的用户线程，它是内核线程的高度抽象，每一个轻量级进程都与一个特定的内核线程关联。内核线程只能由内核管理并像普通进程一样被调度。</p>
+</li>
+<li><p>LinuxThreads 是用户空间的线程库，所采用的是线程-进程 1对1 模型(即一个用户线程对应一个轻量级进程，而一个轻量级进程对应一个特定 的内核线程)，将线程的调度等同于进程的调度，调度交由内核完成，而线程的创建、同步、销毁由核外线程库完成（LinuxThtreads已绑定到 GLIBC中发行）。</p>
+</li>
+<li><p><strong>PS</strong>: Linux 在2.6之前使用的是 LinuxThreads 线程库,2.6之后是NPTL(Native Posix Thread Library)，NPTL 使用的也是1对1的结构，但是在信号处理，线程同步，存储管理等多方面进行了优化。</p>
+</li>
+</ul>
+<p>此外，Linux 内核不存在真正意义上的线程。Linux 将所有的执行实体都称之为任务（task），每一个任务在 Linux 上都类似于一个单线程的进程，具有内存空间、执行实体、文件资源等。但是，Linux 下不同任务之间可以选择公用内存空间，因而在实际意义上，共享同一个内存空间的多个任务构成了一个进程，而这些任务就成为这个进程里面的线程。</p>
+<h2 id="Linux-进程调度"><a href="#Linux-进程调度" class="headerlink" title="Linux 进程调度"></a>Linux 进程调度</h2><p>现在的操作系统都是多任务的，为了能让更多的任务能同时在系统上更好的运行，需要一个管理程序来管理计算机上同时运行的各个任务（也就是进程）。这个管理程序就是调度程序，它的功能说起来很简单：</p>
+<ul>
+<li><p>决定哪些进程运行，哪些进程等待</p>
+</li>
+<li><p>决定每个进程运行多长时间</p>
+</li>
+</ul>
+<p>此外，为了获得更好的用户体验，运行中的进程还可以立即被其他更紧急的进程打断。总之，调度是一个平衡的过程。一方面，它要保证各个运行的进程能够最大限度的使用CPU(即尽量少的切换进程，进程切换过多，CPU的时间会浪费在切换上)；另一方面，保证各个进程能公平的使用CPU(即防止一个进程长时间独占CPU的情况)。</p>
+<h3 id="Linux-进程优先级"><a href="#Linux-进程优先级" class="headerlink" title="Linux 进程优先级"></a>Linux 进程优先级</h3><p>进程提供了两种优先级，一种是普通的进程优先级，第二个是实时优先级。前者适用 SCHED_NORMAL 调度策略，后者可选 SCHED_FIFO 或 SCHED_RR 调度策略。任何时候，实时进程的优先级都高于普通进程，实时进程只会被更高级的实时进程抢占，同级实时进程之间是按照 FIFO（一次机会做完）或者 RR（多次轮转）规则调度的。</p>
+<h3 id="nice-值"><a href="#nice-值" class="headerlink" title="nice 值"></a>nice 值</h3><ul>
+<li><p>nice 的取值范围为 -20 到 19。</p>
+</li>
+<li><p>nice 的值越大，进程的优先级就越低，获得 CPU 调用的机会越少，nice值越小，进程的优先级则越高，获得 CPU 调用的机会越多。</p>
+</li>
+<li><p>一个 nice 值为 -20 的进程优先级最高，nice 值为 19 的进程优先级最低。</p>
+</li>
+<li><p>父进程 fork 出来的子进程 nice 值与父进程相同。父进程 renice，子进程 nice 值不会随之改变。</p>
+</li>
+</ul>
+<h3 id="进程优先级"><a href="#进程优先级" class="headerlink" title="进程优先级"></a>进程优先级</h3><p>Linux 进程优先级与 nice 值及实时进程优先级的关系：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20220925114243.png" alt="image-20220925114243392"></p>
+<h3 id="动态优先级"><a href="#动态优先级" class="headerlink" title="动态优先级"></a>动态优先级</h3><p>除此之外，在执行阶段，调度程序通过增加或减少进程静态优先级的值，来达到奖励IO消耗型或惩罚cpu消耗型的进程，调整后的进程称为动态优先级。与之对应的我们前面提到的优先级的值被称为静态优先级。</p>
+<h3 id="调度原理"><a href="#调度原理" class="headerlink" title="调度原理"></a>调度原理</h3><p>优先级，可以决定谁先运行。但是对于调度程序来说，并不是运行一次就结束了，还必须知道间隔多久进行下次调度。于是就有了时间片的概念。时间片是一个数值，表示一个进程被抢占前能持续运行的时间。也可以认为是进程在下次调度发生前运行的时间(除非进程主动放弃CPU，或者有实时进程来抢占CPU)。时间片的大小设置并不简单，设大了，系统响应变慢(调度周期长)；设小了，进程频繁切换带来的处理器消耗。默认的时间片一般是10ms。</p>
+<p><strong>举个例子说明调度原理的实现：</strong></p>
+<p>假设系统中只有3个进程ProcessA(NI=+10)，ProcessB(NI=0)，ProcessC(NI=-10)，NI表示进程的nice值，时间片=10ms：</p>
+<ul>
+<li><p>调度前，把进程优先级按一定的权重映射成时间片(这里假设优先级高一级相当于多5msCPU时间)。假设ProcessA分配了一个时间片10ms，那么ProcessB的优先级比ProcessA高10(nice值越小优先级越高)，ProcessB应该分配10×5+10=60ms，以此类推，ProcessC分配20×5+10=110ms。</p>
+</li>
+<li><p>开始调度时，优先调度分配CPU时间多的进程。由于ProcessA(10ms),ProcessB(60ms),ProcessC(110ms)。显然先调度ProcessC。</p>
+</li>
+<li><p>10ms(一个时间片)后，再次调度时，ProcessA(10ms), ProcessB(60ms), ProcessC(100ms)。 ProcessC刚运行了10ms，所以变成100ms。此时仍然先调度ProcessC。</p>
+</li>
+<li><p>再调度4次后(4个时间片)，ProcessA(10ms), ProcessB(60ms),ProcessC(60ms)。此时ProcessB和ProcessC的CPU时间一样，这时得看ProcessB和ProcessC谁在CPU运行队列的前面，假设ProcessB在前面，则调度ProcessB</p>
+</li>
+<li><p>10ms(一个时间片)后，ProcessA(10ms), ProcessB(50ms), ProcessC(60ms)。再次调度ProcessC</p>
+</li>
+<li><p>ProcessB 和 ProcessC 交替运行，直至 ProcessA(10ms), ProcessB(10ms), ProcessC(10ms)。<br>这时得看ProcessA，ProcessB，ProcessC谁在CPU运行队列的前面就先调度谁。这里假设调度ProcessA</p>
+</li>
+<li><p>10ms (一个时间片)后，ProcessA (时间片用完后退出), ProcessB (10ms), ProcessC (10ms)。</p>
+</li>
+<li><p>再过2个时间片，ProcessB 和 ProcessC 也运行完退出。</p>
+</li>
+</ul>
+<p>这个例子很简单，主要是为了说明调度的原理，实际的调度算法虽然不会这么简单。</p>
+<h3 id="进程调度算法-CFS"><a href="#进程调度算法-CFS" class="headerlink" title="进程调度算法 CFS"></a>进程调度算法 CFS</h3><p>Linux上的调度算法是不断发展的，在2.6.23内核以后，采用了“完全公平调度算法”，简称CFS。</p>
+<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><p>CFS算法的初衷就是让所有进程同时运行在一个CPU上，例如两个进程都需要运行10ms的时间，则CFS算法下，连个进程同时运行在CPU上，且时间为20ms，而不是每个进程分别运行10ms。但是这只是一种理想的运行方式，CFS为了近似这种运行算法，就提出了虚拟运行时间(vruntime)的概念。vruntime记录了一个可执行进程到当前时刻为止执行的总时间（需要以进程总数n进行归一化，并且根据进程的优先级进行加权）。根据vruntime的定义可以知道，vruntime越大，说明该进程运行的越久，所以被调度的可能性就越小。所以我们的调度算法就是每次选择 vruntime 值最小的进程进行调度，内核中使用红黑树可以方便的得到 vruntime 值最小的进程。至于每个进程如何更新自己的 vruntime ？内核中是按照如下方式来更新的： vruntime += delta * NICE_0_LOAD/ se.weight；其中：</p>
+<p>NICE_0_LOAD 是个定值，及系统默认的进程的权值；se.weight是当前进程的权重(优先级越高，权重越大)；</p>
+<p>delta 是当前进程运行的时间；我们可以得出这么个关系：vruntime 与delta 成正比，即当前运行时间越长 vruntime 增长越快；</p>
+<p>vruntime 与 se.weight 成反比，即权重越大 vunruntime 增长越慢。简单来说，一个进程的优先级越高，而且该进程运行的时间越少，则该进程的 vruntime 就越小，该进程被调度的可能性就越高。</p>
+<h3 id="运行时长"><a href="#运行时长" class="headerlink" title="运行时长"></a>运行时长</h3><p>CFS 的运行时间是有当前系统中所有可调度进程的优先级的比重来确定的，假如现在进程中有三个可调度进程A、B、C，它们的优先级分别为5,10,15，则它们的时间片分别为5/30，10/30，15/30。而不是由自己的时间片计算得来的，这样的话，优先级为1，2的两个进程与优先级为50,100的两个进程分的时间片是相同的。简单来说，CFS采用的所有进程优先级的比重来计算每个进程的时间片的，是相对的而不是绝对的。</p>
+<h3 id="Linux-进程组与-Cgroups"><a href="#Linux-进程组与-Cgroups" class="headerlink" title="Linux 进程组与 Cgroups"></a>Linux 进程组与 Cgroups</h3><p>Cgroups是control groups的缩写，是Linux内核提供的一种可以限制、记录、隔离进程组（process groups）所使用的物理资源（如：cpu,memory,IO等等）的机制。最初由google的工程师提出，后来被整合进Linux内核。也是目前轻量级虚拟化技术 lxc （linux container）的基础之一。 </p>
+<p>Cgroups最初的目标是为资源管理提供的一个统一的框架，既整合现有的cpuset等子系统，也为未来开发新的子系统提供接口。现在的cgroups适用于多种应用场景，从单个进程的资源控制，到实现操作系统层次的虚拟化（OS Level Virtualization）。Cgroups提供了以下功能：</p>
+<ul>
+<li><p>限制进程组可以使用的资源数量（Resource limiting ）。比如：memory子系统可以为进程组设定一个memory使用上限，一旦进程组使用的内存达到限额再申请内存，就会出发OOM（out of memory）。</p>
+</li>
+<li><p>进程组的优先级控制（Prioritization ）。比如：可以使用cpu子系统为某个进程组分配特定cpu share。</p>
+</li>
+<li><p>记录进程组使用的资源数量（Accounting ）。比如：可以使用cpuacct子系统记录某个进程组使用的cpu时间</p>
+</li>
+<li><p>进程组隔离（Isolation）。比如：使用ns子系统可以使不同的进程组使用不同的namespace，以达到隔离的目的，不同的进程组有各自的进程、网络、文件系统挂载空间。</p>
+</li>
+<li><p>进程组控制（Control）。比如：使用freezer子系统可以将进程组挂起和恢复。</p>
+</li>
+</ul>
+<h3 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h3><ul>
+<li><p>任务（task）。在 cgroups 中，任务就是系统的一个进程。</p>
+</li>
+<li><p>控制族群（control group）。控制族群就是一组按照某种标准划分的进程。Cgroups 中的资源控制都是以控制族群为单位实现。一个进程可以加入到某个控制族群，也从一个进程组迁移到另一个控制族群。一个进程组的进程可以使用 cgroups 以控制族群为单位分配的资源，同时受到 cgroups 以控制族群为单位设定的限制。</p>
+</li>
+<li><p>层级（hierarchy）。控制族群可以组织成 hierarchical 的形式，既一颗控制族群树。控制族群树上的子节点控制族群是父节点控制族群的孩子，继承父控制族群的特定的属性。</p>
+</li>
+<li><p>子系统（subsytem）。一个子系统就是一个资源控制器，比如 cpu 子系统就是控制 cpu 时间分配的一个控制器。子系统必须附加（attach）到一个层级上才能起作用，一个子系统附加到某个层级以后，这个层级上的所有控制族群都受到这个子系统的控制。</p>
+</li>
+</ul>
+<h3 id="cgroups-在-Android-中的应用"><a href="#cgroups-在-Android-中的应用" class="headerlink" title="cgroups 在 Android 中的应用"></a>cgroups 在 Android 中的应用</h3><p>Android中关于 cpu/cpuset/schedtune 三个子系统的应用都是基于进程优先级的。</p>
+<p>AMS(ActivityManagerService) 和 PMS(PackageManagerService) 等通过 Process 设置进程优先级、调度策略等；android/osProcess JNI通过调用libcutils.so/libutils.so执行getpriority/setpriority/schedsetscheduler/schedgetschedler系统调用或者直接操作CGroup文件节点以达到设置优先级，限制进程CPU资源的目的。</p>
+<ul>
+<li><p>cpu，这个子系统使用调度程序提供对 CPU 的 cgroup 任务访问，连接在 Android 系统的 /dev/cpuctl 层级结构上。</p>
+</li>
+<li><p>cpuset，这个子系统为 cgroup 中的任务分配独立 CPU（在多核系统）和内存节点，连接在 Android 系统的 /dev/cpuset 层级结构上。</p>
+</li>
+<li><p>schedtune，是ARM/Linaro为了EAS新增的一个子系统，主要用来控制进程调度选择CPU以及boost触发，连接在 Android 系统的 /dev/stune 层级结构上。</p>
+</li>
+<li><p>Android 中在从设置进程优先级到最后映射到不同 cgroups 下的过程，有兴趣的可以参考 Android中关于cpu/cpuset/schedtune的应用{<a href="https://blog.csdn.net/omnispace/article/details/73320945%7D%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E3%80%82%E6%88%91%E4%BB%AC%E8%BF%99%E9%87%8C%E4%BB%A5">https://blog.csdn.net/omnispace/article/details/73320945}这篇文章。我们这里以</a> cpu 子系统为例介绍一下再 CPU 子系统下是如何控制不同 cgroup 对 CPU 资源的访问。</p>
+</li>
+</ul>
+<h3 id="CPU-子系统"><a href="#CPU-子系统" class="headerlink" title="CPU 子系统"></a>CPU 子系统</h3><p>CPU 子系统连接的 /dev/cpuctl 层级结构下有两个 cgroup，分别是</p>
+<ul>
+<li><p>/ ，对应到 Android 的前台进程组。</p>
+</li>
+<li><p>/bg_non_interactive ，对应到 Android 的后台进程组。</p>
+</li>
+</ul>
+<p>在 cgroup 下定义了一些参数，来控制不同的 cgroup 在使用 cpu 资源时的配置：</p>
+<ul>
+<li><p>cpu.shares ：保存了整数值，用来设置 cgroup 分组任务获得 CPU 时间的相对值。</p>
+</li>
+<li><p>cpu.rt_runtime_us ：主要用来设置 cgroup 获得 CPU 资源的周期，单位为微妙。</p>
+</li>
+<li><p>cpu.rt_period_us ：主要是用来设置 cgroup 中的任务可以最长获得 CPU 资源的时间，单位为微秒。</p>
+</li>
+</ul>
+<p>通过下面的数据我们可以看到，前台进程组和后台进程组的 cpu.share 值相比接近于 20:1，也就是说前台进程组中的应用可以利用 95% 的 CPU，而处于后台进程组中的应用则只能获得 5% 的 CPU 利用率。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;cpu.shares</span><br><span class="line">1024</span><br><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;cpu.shares</span><br><span class="line">52</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20220925120102.png" alt="image-20220925120102579"></p>
+<p>同样我们也可查看 cpu.rt_period_us 与 cpu.rt_runtime_us 的时间对比：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;cpu.rt_period_us</span><br><span class="line">1000000</span><br><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;cpu.rt_runtime_us    </span><br><span class="line">800000</span><br></pre></td></tr></table></figure>
+<p>即单个逻辑CPU下每一秒内可以获得0.8秒的执行时间。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;cpu.rt_period_us</span><br><span class="line">1000000</span><br><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;cpu.rt_runtime_us</span><br><span class="line">700000</span><br></pre></td></tr></table></figure>
+<p>PS: 最长的获取CPU资源时间取决于逻辑CPU的数量。比如 cpu.rt_runtime_us 设置为200000（0.2秒）， cpu.rt_period_us 设置为1000000（1秒）。在单个逻辑CPU上的获得时间为每秒为0.2秒。 2个逻辑CPU，获得的时间则是0.4秒。 </p>
+<h3 id="SchedPolicy"><a href="#SchedPolicy" class="headerlink" title="SchedPolicy"></a>SchedPolicy</h3><p>Android 底层对进程分组的操作最后是通过 sched_policy.c 文件中的 set_sched_policy(int tid, SchedPolicy policy) 和 set_cpuset_policy(int tid, SchedPolicy policy) 函数添加到对应的进程组的，调用这两个函数的传递的 SchedPolicy 定义在 sched_policy.h 中，定义不同的调度策略：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;* Keep in sync with THREAD_GROUP_* in frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;os&#x2F;Process.java *&#x2F;</span><br><span class="line">typedef enum &#123;</span><br><span class="line">    SP_DEFAULT    &#x3D; -1,</span><br><span class="line">    SP_BACKGROUND &#x3D; 0,</span><br><span class="line">    SP_FOREGROUND &#x3D; 1,</span><br><span class="line">    SP_SYSTEM     &#x3D; 2,  &#x2F;&#x2F; can&#39;t be used with set_sched_policy()</span><br><span class="line">    SP_AUDIO_APP  &#x3D; 3,</span><br><span class="line">    SP_AUDIO_SYS  &#x3D; 4,</span><br><span class="line">    SP_TOP_APP    &#x3D; 5,</span><br><span class="line">    SP_CNT,</span><br><span class="line">    SP_MAX        &#x3D; SP_CNT - 1,</span><br><span class="line">    SP_SYSTEM_DEFAULT &#x3D; SP_FOREGROUND,</span><br><span class="line">&#125; SchedPolicy;</span><br></pre></td></tr></table></figure>
+<p>在 set_sched_policy 中根据不同的 SchedPolicy 为进程找到不同的进程组，并添加进去。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 根据不同调度策略选择不同的进程组</span><br><span class="line">int fd &#x3D; -1;</span><br><span class="line">int boost_fd &#x3D; -1;</span><br><span class="line">switch (policy) &#123;</span><br><span class="line">case SP_BACKGROUND:</span><br><span class="line">    fd &#x3D; bg_cgroup_fd;</span><br><span class="line">    boost_fd &#x3D; bg_schedboost_fd;</span><br><span class="line">    break;</span><br><span class="line">case SP_FOREGROUND:</span><br><span class="line">case SP_AUDIO_APP:</span><br><span class="line">case SP_AUDIO_SYS:</span><br><span class="line">    fd &#x3D; fg_cgroup_fd;</span><br><span class="line">    boost_fd &#x3D; fg_schedboost_fd;</span><br><span class="line">    break;</span><br><span class="line">case SP_TOP_APP:</span><br><span class="line">    fd &#x3D; fg_cgroup_fd;</span><br><span class="line">    boost_fd &#x3D; ta_schedboost_fd;</span><br><span class="line">    break;</span><br><span class="line">default:</span><br><span class="line">    fd &#x3D; -1;</span><br><span class="line">    boost_fd &#x3D; -1;</span><br><span class="line">    break;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 添加到对应的进程组</span><br><span class="line">if (add_tid_to_cgroup(tid, fd) !&#x3D; 0) &#123;</span><br><span class="line">    if (errno !&#x3D; ESRCH &amp;&amp; errno !&#x3D; ENOENT)</span><br><span class="line">        return -errno;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>set_cpuset_policy 也有类似的逻辑，这里就不重复列举了，有兴趣的可以去看看源码。</p>
+<p>在初始化方法中，可以看到对应不同的进程组和映射到不同的 cgroups 层级架构：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static void __initialize(void) &#123;</span><br><span class="line">    char* filename;</span><br><span class="line">    if (!access(&quot;&#x2F;dev&#x2F;cpuctl&#x2F;tasks&quot;, F_OK)) &#123;</span><br><span class="line">        __sys_supports_schedgroups &#x3D; 1;</span><br><span class="line"></span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuctl&#x2F;tasks&quot;;</span><br><span class="line">        fg_cgroup_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        if (fg_cgroup_fd &lt; 0) &#123;</span><br><span class="line">            SLOGE(&quot;open of %s failed: %s\n&quot;, filename, strerror(errno));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;tasks&quot;;</span><br><span class="line">        bg_cgroup_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        if (bg_cgroup_fd &lt; 0) &#123;</span><br><span class="line">            SLOGE(&quot;open of %s failed: %s\n&quot;, filename, strerror(errno));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        __sys_supports_schedgroups &#x3D; 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">#ifdef USE_CPUSETS</span><br><span class="line">    if (!access(&quot;&#x2F;dev&#x2F;cpuset&#x2F;tasks&quot;, F_OK)) &#123;</span><br><span class="line"></span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;foreground&#x2F;tasks&quot;;</span><br><span class="line">        fg_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;background&#x2F;tasks&quot;;</span><br><span class="line">        bg_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;system-background&#x2F;tasks&quot;;</span><br><span class="line">        system_bg_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;top-app&#x2F;tasks&quot;;</span><br><span class="line">        ta_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line"></span><br><span class="line">#ifdef USE_SCHEDBOOST</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;stune&#x2F;top-app&#x2F;tasks&quot;;</span><br><span class="line">        ta_schedboost_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;stune&#x2F;foreground&#x2F;tasks&quot;;</span><br><span class="line">        fg_schedboost_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;stune&#x2F;background&#x2F;tasks&quot;;</span><br><span class="line">        bg_schedboost_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line"></span><br><span class="line">#endif</span><br><span class="line">    &#125;</span><br><span class="line">#endif</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再回到上面 SchedPolicy 的定义，可以看到 Keep in sync with THREAD_GROUP_* in frameworks/base/core/java/android/os/Process.java 这样的一句注释，看一眼这里 Process.java 对线程组的定义：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;** </span><br><span class="line"> * Default thread group - </span><br><span class="line"> * has meaning with setProcessGroup() only, cannot be used with setThreadGroup(). </span><br><span class="line"> * When used with setProcessGroup(), the group of each thread in the process </span><br><span class="line"> * is conditionally changed based on that thread&#39;s current priority, as follows: </span><br><span class="line"> * threads with priority numerically less than THREAD_PRIORITY_BACKGROUND </span><br><span class="line"> * are moved to foreground thread group.  All other threads are left unchanged. </span><br><span class="line"> *&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_DEFAULT &#x3D; -1;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Background thread group - All threads in </span><br><span class="line"> * this group are scheduled with a reduced share of the CPU. </span><br><span class="line"> * Value is same as constant SP_BACKGROUND of enum SchedPolicy. </span><br><span class="line"> * FIXME rename to THREAD_GROUP_BACKGROUND. </span><br><span class="line"> *&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_BG_NONINTERACTIVE &#x3D; 0;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Foreground thread group - All threads in </span><br><span class="line"> * this group are scheduled with a normal share of the CPU. </span><br><span class="line"> * Value is same as constant SP_FOREGROUND of enum SchedPolicy. </span><br><span class="line"> * Not used at this level. </span><br><span class="line"> **&#x2F;</span><br><span class="line">private static final int THREAD_GROUP_FOREGROUND &#x3D; 1;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * System thread group. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_SYSTEM &#x3D; 2;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Application audio thread group. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_AUDIO_APP &#x3D; 3;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * System audio thread group. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_AUDIO_SYS &#x3D; 4;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Thread group for top foreground app. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_TOP_APP &#x3D; 5;</span><br></pre></td></tr></table></figure>
+<p>可以看到两组定义之间明确的对应关系：</p>
+<table>
+<thead>
+<tr>
+<th>Process 进程组</th>
+<th>SchedPolicy 进程组</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>THREAD_GROUP_DEFAULT</td>
+<td>SP_DEFAULT</td>
+</tr>
+<tr>
+<td>THREAD_GROUP_BG_NONINTERACTIVE</td>
+<td>SP_BACKGROUND</td>
+</tr>
+<tr>
+<td>THREAD_GROUP_FOREGROUND</td>
+<td>SP_FOREGROUND</td>
+</tr>
+<tr>
+<td>THREAD_GROUP_SYSTEM</td>
+<td>SP_SYSTEM</td>
+</tr>
+<tr>
+<td>THREAD_GROUP_AUDIO_APP</td>
+<td>SP_AUDIO_APP</td>
+</tr>
+<tr>
+<td>THREAD_GROUP_AUDIO_SYS</td>
+<td>SP_AUDIO_SYS</td>
+</tr>
+<tr>
+<td>THREAD_GROUP_TOP_APP</td>
+<td>SP_TOP_APP</td>
+</tr>
+</tbody></table>
+<p>至于这里的对应关系是怎么传递对接上的，会在后面进行解释。</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Andriod</category>
+      </categories>
+      <tags>
+        <tag>Andriod</tag>
+        <tag>系统调度</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>树</title>
     <url>/2021/02/04/0042.%20%E6%A0%91/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="1-力扣6117：合并二叉树"><a href="#1-力扣6117：合并二叉树" class="headerlink" title="1. 力扣6117：合并二叉树"></a>1. 力扣6117：<a href="https://leetcode-cn.com/problems/merge-two-binary-trees/">合并二叉树</a></h2><p><img src="/2021/02/04/0042/Users\Alin\AppData\Roaming\Typora\typora-user-images\image-20210417101750231.png" alt="image-20210417101750231"></p>
@@ -6691,192 +6877,6 @@
       <tags>
         <tag>leetcode</tag>
         <tag>动态规划</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从Linux 进程调度到 Android 线程管理</title>
-    <url>/2022/09/23/0044.%E4%BB%8ELinux%20%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%88%B0%20Android%20%E7%BA%BF%E7%A8%8B%E7%AE%A1%E7%90%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="Linux-进程与Android-线程"><a href="#Linux-进程与Android-线程" class="headerlink" title="Linux 进程与Android 线程"></a>Linux 进程与Android 线程</h2><h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>进程是资源管理的最小单位，线程是程序执行的最小单位。在操作系统设计上，从进程演化出线程，最主要的目的就是更好的支持SMP以及减小（进程/线程）上下文切换开销。</p>
-<p>无论按照怎样的分法，一个进程至少需要一个线程作为它的指令执行体，进程管理着资源（比如cpu、内存、文件等等），而将线程分配到某个cpu上执行。一个进程当然可以拥有多个线程，此时，如果进程运行在SMP机器上，它就可以同时使用多个cpu来执行各个线程，达到最大程度的并行，以提高效率；同时，即使是在单cpu的机器上，采用多线程模型来设计程序，正如当年采用多进程模型代替单进程模型一样，使设计更简洁、功能更完备，程序的执行效率也更高，例如采用多个线程响应多个输入，而此时多线程模型所实现的功能实际上也可以用多进程模型来实现，而与后者相比，线程的上下文切换开销就比进程要小多了，从语义上来说，同时响应多个输入这样的功能，实际上就是共享了除cpu以外的所有资源的。</p>
-<p>针对线程模型的两大意义，分别开发出了核心级线程和用户级线程两种线程模型，分类的标准主要是线程的调度者在核内还是在核外。前者更利于并发使用多处理器的资源，而后者则更多考虑的是上下文切换开销。</p>
-<h3 id="内核线程与用户线程"><a href="#内核线程与用户线程" class="headerlink" title="内核线程与用户线程"></a>内核线程与用户线程</h3><p>需要理解 Linux 进程与 Android 线程的关系，需要先解释清楚 Linux 中内核线程、用户线程的关系，在 内核线程、轻量级进程、用户线程的区别和联系 中有比较清晰的阐述。可以总结为几点:</p>
-<ul>
-<li><p>内核线程只运行在内核态，不受用户态上下文的拖累。</p>
-</li>
-<li><p>用户线程是完全建立在用户空间的线程库，用户线程的创建、调度、同步和销毁全由库函数在用户空间完成，不需要内核的帮助。因此这种线程是极其低消耗和高效的。</p>
-</li>
-<li><p>轻量级进程(LWP)是建立在内核之上并由内核支持的用户线程，它是内核线程的高度抽象，每一个轻量级进程都与一个特定的内核线程关联。内核线程只能由内核管理并像普通进程一样被调度。</p>
-</li>
-<li><p>LinuxThreads 是用户空间的线程库，所采用的是线程-进程 1对1 模型(即一个用户线程对应一个轻量级进程，而一个轻量级进程对应一个特定 的内核线程)，将线程的调度等同于进程的调度，调度交由内核完成，而线程的创建、同步、销毁由核外线程库完成（LinuxThtreads已绑定到 GLIBC中发行）。</p>
-</li>
-<li><p><strong>PS</strong>: Linux 在2.6之前使用的是 LinuxThreads 线程库,2.6之后是NPTL(Native Posix Thread Library)，NPTL 使用的也是1对1的结构，但是在信号处理，线程同步，存储管理等多方面进行了优化。</p>
-</li>
-</ul>
-<p>此外，Linux 内核不存在真正意义上的线程。Linux 将所有的执行实体都称之为任务（task），每一个任务在 Linux 上都类似于一个单线程的进程，具有内存空间、执行实体、文件资源等。但是，Linux 下不同任务之间可以选择公用内存空间，因而在实际意义上，共享同一个内存空间的多个任务构成了一个进程，而这些任务就成为这个进程里面的线程。</p>
-<h2 id="Linux-进程调度"><a href="#Linux-进程调度" class="headerlink" title="Linux 进程调度"></a>Linux 进程调度</h2><p>现在的操作系统都是多任务的，为了能让更多的任务能同时在系统上更好的运行，需要一个管理程序来管理计算机上同时运行的各个任务（也就是进程）。这个管理程序就是调度程序，它的功能说起来很简单：</p>
-<ul>
-<li><p>决定哪些进程运行，哪些进程等待</p>
-</li>
-<li><p>决定每个进程运行多长时间</p>
-</li>
-</ul>
-<p>此外，为了获得更好的用户体验，运行中的进程还可以立即被其他更紧急的进程打断。总之，调度是一个平衡的过程。一方面，它要保证各个运行的进程能够最大限度的使用CPU(即尽量少的切换进程，进程切换过多，CPU的时间会浪费在切换上)；另一方面，保证各个进程能公平的使用CPU(即防止一个进程长时间独占CPU的情况)。</p>
-<h3 id="Linux-进程优先级"><a href="#Linux-进程优先级" class="headerlink" title="Linux 进程优先级"></a>Linux 进程优先级</h3><p>进程提供了两种优先级，一种是普通的进程优先级，第二个是实时优先级。前者适用 SCHED_NORMAL 调度策略，后者可选 SCHED_FIFO 或 SCHED_RR 调度策略。任何时候，实时进程的优先级都高于普通进程，实时进程只会被更高级的实时进程抢占，同级实时进程之间是按照 FIFO（一次机会做完）或者 RR（多次轮转）规则调度的。</p>
-<h3 id="nice-值"><a href="#nice-值" class="headerlink" title="nice 值"></a>nice 值</h3><ul>
-<li><p>nice 的取值范围为 -20 到 19。</p>
-</li>
-<li><p>nice 的值越大，进程的优先级就越低，获得 CPU 调用的机会越少，nice值越小，进程的优先级则越高，获得 CPU 调用的机会越多。</p>
-</li>
-<li><p>一个 nice 值为 -20 的进程优先级最高，nice 值为 19 的进程优先级最低。</p>
-</li>
-<li><p>父进程 fork 出来的子进程 nice 值与父进程相同。父进程 renice，子进程 nice 值不会随之改变。</p>
-</li>
-</ul>
-<h3 id="进程优先级"><a href="#进程优先级" class="headerlink" title="进程优先级"></a>进程优先级</h3><p>Linux 进程优先级与 nice 值及实时进程优先级的关系：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20220925114243.png" alt="image-20220925114243392"></p>
-<h3 id="动态优先级"><a href="#动态优先级" class="headerlink" title="动态优先级"></a>动态优先级</h3><p>除此之外，在执行阶段，调度程序通过增加或减少进程静态优先级的值，来达到奖励IO消耗型或惩罚cpu消耗型的进程，调整后的进程称为动态优先级。与之对应的我们前面提到的优先级的值被称为静态优先级。</p>
-<h3 id="调度原理"><a href="#调度原理" class="headerlink" title="调度原理"></a>调度原理</h3><p>优先级，可以决定谁先运行。但是对于调度程序来说，并不是运行一次就结束了，还必须知道间隔多久进行下次调度。于是就有了时间片的概念。时间片是一个数值，表示一个进程被抢占前能持续运行的时间。也可以认为是进程在下次调度发生前运行的时间(除非进程主动放弃CPU，或者有实时进程来抢占CPU)。时间片的大小设置并不简单，设大了，系统响应变慢(调度周期长)；设小了，进程频繁切换带来的处理器消耗。默认的时间片一般是10ms。</p>
-<p><strong>举个例子说明调度原理的实现：</strong></p>
-<p>假设系统中只有3个进程ProcessA(NI=+10)，ProcessB(NI=0)，ProcessC(NI=-10)，NI表示进程的nice值，时间片=10ms：</p>
-<ul>
-<li><p>调度前，把进程优先级按一定的权重映射成时间片(这里假设优先级高一级相当于多5msCPU时间)。假设ProcessA分配了一个时间片10ms，那么ProcessB的优先级比ProcessA高10(nice值越小优先级越高)，ProcessB应该分配10×5+10=60ms，以此类推，ProcessC分配20×5+10=110ms。</p>
-</li>
-<li><p>开始调度时，优先调度分配CPU时间多的进程。由于ProcessA(10ms),ProcessB(60ms),ProcessC(110ms)。显然先调度ProcessC。</p>
-</li>
-<li><p>10ms(一个时间片)后，再次调度时，ProcessA(10ms), ProcessB(60ms), ProcessC(100ms)。 ProcessC刚运行了10ms，所以变成100ms。此时仍然先调度ProcessC。</p>
-</li>
-<li><p>再调度4次后(4个时间片)，ProcessA(10ms), ProcessB(60ms),ProcessC(60ms)。此时ProcessB和ProcessC的CPU时间一样，这时得看ProcessB和ProcessC谁在CPU运行队列的前面，假设ProcessB在前面，则调度ProcessB</p>
-</li>
-<li><p>10ms(一个时间片)后，ProcessA(10ms), ProcessB(50ms), ProcessC(60ms)。再次调度ProcessC</p>
-</li>
-<li><p>ProcessB 和 ProcessC 交替运行，直至 ProcessA(10ms), ProcessB(10ms), ProcessC(10ms)。<br>这时得看ProcessA，ProcessB，ProcessC谁在CPU运行队列的前面就先调度谁。这里假设调度ProcessA</p>
-</li>
-<li><p>10ms (一个时间片)后，ProcessA (时间片用完后退出), ProcessB (10ms), ProcessC (10ms)。</p>
-</li>
-<li><p>再过2个时间片，ProcessB 和 ProcessC 也运行完退出。</p>
-</li>
-</ul>
-<p>这个例子很简单，主要是为了说明调度的原理，实际的调度算法虽然不会这么简单。</p>
-<h3 id="进程调度算法-CFS"><a href="#进程调度算法-CFS" class="headerlink" title="进程调度算法 CFS"></a>进程调度算法 CFS</h3><p>Linux上的调度算法是不断发展的，在2.6.23内核以后，采用了“完全公平调度算法”，简称CFS。</p>
-<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><p>CFS算法的初衷就是让所有进程同时运行在一个CPU上，例如两个进程都需要运行10ms的时间，则CFS算法下，连个进程同时运行在CPU上，且时间为20ms，而不是每个进程分别运行10ms。但是这只是一种理想的运行方式，CFS为了近似这种运行算法，就提出了虚拟运行时间(vruntime)的概念。vruntime记录了一个可执行进程到当前时刻为止执行的总时间（需要以进程总数n进行归一化，并且根据进程的优先级进行加权）。根据vruntime的定义可以知道，vruntime越大，说明该进程运行的越久，所以被调度的可能性就越小。所以我们的调度算法就是每次选择 vruntime 值最小的进程进行调度，内核中使用红黑树可以方便的得到 vruntime 值最小的进程。至于每个进程如何更新自己的 vruntime ？内核中是按照如下方式来更新的： vruntime += delta * NICE_0_LOAD/ se.weight；其中：</p>
-<p>NICE_0_LOAD 是个定值，及系统默认的进程的权值；se.weight是当前进程的权重(优先级越高，权重越大)；</p>
-<p>delta 是当前进程运行的时间；我们可以得出这么个关系：vruntime 与delta 成正比，即当前运行时间越长 vruntime 增长越快；</p>
-<p>vruntime 与 se.weight 成反比，即权重越大 vunruntime 增长越慢。简单来说，一个进程的优先级越高，而且该进程运行的时间越少，则该进程的 vruntime 就越小，该进程被调度的可能性就越高。</p>
-<h3 id="运行时长"><a href="#运行时长" class="headerlink" title="运行时长"></a>运行时长</h3><p>CFS 的运行时间是有当前系统中所有可调度进程的优先级的比重来确定的，假如现在进程中有三个可调度进程A、B、C，它们的优先级分别为5,10,15，则它们的时间片分别为5/30，10/30，15/30。而不是由自己的时间片计算得来的，这样的话，优先级为1，2的两个进程与优先级为50,100的两个进程分的时间片是相同的。简单来说，CFS采用的所有进程优先级的比重来计算每个进程的时间片的，是相对的而不是绝对的。</p>
-<h3 id="Linux-进程组与-Cgroups"><a href="#Linux-进程组与-Cgroups" class="headerlink" title="Linux 进程组与 Cgroups"></a>Linux 进程组与 Cgroups</h3><p>Cgroups是control groups的缩写，是Linux内核提供的一种可以限制、记录、隔离进程组（process groups）所使用的物理资源（如：cpu,memory,IO等等）的机制。最初由google的工程师提出，后来被整合进Linux内核。也是目前轻量级虚拟化技术 lxc （linux container）的基础之一。 </p>
-<p>Cgroups最初的目标是为资源管理提供的一个统一的框架，既整合现有的cpuset等子系统，也为未来开发新的子系统提供接口。现在的cgroups适用于多种应用场景，从单个进程的资源控制，到实现操作系统层次的虚拟化（OS Level Virtualization）。Cgroups提供了以下功能：</p>
-<ul>
-<li><p>限制进程组可以使用的资源数量（Resource limiting ）。比如：memory子系统可以为进程组设定一个memory使用上限，一旦进程组使用的内存达到限额再申请内存，就会出发OOM（out of memory）。</p>
-</li>
-<li><p>进程组的优先级控制（Prioritization ）。比如：可以使用cpu子系统为某个进程组分配特定cpu share。</p>
-</li>
-<li><p>记录进程组使用的资源数量（Accounting ）。比如：可以使用cpuacct子系统记录某个进程组使用的cpu时间</p>
-</li>
-<li><p>进程组隔离（Isolation）。比如：使用ns子系统可以使不同的进程组使用不同的namespace，以达到隔离的目的，不同的进程组有各自的进程、网络、文件系统挂载空间。</p>
-</li>
-<li><p>进程组控制（Control）。比如：使用freezer子系统可以将进程组挂起和恢复。</p>
-</li>
-</ul>
-<h3 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h3><ul>
-<li><p>任务（task）。在 cgroups 中，任务就是系统的一个进程。</p>
-</li>
-<li><p>控制族群（control group）。控制族群就是一组按照某种标准划分的进程。Cgroups 中的资源控制都是以控制族群为单位实现。一个进程可以加入到某个控制族群，也从一个进程组迁移到另一个控制族群。一个进程组的进程可以使用 cgroups 以控制族群为单位分配的资源，同时受到 cgroups 以控制族群为单位设定的限制。</p>
-</li>
-<li><p>层级（hierarchy）。控制族群可以组织成 hierarchical 的形式，既一颗控制族群树。控制族群树上的子节点控制族群是父节点控制族群的孩子，继承父控制族群的特定的属性。</p>
-</li>
-<li><p>子系统（subsytem）。一个子系统就是一个资源控制器，比如 cpu 子系统就是控制 cpu 时间分配的一个控制器。子系统必须附加（attach）到一个层级上才能起作用，一个子系统附加到某个层级以后，这个层级上的所有控制族群都受到这个子系统的控制。</p>
-</li>
-</ul>
-<h3 id="cgroups-在-Android-中的应用"><a href="#cgroups-在-Android-中的应用" class="headerlink" title="cgroups 在 Android 中的应用"></a>cgroups 在 Android 中的应用</h3><p>Android中关于 cpu/cpuset/schedtune 三个子系统的应用都是基于进程优先级的。</p>
-<p>AMS(ActivityManagerService) 和 PMS(PackageManagerService) 等通过 Process 设置进程优先级、调度策略等；android/osProcess JNI通过调用libcutils.so/libutils.so执行getpriority/setpriority/schedsetscheduler/schedgetschedler系统调用或者直接操作CGroup文件节点以达到设置优先级，限制进程CPU资源的目的。</p>
-<ul>
-<li><p>cpu，这个子系统使用调度程序提供对 CPU 的 cgroup 任务访问，连接在 Android 系统的 /dev/cpuctl 层级结构上。</p>
-</li>
-<li><p>cpuset，这个子系统为 cgroup 中的任务分配独立 CPU（在多核系统）和内存节点，连接在 Android 系统的 /dev/cpuset 层级结构上。</p>
-</li>
-<li><p>schedtune，是ARM/Linaro为了EAS新增的一个子系统，主要用来控制进程调度选择CPU以及boost触发，连接在 Android 系统的 /dev/stune 层级结构上。</p>
-</li>
-<li><p>Android 中在从设置进程优先级到最后映射到不同 cgroups 下的过程，有兴趣的可以参考 Android中关于cpu/cpuset/schedtune的应用{<a href="https://blog.csdn.net/omnispace/article/details/73320945%7D%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E3%80%82%E6%88%91%E4%BB%AC%E8%BF%99%E9%87%8C%E4%BB%A5">https://blog.csdn.net/omnispace/article/details/73320945}这篇文章。我们这里以</a> cpu 子系统为例介绍一下再 CPU 子系统下是如何控制不同 cgroup 对 CPU 资源的访问。</p>
-</li>
-</ul>
-<h3 id="CPU-子系统"><a href="#CPU-子系统" class="headerlink" title="CPU 子系统"></a>CPU 子系统</h3><p>CPU 子系统连接的 /dev/cpuctl 层级结构下有两个 cgroup，分别是</p>
-<ul>
-<li><p>/ ，对应到 Android 的前台进程组。</p>
-</li>
-<li><p>/bg_non_interactive ，对应到 Android 的后台进程组。</p>
-</li>
-</ul>
-<p>在 cgroup 下定义了一些参数，来控制不同的 cgroup 在使用 cpu 资源时的配置：</p>
-<ul>
-<li><p>cpu.shares ：保存了整数值，用来设置 cgroup 分组任务获得 CPU 时间的相对值。</p>
-</li>
-<li><p>cpu.rt_runtime_us ：主要用来设置 cgroup 获得 CPU 资源的周期，单位为微妙。</p>
-</li>
-<li><p>cpu.rt_period_us ：主要是用来设置 cgroup 中的任务可以最长获得 CPU 资源的时间，单位为微秒。</p>
-</li>
-</ul>
-<p>通过下面的数据我们可以看到，前台进程组和后台进程组的 cpu.share 值相比接近于 20:1，也就是说前台进程组中的应用可以利用 95% 的 CPU，而处于后台进程组中的应用则只能获得 5% 的 CPU 利用率。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;cpu.shares</span><br><span class="line">1024</span><br><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;cpu.shares</span><br><span class="line">52</span><br></pre></td></tr></table></figure>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20220925120102.png" alt="image-20220925120102579"></p>
-<p>同样我们也可查看 cpu.rt_period_us 与 cpu.rt_runtime_us 的时间对比：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;cpu.rt_period_us</span><br><span class="line">1000000</span><br><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;cpu.rt_runtime_us    </span><br><span class="line">800000</span><br></pre></td></tr></table></figure>
-<p>即单个逻辑CPU下每一秒内可以获得0.8秒的执行时间。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;cpu.rt_period_us</span><br><span class="line">1000000</span><br><span class="line">shell@hammerhead:&#x2F; $ cat &#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;cpu.rt_runtime_us</span><br><span class="line">700000</span><br></pre></td></tr></table></figure>
-<p>PS: 最长的获取CPU资源时间取决于逻辑CPU的数量。比如 cpu.rt_runtime_us 设置为200000（0.2秒）， cpu.rt_period_us 设置为1000000（1秒）。在单个逻辑CPU上的获得时间为每秒为0.2秒。 2个逻辑CPU，获得的时间则是0.4秒。 </p>
-<h3 id="SchedPolicy"><a href="#SchedPolicy" class="headerlink" title="SchedPolicy"></a>SchedPolicy</h3><p>Android 底层对进程分组的操作最后是通过 sched_policy.c 文件中的 set_sched_policy(int tid, SchedPolicy policy) 和 set_cpuset_policy(int tid, SchedPolicy policy) 函数添加到对应的进程组的，调用这两个函数的传递的 SchedPolicy 定义在 sched_policy.h 中，定义不同的调度策略：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;* Keep in sync with THREAD_GROUP_* in frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;os&#x2F;Process.java *&#x2F;</span><br><span class="line">typedef enum &#123;</span><br><span class="line">    SP_DEFAULT    &#x3D; -1,</span><br><span class="line">    SP_BACKGROUND &#x3D; 0,</span><br><span class="line">    SP_FOREGROUND &#x3D; 1,</span><br><span class="line">    SP_SYSTEM     &#x3D; 2,  &#x2F;&#x2F; can&#39;t be used with set_sched_policy()</span><br><span class="line">    SP_AUDIO_APP  &#x3D; 3,</span><br><span class="line">    SP_AUDIO_SYS  &#x3D; 4,</span><br><span class="line">    SP_TOP_APP    &#x3D; 5,</span><br><span class="line">    SP_CNT,</span><br><span class="line">    SP_MAX        &#x3D; SP_CNT - 1,</span><br><span class="line">    SP_SYSTEM_DEFAULT &#x3D; SP_FOREGROUND,</span><br><span class="line">&#125; SchedPolicy;</span><br></pre></td></tr></table></figure>
-<p>在 set_sched_policy 中根据不同的 SchedPolicy 为进程找到不同的进程组，并添加进去。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 根据不同调度策略选择不同的进程组</span><br><span class="line">int fd &#x3D; -1;</span><br><span class="line">int boost_fd &#x3D; -1;</span><br><span class="line">switch (policy) &#123;</span><br><span class="line">case SP_BACKGROUND:</span><br><span class="line">    fd &#x3D; bg_cgroup_fd;</span><br><span class="line">    boost_fd &#x3D; bg_schedboost_fd;</span><br><span class="line">    break;</span><br><span class="line">case SP_FOREGROUND:</span><br><span class="line">case SP_AUDIO_APP:</span><br><span class="line">case SP_AUDIO_SYS:</span><br><span class="line">    fd &#x3D; fg_cgroup_fd;</span><br><span class="line">    boost_fd &#x3D; fg_schedboost_fd;</span><br><span class="line">    break;</span><br><span class="line">case SP_TOP_APP:</span><br><span class="line">    fd &#x3D; fg_cgroup_fd;</span><br><span class="line">    boost_fd &#x3D; ta_schedboost_fd;</span><br><span class="line">    break;</span><br><span class="line">default:</span><br><span class="line">    fd &#x3D; -1;</span><br><span class="line">    boost_fd &#x3D; -1;</span><br><span class="line">    break;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 添加到对应的进程组</span><br><span class="line">if (add_tid_to_cgroup(tid, fd) !&#x3D; 0) &#123;</span><br><span class="line">    if (errno !&#x3D; ESRCH &amp;&amp; errno !&#x3D; ENOENT)</span><br><span class="line">        return -errno;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>set_cpuset_policy 也有类似的逻辑，这里就不重复列举了，有兴趣的可以去看看源码。</p>
-<p>在初始化方法中，可以看到对应不同的进程组和映射到不同的 cgroups 层级架构：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static void __initialize(void) &#123;</span><br><span class="line">    char* filename;</span><br><span class="line">    if (!access(&quot;&#x2F;dev&#x2F;cpuctl&#x2F;tasks&quot;, F_OK)) &#123;</span><br><span class="line">        __sys_supports_schedgroups &#x3D; 1;</span><br><span class="line"></span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuctl&#x2F;tasks&quot;;</span><br><span class="line">        fg_cgroup_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        if (fg_cgroup_fd &lt; 0) &#123;</span><br><span class="line">            SLOGE(&quot;open of %s failed: %s\n&quot;, filename, strerror(errno));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuctl&#x2F;bg_non_interactive&#x2F;tasks&quot;;</span><br><span class="line">        bg_cgroup_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        if (bg_cgroup_fd &lt; 0) &#123;</span><br><span class="line">            SLOGE(&quot;open of %s failed: %s\n&quot;, filename, strerror(errno));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        __sys_supports_schedgroups &#x3D; 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">#ifdef USE_CPUSETS</span><br><span class="line">    if (!access(&quot;&#x2F;dev&#x2F;cpuset&#x2F;tasks&quot;, F_OK)) &#123;</span><br><span class="line"></span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;foreground&#x2F;tasks&quot;;</span><br><span class="line">        fg_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;background&#x2F;tasks&quot;;</span><br><span class="line">        bg_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;system-background&#x2F;tasks&quot;;</span><br><span class="line">        system_bg_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;cpuset&#x2F;top-app&#x2F;tasks&quot;;</span><br><span class="line">        ta_cpuset_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line"></span><br><span class="line">#ifdef USE_SCHEDBOOST</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;stune&#x2F;top-app&#x2F;tasks&quot;;</span><br><span class="line">        ta_schedboost_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;stune&#x2F;foreground&#x2F;tasks&quot;;</span><br><span class="line">        fg_schedboost_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line">        filename &#x3D; &quot;&#x2F;dev&#x2F;stune&#x2F;background&#x2F;tasks&quot;;</span><br><span class="line">        bg_schedboost_fd &#x3D; open(filename, O_WRONLY | O_CLOEXEC);</span><br><span class="line"></span><br><span class="line">#endif</span><br><span class="line">    &#125;</span><br><span class="line">#endif</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>再回到上面 SchedPolicy 的定义，可以看到 Keep in sync with THREAD_GROUP_* in frameworks/base/core/java/android/os/Process.java 这样的一句注释，看一眼这里 Process.java 对线程组的定义：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;** </span><br><span class="line"> * Default thread group - </span><br><span class="line"> * has meaning with setProcessGroup() only, cannot be used with setThreadGroup(). </span><br><span class="line"> * When used with setProcessGroup(), the group of each thread in the process </span><br><span class="line"> * is conditionally changed based on that thread&#39;s current priority, as follows: </span><br><span class="line"> * threads with priority numerically less than THREAD_PRIORITY_BACKGROUND </span><br><span class="line"> * are moved to foreground thread group.  All other threads are left unchanged. </span><br><span class="line"> *&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_DEFAULT &#x3D; -1;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Background thread group - All threads in </span><br><span class="line"> * this group are scheduled with a reduced share of the CPU. </span><br><span class="line"> * Value is same as constant SP_BACKGROUND of enum SchedPolicy. </span><br><span class="line"> * FIXME rename to THREAD_GROUP_BACKGROUND. </span><br><span class="line"> *&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_BG_NONINTERACTIVE &#x3D; 0;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Foreground thread group - All threads in </span><br><span class="line"> * this group are scheduled with a normal share of the CPU. </span><br><span class="line"> * Value is same as constant SP_FOREGROUND of enum SchedPolicy. </span><br><span class="line"> * Not used at this level. </span><br><span class="line"> **&#x2F;</span><br><span class="line">private static final int THREAD_GROUP_FOREGROUND &#x3D; 1;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * System thread group. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_SYSTEM &#x3D; 2;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Application audio thread group. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_AUDIO_APP &#x3D; 3;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * System audio thread group. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_AUDIO_SYS &#x3D; 4;</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * Thread group for top foreground app. </span><br><span class="line"> **&#x2F;</span><br><span class="line">public static final int THREAD_GROUP_TOP_APP &#x3D; 5;</span><br></pre></td></tr></table></figure>
-<p>可以看到两组定义之间明确的对应关系：</p>
-<table>
-<thead>
-<tr>
-<th>Process 进程组</th>
-<th>SchedPolicy 进程组</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>THREAD_GROUP_DEFAULT</td>
-<td>SP_DEFAULT</td>
-</tr>
-<tr>
-<td>THREAD_GROUP_BG_NONINTERACTIVE</td>
-<td>SP_BACKGROUND</td>
-</tr>
-<tr>
-<td>THREAD_GROUP_FOREGROUND</td>
-<td>SP_FOREGROUND</td>
-</tr>
-<tr>
-<td>THREAD_GROUP_SYSTEM</td>
-<td>SP_SYSTEM</td>
-</tr>
-<tr>
-<td>THREAD_GROUP_AUDIO_APP</td>
-<td>SP_AUDIO_APP</td>
-</tr>
-<tr>
-<td>THREAD_GROUP_AUDIO_SYS</td>
-<td>SP_AUDIO_SYS</td>
-</tr>
-<tr>
-<td>THREAD_GROUP_TOP_APP</td>
-<td>SP_TOP_APP</td>
-</tr>
-</tbody></table>
-<p>至于这里的对应关系是怎么传递对接上的，会在后面进行解释。</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Andriod</category>
-      </categories>
-      <tags>
-        <tag>Andriod</tag>
-        <tag>系统调度</tag>
       </tags>
   </entry>
   <entry>
