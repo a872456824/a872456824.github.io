@@ -1,329 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>树与二叉树</title>
-    <url>/2021/01/03/0004.%20%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="树与二叉树"><a href="#树与二叉树" class="headerlink" title="树与二叉树"></a>树与二叉树</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><ul>
-<li>树的组成：结点 + 边<ul>
-<li>结点 ：集合；边 ： 关系</li>
-<li>根结点：全集；子结点：子集<ul>
-<li>根结点的所有子结点的集合并集 = 全集</li>
-<li>【思想】大问题抽象为树，小问题抽象为子结点</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><p>【结点 + 边】</p>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093517.png" alt="图片" style="zoom: 67%;">
-
-<ul>
-<li>一叉树是链表结构，只有一个分支的树形结构</li>
-<li>对于三叉树，则将链表的next指针变成next[3]数组即可</li>
-</ul>
-<h3 id="属性、性质"><a href="#属性、性质" class="headerlink" title="属性、性质"></a>属性、性质</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093534.png" alt="图片" style="zoom: 33%;">
-
-<ul>
-<li>深度、高度<ul>
-<li>树的深度和高度是一个值：最大层数</li>
-<li>结点的深度和高度不一样<ul>
-<li>深度：从根结点往下数，该结点是第几层</li>
-<li>高度：从最深的层数往上数，该结点是第几层</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>度：有几个子孩子</li>
-<li>【重要公式】结点数 = 边数 + 1</li>
-</ul>
-<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
-<li><p>二进制可以转换成任何进制，二叉树同理</p>
-<ul>
-<li>首先简单</li>
-<li>且可以表示所有的树形结构<ul>
-<li>方法：左孩子、右兄弟法，又称十字链表法</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093557.png" alt="图片" style="zoom:50%;"></li>
-<li>从上往下，从左往右，结点的孩子放在左边，结点的相邻兄弟放在右边</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>对于n叉树，n不确定，而二叉树是确定的</p>
-<ul>
-<li>n叉树可以用二叉树来实现</li>
-<li>所以，利用二叉树可以将非确定性问题 → 计算机能解决的确定性问题</li>
-</ul>
-</li>
-<li><p>【重要公式】二叉树中，度为0的结点比度为2的结点多1个</p>
-<ul>
-<li>利用另一重要公式：结点数 = 边数 + 1</li>
-<li>令 $ n_i $ 表示度为i的结点个数</li>
-<li>则：$ [结点数] n_0 + n_1 + n_2 = n_1 + 2 * n_2 + 1 [边数 + 1] $</li>
-<li>得：$ n_0 = n_2 + 1 $</li>
-</ul>
-</li>
-<li><p>遍历方式：取决于什么时候[最先、中间、最后]访问根节点</p>
-<ul>
-<li>前序遍历：根 左 右</li>
-<li>中序遍历：左 根 右</li>
-<li>后序遍历：左 右 根</li>
-<li>遍历时的左、右可以分别代表左、右子树</li>
-<li>左右的相对顺序一直是左在前，右在后</li>
-</ul>
-</li>
-<li><p>二叉树分类（国际版）</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093615.png" alt="图片"></li>
-</ul>
-</li>
-<li><p>完全二叉树：除了最后一层最右边可以缺少若干结点，其他地方都满满当当</p>
-<ul>
-<li>满二叉树：度为0或2即可</li>
-</ul>
-</li>
-<li><p>完美二叉树：度均为2，所有叶结点在同一层</p>
-<ul>
-<li>PS：中国版只分完全二叉树和满二叉树，满二叉树的定义同国际版的完美二叉树</li>
-</ul>
-</li>
-<li><p>完全二叉树的特点 [完美二叉树同样满足]</p>
-<ul>
-<li>编号为 i 的结点的左右孩子编号分别是2 * i、2 * i + 1</li>
-<li>可以用连续空间（数组）存储，用于算法优化：记录式-&gt;计算式<ul>
-<li>不再需要用结构体存储孩子结点的地址，直接通过公式可计算其在数组中的索引</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>广义表：树的字符串化</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093853.png" alt="图片"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093841.png" alt="图片"></li>
-<li>有很多种表示方法，一般怎么简单怎么来，见上图红框：方式一、方式二</li>
-</ul>
-</li>
-<li><p>对于二叉搜索树，中序遍历是顺序的</p>
-</li>
-<li><p>根据两种遍历可得第三种遍历结果</p>
-<ul>
-<li>前序遍历/后序遍历可得根结点，中序遍历可得左右孩子的位置</li>
-<li>【必须】要有中序遍历，只有它才能确定孩子的左右</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h3><ul>
-<li>二叉搜索树</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clearNode</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(node-&gt;lchild);</span><br><span class="line">    clearNode(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">insert_node</span><span class="params">(Node *root, <span class="keyword">int</span> val, <span class="keyword">int</span> *flag)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *flag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> getNewNode(val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;data == val) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span>(val &lt; root-&gt;data) root-&gt;lchild = insert_node(root-&gt;lchild, val, flag);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;rchild = insert_node(root-&gt;rchild, val, flag);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Tree *tree, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    tree-&gt;root = insert_node(tree-&gt;root, val, &amp;flag);</span><br><span class="line">    tree-&gt;n += flag;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    pre_order_node(node-&gt;lchild);</span><br><span class="line">    pre_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(node-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    in_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(node-&gt;lchild);</span><br><span class="line">    post_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output_node</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;lchild == <span class="literal">NULL</span> &amp;&amp; root-&gt;rchild == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">    output_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;,&quot;</span>);</span><br><span class="line">    output_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;tree(%d) : &quot;</span>, tree-&gt;n);</span><br><span class="line">    output_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 10</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        insert(tree, val);</span><br><span class="line">    &#125;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    output(tree);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>广义表还原二叉树</li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306094107.png" alt="图片" style="zoom:50%;">
-
-<ul>
-<li>具有完全包含关系的问题，使用栈</li>
-<li>栈里存储结点地址[Node *]：把广义表中的字符看成结点</li>
-<li>转换过程</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="center"><strong>(</strong></th>
-<th align="center"><strong>,</strong></th>
-<th align="center"><strong>)</strong></th>
-<th align="center"><strong>其他字符【字母】</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">【将元素入栈】 下一个’,’前的元素为左孩子</td>
-<td align="center">决定下一个字符封装的元素为【右孩子】</td>
-<td align="center">记录栈顶，【将元素弹栈】</td>
-<td align="center">①将字符【封装】成结点指针类型，作为栈的元素 ②【关系确定】如果栈不为空，则根据该字符相对于’,’的位置，成为栈顶元素的左孩子或右孩子</td>
-</tr>
-</tbody></table>
-<ul>
-<li>结构定义、操作定义：栈、二叉树</li>
-<li>【关键】转换的匹配规则</li>
-</ul>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> top, size;</span><br><span class="line">&#125; Stack;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">char</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Stack *<span class="title">init_stack</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Stack *s = (Stack *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    s-&gt;data = (Node **)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node *) * n);</span><br><span class="line">    s-&gt;top = <span class="number">-1</span>;</span><br><span class="line">    s-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">top</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;data[s-&gt;top];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;top == <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Stack *s, Node *val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(s-&gt;top == s-&gt;size - <span class="number">1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;data[++(s-&gt;top)] = val;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(empty(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;top -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_stack</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(s-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(node-&gt;lchild);</span><br><span class="line">    clear_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_tree</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">build</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">int</span> *node_num)</span> </span>&#123;</span><br><span class="line">    Stack *s = init_stack(<span class="built_in">strlen</span>(str));</span><br><span class="line">    Node *temp = <span class="literal">NULL</span>, *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (str[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(str[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;(&#x27;</span>: &#123;</span><br><span class="line">                push(s, temp);</span><br><span class="line">                flag = <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;)&#x27;</span>: &#123;</span><br><span class="line">                p = top(s);</span><br><span class="line">                pop(s);</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;,&#x27;</span>: &#123;</span><br><span class="line">                flag = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27; &#x27;</span>: <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                temp = getNewNode(str[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">0</span>) &#123;</span><br><span class="line">                top(s)-&gt;lchild = temp;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">1</span>) &#123;</span><br><span class="line">                top(s)-&gt;rchild = temp;</span><br><span class="line">            &#125;</span><br><span class="line">            ++(*node_num);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ++str;</span><br><span class="line">    &#125;</span><br><span class="line">    clear_stack(s);</span><br><span class="line">    <span class="keyword">if</span> (temp &amp;&amp; !p) p = temp;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    pre_order_node(root-&gt;lchild);</span><br><span class="line">    pre_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    in_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(root-&gt;lchild);</span><br><span class="line">    post_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;post_order : &quot;</span>);</span><br><span class="line">    post_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> node_num = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%[^\n]s&quot;</span>, str);</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    tree-&gt;root = build(str, &amp;node_num);</span><br><span class="line">    tree-&gt;n = node_num;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    clear_tree(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095937.png" alt="image-20201202082334602"></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>栈与队列</title>
-    <url>/2021/01/02/0003.%20%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h1><h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><ul>
-<li>FIFO（First In First Out）、LILO。类似排队，区分先来后到</li>
-<li>也是顺序结构，需要连续存储空间（不过也可以用链表实现）</li>
-</ul>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
-<li>需要连续的存储空间</li>
-<li>容量</li>
-<li>队首、队尾</li>
-<li>+元素个数：用来判断队列是否已满，方便<strong>循环队列</strong>解决假溢出问题</li>
-<li>数据类型</li>
-</ul>
-<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><ul>
-<li><p>出队</p>
-<ul>
-<li>head - 1</li>
-<li>count - 1</li>
-</ul>
-</li>
-<li><p>入队</p>
-<ul>
-<li>tail + 1</li>
-<li>count + 1</li>
-</ul>
-</li>
-<li><p>假溢出</p>
-<ul>
-<li><p>不能存元素了</p>
-</li>
-<li><p>实际上可能还没有满：出队操作使队列头部有空位</p>
-</li>
-<li><p>解决方案：</p>
-<p>循环队列</p>
-<ul>
-<li>tail走到头了再回到队列前面</li>
-<li>使用取余运算确定位置：(tail + 1) % length</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>扩容：遇到真溢出时，详见代码演示</p>
-</li>
-</ul>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>定义tail有两种方式<ul>
-<li>①指向最后一个元素的地址</li>
-<li><strong>②</strong>指向最后一个元素的下一个地址（本代码的选择）</li>
-</ul>
-</li>
-<li>使用循环队列，已经不存在假溢出的现象</li>
-<li>但对于真溢出怎么办呢？</li>
-<li><strong>扩容</strong>：针对循环队列的扩容<ul>
-<li>3种动态开辟内存的方法【malloc、calloc、realloc】，使用哪一种？</li>
-<li>malloc、calloc都可以，但是realloc不好使<ul>
-<li>循环队列的尾可能不在头的后面，而是尾和头重合了</li>
-<li>举例：当队列已满时，head、tail（这里tail定义为尾部元素的后一位）在如下位置，此时扩容一倍，扩容后队列的push和pop会怎么样呢？</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093207.png" alt="image-20201202094139099"></li>
-<li>此时从head→tail之间插入了很多空值，因为realloc是把值按原顺序搬过去，而扩容部分还没有值</li>
-<li>那么，不管是从head到tail出队[中间夹杂了很多空值]，还是从tail入队[tail位置存在未出队的元素]，都存在问题！</li>
-</ul>
-</li>
-<li>而用malloc开辟空间后，把原队列从head到tail按顺序迁移，即手动将head调整为索引0，如下，关键在于<strong>头尾指针的调整</strong>！<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093232.png" alt="image-20201202094256207"></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR_HL(a,b) <span class="meta-string">&quot;\033[1;&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR_HL(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> head, tail, length, count;</span><br><span class="line">&#125; Queue;</span><br><span class="line"></span><br><span class="line"><span class="function">Queue *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Queue  *q = (Queue *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Queue));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);</span><br><span class="line">    q-&gt;length = n;</span><br><span class="line">    q-&gt;head = q-&gt;tail = <span class="number">0</span>;</span><br><span class="line">    q-&gt;count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">front</span><span class="params">(Queue *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[q-&gt;head];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Queue *q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;count == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">expand</span><span class="params">(Queue *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> extr_size = q-&gt;length;</span><br><span class="line">    <span class="keyword">int</span> *p;</span><br><span class="line">    <span class="keyword">while</span>(extr_size) &#123;</span><br><span class="line">        p = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (q-&gt;length + extr_size));</span><br><span class="line">        <span class="keyword">if</span>(p) <span class="keyword">break</span>;</span><br><span class="line">        extr_size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = q-&gt;head, j = <span class="number">0</span>; j &lt; q-&gt;count; j++) &#123;</span><br><span class="line">        p[j] = q-&gt;data[(i + j) % q-&gt;length];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    q-&gt;data = p;</span><br><span class="line">    q-&gt;length += extr_size;</span><br><span class="line">    q-&gt;head = <span class="number">0</span>;</span><br><span class="line">    q-&gt;tail = q-&gt;count;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Queue *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(q-&gt;count == q-&gt;length)&#123;</span><br><span class="line">        <span class="keyword">if</span> (!expand(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(GREEN(<span class="string">&quot;expand successfully! Queue-&gt;size(%d)\n&quot;</span>), q-&gt;length);</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;data[q-&gt;tail++] = val;</span><br><span class="line">    <span class="keyword">if</span>(q-&gt;tail == q-&gt;length) q-&gt;tail = <span class="number">0</span>;</span><br><span class="line">    q-&gt;count++;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Queue *q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;head++;</span><br><span class="line">    <span class="keyword">if</span>(q-&gt;head == q-&gt;length) q-&gt;head = <span class="number">0</span>;</span><br><span class="line">    q-&gt;count--;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Queue *q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Queue : [&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = q-&gt;head, j = <span class="number">0</span>; j &lt; q-&gt;count; i++, j++) &#123;</span><br><span class="line">        <span class="function">j &amp;&amp; <span class="title">printf</span><span class="params">(<span class="string">&quot;, &quot;</span>)</span></span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, q-&gt;data[i % q-&gt;length]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Queue *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    Queue *q = init(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;push %d to the Queue ! &quot;</span>, val);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;result = %d\n&quot;</span>, push(q, val));</span><br><span class="line">            &#125;<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;pop %d from the Queue !&quot;</span>, front(q));</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;result = %d\n&quot;</span>, pop(q));</span><br><span class="line">            &#125;<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        output(q), <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><ul>
-<li>FILO（First In Last Out）、LIFO。类比装书的箱子，一头是堵死的</li>
-<li>也是顺序结构</li>
-</ul>
-<h3 id="结构定义-1"><a href="#结构定义-1" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
-<li>需要连续的存储空间（有大小限制）</li>
-<li>容量</li>
-<li>栈顶指针【top】：对于空栈，top = -1，为0可不合适</li>
-<li>数据类型</li>
-</ul>
-<h3 id="结构操作-1"><a href="#结构操作-1" class="headerlink" title="结构操作"></a>结构操作</h3><ul>
-<li>出栈：top - 1 // 需要判空</li>
-<li>入栈：top + 1，存值 // 需要判满</li>
-</ul>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309094104.png" alt="图片"></p>
-<ul>
-<li>DFS和BFS</li>
-<li>单调栈、单调队列自行学习</li>
-</ul>
-<h1 id="随堂练习"><a href="#随堂练习" class="headerlink" title="随堂练习"></a>随堂练习</h1><h2 id="LC-20：-有效的括号"><a href="#LC-20：-有效的括号" class="headerlink" title="LC-20： 有效的括号"></a><a href="https://leetcode-cn.com/problems/valid-parentheses/">LC-20</a>： 有效的括号</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309094122.png" alt="图片"></p>
-<ul>
-<li>关键在于思维：大问题转小问题<ul>
-<li>问题简化成只有一种括号，怎么做？可以不使用栈完成吗？</li>
-<li>思路：只需要记录左括号数量和右括号数量<ul>
-<li>在任意位置，左数 &gt;= 右数</li>
-<li>在最后位置，左数 == 右数</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309094110.png" alt="图片"></li>
-<li>其实可以只用一个数top记录，遇到左括号+1，遇到右括号-1<ul>
-<li>在任意位置，top &gt;= 0</li>
-<li>在最后位置，top == 0</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>这个+1、-1操作，可以联想到栈的入栈、出栈吗？</li>
-<li>一次括号匹配相当于入栈出栈一次</li>
-<li>括号里的括号相当于完全包含关系</li>
-<li>也有分治思想</li>
-</ul>
-</li>
-<li><strong>栈</strong>：可以处理具有完全包含关系的问题</li>
-</ul>
-<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR_HL(a, b) <span class="meta-string">&quot;\033[1;&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR_HL(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> top, size;</span><br><span class="line">&#125; Stack;</span><br><span class="line"></span><br><span class="line"><span class="function">Stack *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Stack *s = (Stack*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    s-&gt;data = (<span class="keyword">int</span> *) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);</span><br><span class="line">    s-&gt;size = n;</span><br><span class="line">    s-&gt;top = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;data[s-&gt;top];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;top == <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">expand</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> extr_size = s-&gt;size;</span><br><span class="line">    <span class="keyword">int</span> *p;</span><br><span class="line">    <span class="keyword">while</span>(p) &#123;</span><br><span class="line">        p = (<span class="keyword">int</span> *)<span class="built_in">realloc</span>(s-&gt;data, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (extr_size + s-&gt;size));</span><br><span class="line">        <span class="keyword">if</span>(p) <span class="keyword">break</span>;</span><br><span class="line">        extr_size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;data = p;</span><br><span class="line">    s-&gt;size = s-&gt;size + extr_size;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Stack *s, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (s-&gt;top == s-&gt;size - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!expand(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(GREEN(<span class="string">&quot;expand successfully! Stack -&gt; size = (%d)\n&quot;</span>), s-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    s-&gt;data[++(s-&gt;top)] = val;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;top -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= s-&gt;top; i++) &#123;</span><br><span class="line">        <span class="function">i &amp;&amp; <span class="title">printf</span><span class="params">(<span class="string">&quot;, &quot;</span>)</span></span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, s-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(s-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    Stack *s = init(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span>(op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;push %d to the Stack = %d\n&quot;</span>, val, push(s, val));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;pop %d from the Stack&quot;</span>, top(s));</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;result = %d\n&quot;</span>, pop(s));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        output(s), <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(s);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h1 id="附加："><a href="#附加：" class="headerlink" title="附加："></a>附加：</h1><ul>
-<li>系统栈<ul>
-<li>也是栈，大小：8MB</li>
-<li>递归时，使用的就是系统栈</li>
-</ul>
-</li>
-</ul>
-<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093445.png" alt="图片" style="zoom:50%;"></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>顺序表与链表</title>
     <url>/2021/01/01/0002.%20%E9%A1%BA%E5%BA%8F%E8%A1%A8%E4%B8%8E%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="顺序表与链表"><a href="#顺序表与链表" class="headerlink" title="顺序表与链表"></a>顺序表与链表</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ul>
@@ -542,6 +219,486 @@
 </li>
 </ul>
 <p><img src="https://gitee.com/doubleL3/blog-imgs/raw/master/img/WE8asP6.png" alt="图片"></p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆与优先队列</title>
+    <url>/2021/01/05/0006.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
+
+<ul>
+<li><p>完全二叉树默认从1开始编号</p>
+<ul>
+<li>这样可以保证左孩子、右孩子编号简洁</li>
+<li>[否则] 左孩子编号需为2 * i + 1，右孩子编号需为2 * i + 2</li>
+</ul>
+</li>
+<li><p>可编号的性质→可用顺序结构存储，而不需要保存下一个结点的地址</p>
+<ul>
+<li><img src="https://i.loli.net/2020/12/02/DnX8VaTRLbd7mox.png" alt="图片" style="zoom:50%;"></li>
+</ul>
+</li>
+<li><p>二叉树→数组的转换</p>
+<ul>
+<li>按层序遍历的顺序存储在数组中，每一层的结点存储是连续的</li>
+</ul>
+</li>
+</ul>
+<h2 id="堆-优先队列"><a href="#堆-优先队列" class="headerlink" title="堆[优先队列]"></a>堆[优先队列]</h2><p>优先队列是堆的一个别名；堆是在<strong>完全二叉树</strong>的基础上维护的</p>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
+<li>结构与完全二叉树一样，但多维护了一种性质<ul>
+<li>大顶堆：对于任意三元组，根结点值最大</li>
+<li>小顶堆：对于任意三元组，根结点值最小</li>
+</ul>
+</li>
+</ul>
+<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><p>一切操作都要维护自己的性质！</p>
+<ul>
+<li>尾部插入【+调整】<ul>
+<li>在尾部插入该元素，再自下向上调整，最远调整到根结点<ul>
+<li>在三元组里不断调整，依次与父结点比较，只要交换了就不停止，直到到达根结点</li>
+<li>交换时只会改变交换元素的相对大小，整个结构的相对大小关系不变</li>
+</ul>
+</li>
+<li>比较的编号其实就是i 与 i / 2</li>
+<li>时间复杂度：$ O(log_2N) $，即树高</li>
+</ul>
+</li>
+<li>头部弹出【+调整】<ul>
+<li>将最后一个元素拿到堆顶，再自上向下调整，直到该元素没有子结点<ul>
+<li>在三元组里不断调整，依次与孩子结点比较，只要交换了就不停止，直到没有孩子</li>
+<li>为什么选择最后一个元素放到堆顶？</li>
+<li>因为，如果拿其他位置的元素，谁来补这个元素的缺口呢</li>
+</ul>
+</li>
+<li>比较的编号其实就是i、2 * i 与 2 * i + 1</li>
+<li>时间复杂度：同为树高</li>
+</ul>
+</li>
+<li>[PS]<ul>
+<li>大顶堆：方便查找第1大和第2大的元素 [根结点、第二层中]<ul>
+<li>找第3大、第4大…就不那么简单，不方便确定所在层数</li>
+</ul>
+</li>
+<li>上面这个过程<ul>
+<li>队尾进元素，队首出元素-&gt;同队列</li>
+<li>而出队的元素是最值-&gt;又名优先队列</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">priority_queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> cnt, size;</span><br><span class="line">&#125; <span class="built_in">priority_queue</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">priority_queue</span> *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">priority_queue</span> *q = (<span class="built_in">priority_queue</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="built_in">priority_queue</span>));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    q-&gt;cnt = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;cnt == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(<span class="built_in">priority_queue</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;cnt == q-&gt;size) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[++(q-&gt;cnt)] = val;</span><br><span class="line">    <span class="keyword">int</span> ind = q-&gt;cnt;</span><br><span class="line">    <span class="keyword">while</span> (ind &gt;&gt; <span class="number">1</span> &amp;&amp; q-&gt;data[ind] &gt; q-&gt;data[ind &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[ind &gt;&gt; <span class="number">1</span>]);</span><br><span class="line">        ind &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[<span class="number">1</span>] = q-&gt;data[q-&gt;cnt--];</span><br><span class="line">    <span class="keyword">int</span> ind = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((ind &lt;&lt; <span class="number">1</span>) &lt;= q-&gt;cnt) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = ind, l = ind &lt;&lt; <span class="number">1</span>, r = ind &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;data[l] &gt; q-&gt;data[temp]) temp = l;</span><br><span class="line">        <span class="keyword">if</span> (r &lt;= q-&gt;cnt &amp;&amp; q-&gt;data[r] &gt; q-&gt;data[temp]) temp = r;</span><br><span class="line">        <span class="keyword">if</span> (temp == ind) <span class="keyword">break</span>;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[temp]);</span><br><span class="line">        ind = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    <span class="built_in">priority_queue</span>*q = init(max_op);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        push(q, val);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;insert %d to the priority_queue.\n&quot;</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, top(q));</span><br><span class="line">        pop(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
+<li>根据其性质，全部弹出，将得到一个排好序的序列</li>
+<li>思维转变：堆顶元素的弹出操作 ==&gt; 堆顶元素与堆尾元素交换<ul>
+<li><strong>大顶堆</strong>的元素全部弹出：<strong>原数组</strong>存储了一个<strong>从小到大</strong>的排序序列</li>
+<li>[至此，从大顶堆，得到一个特殊的小顶堆]</li>
+</ul>
+</li>
+<li>时间复杂度：$ O(NlogN) $<ul>
+<li>消耗的时间在于调整操作，每次调整的时间复杂度是 $ O(logN) $，共N个元素，需调整N - 1次</li>
+<li>弹出操作的时间复杂度是O(1)的</li>
+<li>时间效率一定不会退化</li>
+</ul>
+</li>
+</ul>
+<h3 id="建堆"><a href="#建堆" class="headerlink" title="建堆"></a>建堆</h3><ul>
+<li>若要使用堆排序，首先需要维护一个堆，也就是用普通的序列<strong>建堆</strong>，下面有2种思路</li>
+</ul>
+<h4 id="1-插入建堆法"><a href="#1-插入建堆法" class="headerlink" title="1. 插入建堆法"></a>1. 插入建堆法</h4><ul>
+<li>按照前述尾部插入的调整方法：自下向上<ul>
+<li>从第0层 [默认根结点在第0层] 开始，计算每一层的最多调整次数：</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100309.png" alt="图片" style="zoom:50%;"></li>
+<li>第 i 层元素的调整次数为 i，第 i 层的结点数为2 ^ i→ 第 i 层的总调整次数为 $ i * (2 ^ i) $</li>
+</ul>
+</li>
+<li>最坏的建堆时间复杂度O(NlogN)，计算过程如下：<ul>
+<li>总的调整次数 $ S = (n - 1) * 2 ^ {n + 1}+ 1 $，过程如下：<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100428.png" alt="图片"></li>
+<li>利用裂项相消法</li>
+</ul>
+</li>
+<li>上面的n对应层数 - 1 [从第0层开始的]，若令总的结点数为N，则 $ n ≈ log_2N $</li>
+<li>【层数n→结点数N的换算】将 $ n ≈ log_2N $代入S，得到 $ S ≈ Nlog_2N $</li>
+<li>即最坏的时间复杂度为：$ O(NlogN) $</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-线性建堆"><a href="#2-线性建堆" class="headerlink" title="2. 线性建堆"></a>2. 线性建堆</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100544.png" alt="图片"></p>
+<ul>
+<li><p>如图所示</p>
+<ul>
+<li>常规思路：越到下面层，需要的调整次数越多，也就是权重越大</li>
+<li>那是否可以思维反转，把大权重放到前面，让下面结点数多的层的权重减小</li>
+<li>线性思路：可以！从倒数第二层开始排，【自上向下】调整</li>
+</ul>
+</li>
+<li><p>最坏的建堆时间复杂度O(N)</p>
+<ul>
+<li>同样利用裂项相消法得到总的调整次数 $ S = 2 ^ {n + 1} - 2 - n $</li>
+<li>把层数n换算到结点数N，得到 $ S ≈ 2N - 2 - log_2N $</li>
+<li>即最坏的时间复杂度为：O(N)</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>线性建堆</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define swap(a, b) &#123;\</span><br><span class="line">    __typeof(a) __temp &#x3D; a;\</span><br><span class="line">    a &#x3D; b; b &#x3D; __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void downUpdate(int *arr, int n, int ind) &#123;</span><br><span class="line">    while ((ind &lt;&lt; 1) &lt;&#x3D; n) &#123;</span><br><span class="line">        int temp &#x3D; ind, l &#x3D; ind &lt;&lt; 1, r &#x3D; ind &lt;&lt; 1 | 1;</span><br><span class="line">        if (arr[l] &gt; arr[temp]) temp &#x3D; l;</span><br><span class="line">        if (r &lt;&#x3D; n &amp;&amp; arr[r] &gt; arr[temp]) temp &#x3D; r;</span><br><span class="line">        if (ind &#x3D;&#x3D; temp) break;</span><br><span class="line">        swap(arr[temp], arr[ind]);</span><br><span class="line">        ind &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void heap_sort(int *arr, int n) &#123;</span><br><span class="line">    arr -&#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n &gt;&gt; 1; i &gt;&#x3D; 1; i--) &#123;</span><br><span class="line">        downUpdate(arr, n, i);</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; n; i &gt; 1; i--) &#123;</span><br><span class="line">        swap(arr[i], arr[1]);</span><br><span class="line">        downUpdate(arr, i - 1, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void output(int *arr, int n) &#123;</span><br><span class="line">    printf(&quot;[&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        printf(&quot;%d &quot;, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;]&quot;);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    srand(time(0));</span><br><span class="line">    #define max_n 20</span><br><span class="line">    int *arr &#x3D; (int *)malloc(sizeof(int) * max_n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; max_n; i++) &#123;</span><br><span class="line">        arr[i] &#x3D; rand() % 100;</span><br><span class="line">    &#125;</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    heap_sort(arr,max_n);</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    free(arr);</span><br><span class="line">    #undef max_n</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>这里的【堆排序】考虑了【建堆】+【排序】: $ O(N) + O(NlogN) = O(NlogN)$</li>
+<li>没有定义堆结构，用数组模拟堆</li>
+</ul>
+<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100859.png" alt="img"></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>栈与队列</title>
+    <url>/2021/01/02/0003.%20%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h1><h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><ul>
+<li>FIFO（First In First Out）、LILO。类似排队，区分先来后到</li>
+<li>也是顺序结构，需要连续存储空间（不过也可以用链表实现）</li>
+</ul>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
+<li>需要连续的存储空间</li>
+<li>容量</li>
+<li>队首、队尾</li>
+<li>+元素个数：用来判断队列是否已满，方便<strong>循环队列</strong>解决假溢出问题</li>
+<li>数据类型</li>
+</ul>
+<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><ul>
+<li><p>出队</p>
+<ul>
+<li>head - 1</li>
+<li>count - 1</li>
+</ul>
+</li>
+<li><p>入队</p>
+<ul>
+<li>tail + 1</li>
+<li>count + 1</li>
+</ul>
+</li>
+<li><p>假溢出</p>
+<ul>
+<li><p>不能存元素了</p>
+</li>
+<li><p>实际上可能还没有满：出队操作使队列头部有空位</p>
+</li>
+<li><p>解决方案：</p>
+<p>循环队列</p>
+<ul>
+<li>tail走到头了再回到队列前面</li>
+<li>使用取余运算确定位置：(tail + 1) % length</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>扩容：遇到真溢出时，详见代码演示</p>
+</li>
+</ul>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>定义tail有两种方式<ul>
+<li>①指向最后一个元素的地址</li>
+<li><strong>②</strong>指向最后一个元素的下一个地址（本代码的选择）</li>
+</ul>
+</li>
+<li>使用循环队列，已经不存在假溢出的现象</li>
+<li>但对于真溢出怎么办呢？</li>
+<li><strong>扩容</strong>：针对循环队列的扩容<ul>
+<li>3种动态开辟内存的方法【malloc、calloc、realloc】，使用哪一种？</li>
+<li>malloc、calloc都可以，但是realloc不好使<ul>
+<li>循环队列的尾可能不在头的后面，而是尾和头重合了</li>
+<li>举例：当队列已满时，head、tail（这里tail定义为尾部元素的后一位）在如下位置，此时扩容一倍，扩容后队列的push和pop会怎么样呢？</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093207.png" alt="image-20201202094139099"></li>
+<li>此时从head→tail之间插入了很多空值，因为realloc是把值按原顺序搬过去，而扩容部分还没有值</li>
+<li>那么，不管是从head到tail出队[中间夹杂了很多空值]，还是从tail入队[tail位置存在未出队的元素]，都存在问题！</li>
+</ul>
+</li>
+<li>而用malloc开辟空间后，把原队列从head到tail按顺序迁移，即手动将head调整为索引0，如下，关键在于<strong>头尾指针的调整</strong>！<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093232.png" alt="image-20201202094256207"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR_HL(a,b) <span class="meta-string">&quot;\033[1;&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR_HL(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> head, tail, length, count;</span><br><span class="line">&#125; Queue;</span><br><span class="line"></span><br><span class="line"><span class="function">Queue *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Queue  *q = (Queue *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Queue));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);</span><br><span class="line">    q-&gt;length = n;</span><br><span class="line">    q-&gt;head = q-&gt;tail = <span class="number">0</span>;</span><br><span class="line">    q-&gt;count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">front</span><span class="params">(Queue *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[q-&gt;head];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Queue *q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;count == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">expand</span><span class="params">(Queue *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> extr_size = q-&gt;length;</span><br><span class="line">    <span class="keyword">int</span> *p;</span><br><span class="line">    <span class="keyword">while</span>(extr_size) &#123;</span><br><span class="line">        p = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (q-&gt;length + extr_size));</span><br><span class="line">        <span class="keyword">if</span>(p) <span class="keyword">break</span>;</span><br><span class="line">        extr_size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = q-&gt;head, j = <span class="number">0</span>; j &lt; q-&gt;count; j++) &#123;</span><br><span class="line">        p[j] = q-&gt;data[(i + j) % q-&gt;length];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    q-&gt;data = p;</span><br><span class="line">    q-&gt;length += extr_size;</span><br><span class="line">    q-&gt;head = <span class="number">0</span>;</span><br><span class="line">    q-&gt;tail = q-&gt;count;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Queue *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(q-&gt;count == q-&gt;length)&#123;</span><br><span class="line">        <span class="keyword">if</span> (!expand(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(GREEN(<span class="string">&quot;expand successfully! Queue-&gt;size(%d)\n&quot;</span>), q-&gt;length);</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;data[q-&gt;tail++] = val;</span><br><span class="line">    <span class="keyword">if</span>(q-&gt;tail == q-&gt;length) q-&gt;tail = <span class="number">0</span>;</span><br><span class="line">    q-&gt;count++;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Queue *q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;head++;</span><br><span class="line">    <span class="keyword">if</span>(q-&gt;head == q-&gt;length) q-&gt;head = <span class="number">0</span>;</span><br><span class="line">    q-&gt;count--;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Queue *q)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Queue : [&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = q-&gt;head, j = <span class="number">0</span>; j &lt; q-&gt;count; i++, j++) &#123;</span><br><span class="line">        <span class="function">j &amp;&amp; <span class="title">printf</span><span class="params">(<span class="string">&quot;, &quot;</span>)</span></span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, q-&gt;data[i % q-&gt;length]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Queue *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    Queue *q = init(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;push %d to the Queue ! &quot;</span>, val);</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;result = %d\n&quot;</span>, push(q, val));</span><br><span class="line">            &#125;<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;pop %d from the Queue !&quot;</span>, front(q));</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;result = %d\n&quot;</span>, pop(q));</span><br><span class="line">            &#125;<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        output(q), <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><ul>
+<li>FILO（First In Last Out）、LIFO。类比装书的箱子，一头是堵死的</li>
+<li>也是顺序结构</li>
+</ul>
+<h3 id="结构定义-1"><a href="#结构定义-1" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
+<li>需要连续的存储空间（有大小限制）</li>
+<li>容量</li>
+<li>栈顶指针【top】：对于空栈，top = -1，为0可不合适</li>
+<li>数据类型</li>
+</ul>
+<h3 id="结构操作-1"><a href="#结构操作-1" class="headerlink" title="结构操作"></a>结构操作</h3><ul>
+<li>出栈：top - 1 // 需要判空</li>
+<li>入栈：top + 1，存值 // 需要判满</li>
+</ul>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309094104.png" alt="图片"></p>
+<ul>
+<li>DFS和BFS</li>
+<li>单调栈、单调队列自行学习</li>
+</ul>
+<h1 id="随堂练习"><a href="#随堂练习" class="headerlink" title="随堂练习"></a>随堂练习</h1><h2 id="LC-20：-有效的括号"><a href="#LC-20：-有效的括号" class="headerlink" title="LC-20： 有效的括号"></a><a href="https://leetcode-cn.com/problems/valid-parentheses/">LC-20</a>： 有效的括号</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309094122.png" alt="图片"></p>
+<ul>
+<li>关键在于思维：大问题转小问题<ul>
+<li>问题简化成只有一种括号，怎么做？可以不使用栈完成吗？</li>
+<li>思路：只需要记录左括号数量和右括号数量<ul>
+<li>在任意位置，左数 &gt;= 右数</li>
+<li>在最后位置，左数 == 右数</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309094110.png" alt="图片"></li>
+<li>其实可以只用一个数top记录，遇到左括号+1，遇到右括号-1<ul>
+<li>在任意位置，top &gt;= 0</li>
+<li>在最后位置，top == 0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>这个+1、-1操作，可以联想到栈的入栈、出栈吗？</li>
+<li>一次括号匹配相当于入栈出栈一次</li>
+<li>括号里的括号相当于完全包含关系</li>
+<li>也有分治思想</li>
+</ul>
+</li>
+<li><strong>栈</strong>：可以处理具有完全包含关系的问题</li>
+</ul>
+<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR_HL(a, b) <span class="meta-string">&quot;\033[1;&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR_HL(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> top, size;</span><br><span class="line">&#125; Stack;</span><br><span class="line"></span><br><span class="line"><span class="function">Stack *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Stack *s = (Stack*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    s-&gt;data = (<span class="keyword">int</span> *) <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);</span><br><span class="line">    s-&gt;size = n;</span><br><span class="line">    s-&gt;top = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;data[s-&gt;top];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;top == <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">expand</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> extr_size = s-&gt;size;</span><br><span class="line">    <span class="keyword">int</span> *p;</span><br><span class="line">    <span class="keyword">while</span>(p) &#123;</span><br><span class="line">        p = (<span class="keyword">int</span> *)<span class="built_in">realloc</span>(s-&gt;data, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (extr_size + s-&gt;size));</span><br><span class="line">        <span class="keyword">if</span>(p) <span class="keyword">break</span>;</span><br><span class="line">        extr_size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;data = p;</span><br><span class="line">    s-&gt;size = s-&gt;size + extr_size;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Stack *s, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (s-&gt;top == s-&gt;size - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!expand(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(GREEN(<span class="string">&quot;expand successfully! Stack -&gt; size = (%d)\n&quot;</span>), s-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    s-&gt;data[++(s-&gt;top)] = val;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;top -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= s-&gt;top; i++) &#123;</span><br><span class="line">        <span class="function">i &amp;&amp; <span class="title">printf</span><span class="params">(<span class="string">&quot;, &quot;</span>)</span></span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, s-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(s-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    Stack *s = init(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span>(op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;push %d to the Stack = %d\n&quot;</span>, val, push(s, val));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;pop %d from the Stack&quot;</span>, top(s));</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;result = %d\n&quot;</span>, pop(s));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        output(s), <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(s);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h1 id="附加："><a href="#附加：" class="headerlink" title="附加："></a>附加：</h1><ul>
+<li>系统栈<ul>
+<li>也是栈，大小：8MB</li>
+<li>递归时，使用的就是系统栈</li>
+</ul>
+</li>
+</ul>
+<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093445.png" alt="图片" style="zoom:50%;"></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>树与二叉树</title>
+    <url>/2021/01/03/0004.%20%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="树与二叉树"><a href="#树与二叉树" class="headerlink" title="树与二叉树"></a>树与二叉树</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><ul>
+<li>树的组成：结点 + 边<ul>
+<li>结点 ：集合；边 ： 关系</li>
+<li>根结点：全集；子结点：子集<ul>
+<li>根结点的所有子结点的集合并集 = 全集</li>
+<li>【思想】大问题抽象为树，小问题抽象为子结点</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><p>【结点 + 边】</p>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093517.png" alt="图片" style="zoom: 67%;">
+
+<ul>
+<li>一叉树是链表结构，只有一个分支的树形结构</li>
+<li>对于三叉树，则将链表的next指针变成next[3]数组即可</li>
+</ul>
+<h3 id="属性、性质"><a href="#属性、性质" class="headerlink" title="属性、性质"></a>属性、性质</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093534.png" alt="图片" style="zoom: 33%;">
+
+<ul>
+<li>深度、高度<ul>
+<li>树的深度和高度是一个值：最大层数</li>
+<li>结点的深度和高度不一样<ul>
+<li>深度：从根结点往下数，该结点是第几层</li>
+<li>高度：从最深的层数往上数，该结点是第几层</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>度：有几个子孩子</li>
+<li>【重要公式】结点数 = 边数 + 1</li>
+</ul>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><ul>
+<li><p>二进制可以转换成任何进制，二叉树同理</p>
+<ul>
+<li>首先简单</li>
+<li>且可以表示所有的树形结构<ul>
+<li>方法：左孩子、右兄弟法，又称十字链表法</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093557.png" alt="图片" style="zoom:50%;"></li>
+<li>从上往下，从左往右，结点的孩子放在左边，结点的相邻兄弟放在右边</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>对于n叉树，n不确定，而二叉树是确定的</p>
+<ul>
+<li>n叉树可以用二叉树来实现</li>
+<li>所以，利用二叉树可以将非确定性问题 → 计算机能解决的确定性问题</li>
+</ul>
+</li>
+<li><p>【重要公式】二叉树中，度为0的结点比度为2的结点多1个</p>
+<ul>
+<li>利用另一重要公式：结点数 = 边数 + 1</li>
+<li>令 $ n_i $ 表示度为i的结点个数</li>
+<li>则：$ [结点数] n_0 + n_1 + n_2 = n_1 + 2 * n_2 + 1 [边数 + 1] $</li>
+<li>得：$ n_0 = n_2 + 1 $</li>
+</ul>
+</li>
+<li><p>遍历方式：取决于什么时候[最先、中间、最后]访问根节点</p>
+<ul>
+<li>前序遍历：根 左 右</li>
+<li>中序遍历：左 根 右</li>
+<li>后序遍历：左 右 根</li>
+<li>遍历时的左、右可以分别代表左、右子树</li>
+<li>左右的相对顺序一直是左在前，右在后</li>
+</ul>
+</li>
+<li><p>二叉树分类（国际版）</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093615.png" alt="图片"></li>
+</ul>
+</li>
+<li><p>完全二叉树：除了最后一层最右边可以缺少若干结点，其他地方都满满当当</p>
+<ul>
+<li>满二叉树：度为0或2即可</li>
+</ul>
+</li>
+<li><p>完美二叉树：度均为2，所有叶结点在同一层</p>
+<ul>
+<li>PS：中国版只分完全二叉树和满二叉树，满二叉树的定义同国际版的完美二叉树</li>
+</ul>
+</li>
+<li><p>完全二叉树的特点 [完美二叉树同样满足]</p>
+<ul>
+<li>编号为 i 的结点的左右孩子编号分别是2 * i、2 * i + 1</li>
+<li>可以用连续空间（数组）存储，用于算法优化：记录式-&gt;计算式<ul>
+<li>不再需要用结构体存储孩子结点的地址，直接通过公式可计算其在数组中的索引</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>广义表：树的字符串化</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093853.png" alt="图片"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093841.png" alt="图片"></li>
+<li>有很多种表示方法，一般怎么简单怎么来，见上图红框：方式一、方式二</li>
+</ul>
+</li>
+<li><p>对于二叉搜索树，中序遍历是顺序的</p>
+</li>
+<li><p>根据两种遍历可得第三种遍历结果</p>
+<ul>
+<li>前序遍历/后序遍历可得根结点，中序遍历可得左右孩子的位置</li>
+<li>【必须】要有中序遍历，只有它才能确定孩子的左右</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h3><ul>
+<li>二叉搜索树</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clearNode</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(node-&gt;lchild);</span><br><span class="line">    clearNode(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clearNode(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">insert_node</span><span class="params">(Node *root, <span class="keyword">int</span> val, <span class="keyword">int</span> *flag)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *flag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> getNewNode(val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;data == val) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span>(val &lt; root-&gt;data) root-&gt;lchild = insert_node(root-&gt;lchild, val, flag);</span><br><span class="line">    <span class="keyword">else</span> root-&gt;rchild = insert_node(root-&gt;rchild, val, flag);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(Tree *tree, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    tree-&gt;root = insert_node(tree-&gt;root, val, &amp;flag);</span><br><span class="line">    tree-&gt;n += flag;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    pre_order_node(node-&gt;lchild);</span><br><span class="line">    pre_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(node-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    in_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(node-&gt;lchild);</span><br><span class="line">    post_order_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, node-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output_node</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">if</span>(root-&gt;lchild == <span class="literal">NULL</span> &amp;&amp; root-&gt;rchild == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">    output_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;,&quot;</span>);</span><br><span class="line">    output_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;tree(%d) : &quot;</span>, tree-&gt;n);</span><br><span class="line">    output_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 10</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        insert(tree, val);</span><br><span class="line">    &#125;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    output(tree);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>广义表还原二叉树</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306094107.png" alt="图片" style="zoom:50%;">
+
+<ul>
+<li>具有完全包含关系的问题，使用栈</li>
+<li>栈里存储结点地址[Node *]：把广义表中的字符看成结点</li>
+<li>转换过程</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>(</strong></th>
+<th align="center"><strong>,</strong></th>
+<th align="center"><strong>)</strong></th>
+<th align="center"><strong>其他字符【字母】</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">【将元素入栈】 下一个’,’前的元素为左孩子</td>
+<td align="center">决定下一个字符封装的元素为【右孩子】</td>
+<td align="center">记录栈顶，【将元素弹栈】</td>
+<td align="center">①将字符【封装】成结点指针类型，作为栈的元素 ②【关系确定】如果栈不为空，则根据该字符相对于’,’的位置，成为栈顶元素的左孩子或右孩子</td>
+</tr>
+</tbody></table>
+<ul>
+<li>结构定义、操作定义：栈、二叉树</li>
+<li>【关键】转换的匹配规则</li>
+</ul>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Tree</span> &#123;</span></span><br><span class="line">    Node *root;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; Tree;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Stack</span> &#123;</span></span><br><span class="line">    Node **data;</span><br><span class="line">    <span class="keyword">int</span> top, size;</span><br><span class="line">&#125; Stack;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">char</span> val)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Tree *<span class="title">getNewTree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Tree *tree = (Tree *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Tree));</span><br><span class="line">    tree-&gt;root = <span class="literal">NULL</span>;</span><br><span class="line">    tree-&gt;n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> tree;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Stack *<span class="title">init_stack</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    Stack *s = (Stack *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Stack));</span><br><span class="line">    s-&gt;data = (Node **)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node *) * n);</span><br><span class="line">    s-&gt;top = <span class="number">-1</span>;</span><br><span class="line">    s-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">top</span><span class="params">(Stack *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;data[s-&gt;top];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s-&gt;top == <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(Stack *s, Node *val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(s-&gt;top == s-&gt;size - <span class="number">1</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;data[++(s-&gt;top)] = val;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(empty(s)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    s-&gt;top -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_stack</span><span class="params">(Stack *s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(s-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(Node *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(node-&gt;lchild);</span><br><span class="line">    clear_node(node-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_tree</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    clear_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">free</span>(tree);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">build</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">int</span> *node_num)</span> </span>&#123;</span><br><span class="line">    Stack *s = init_stack(<span class="built_in">strlen</span>(str));</span><br><span class="line">    Node *temp = <span class="literal">NULL</span>, *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (str[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(str[<span class="number">0</span>]) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;(&#x27;</span>: &#123;</span><br><span class="line">                push(s, temp);</span><br><span class="line">                flag = <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;)&#x27;</span>: &#123;</span><br><span class="line">                p = top(s);</span><br><span class="line">                pop(s);</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;,&#x27;</span>: &#123;</span><br><span class="line">                flag = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27; &#x27;</span>: <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                temp = getNewNode(str[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">0</span>) &#123;</span><br><span class="line">                top(s)-&gt;lchild = temp;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(!empty(s) &amp;&amp; flag == <span class="number">1</span>) &#123;</span><br><span class="line">                top(s)-&gt;rchild = temp;</span><br><span class="line">            &#125;</span><br><span class="line">            ++(*node_num);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ++str;</span><br><span class="line">    &#125;</span><br><span class="line">    clear_stack(s);</span><br><span class="line">    <span class="keyword">if</span> (temp &amp;&amp; !p) p = temp;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    pre_order_node(root-&gt;lchild);</span><br><span class="line">    pre_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pre_order : &quot;</span>);</span><br><span class="line">    pre_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    in_order_node(root-&gt;lchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    in_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">in_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in_order : &quot;</span>);</span><br><span class="line">    in_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order_node</span><span class="params">(Node *root)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    post_order_node(root-&gt;lchild);</span><br><span class="line">    post_order_node(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c &quot;</span>, root-&gt;data);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">post_order</span><span class="params">(Tree *tree)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(tree == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;post_order : &quot;</span>);</span><br><span class="line">    post_order_node(tree-&gt;root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> node_num = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%[^\n]s&quot;</span>, str);</span><br><span class="line">    Tree *tree = getNewTree();</span><br><span class="line">    tree-&gt;root = build(str, &amp;node_num);</span><br><span class="line">    tree-&gt;n = node_num;</span><br><span class="line">    pre_order(tree);</span><br><span class="line">    in_order(tree);</span><br><span class="line">    post_order(tree);</span><br><span class="line">    clear_tree(tree);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095937.png" alt="image-20201202082334602"></li>
+</ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>数据结构</category>
@@ -807,163 +964,6 @@
 <li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095931.png" alt="图片" style="zoom:50%;"></li>
 <li><a href="https://www.cnblogs.com/onepixel/articles/7674659.html">十大经典排序算法(动图演示)</a></li>
 <li><a href="https://www.cxyxiaowu.com/2026.html">十大经典排序算法动画与解析，看我就够了</a></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>堆与优先队列</title>
-    <url>/2021/01/05/0006.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
-
-<ul>
-<li><p>完全二叉树默认从1开始编号</p>
-<ul>
-<li>这样可以保证左孩子、右孩子编号简洁</li>
-<li>[否则] 左孩子编号需为2 * i + 1，右孩子编号需为2 * i + 2</li>
-</ul>
-</li>
-<li><p>可编号的性质→可用顺序结构存储，而不需要保存下一个结点的地址</p>
-<ul>
-<li><img src="https://i.loli.net/2020/12/02/DnX8VaTRLbd7mox.png" alt="图片" style="zoom:50%;"></li>
-</ul>
-</li>
-<li><p>二叉树→数组的转换</p>
-<ul>
-<li>按层序遍历的顺序存储在数组中，每一层的结点存储是连续的</li>
-</ul>
-</li>
-</ul>
-<h2 id="堆-优先队列"><a href="#堆-优先队列" class="headerlink" title="堆[优先队列]"></a>堆[优先队列]</h2><p>优先队列是堆的一个别名；堆是在<strong>完全二叉树</strong>的基础上维护的</p>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
-<li>结构与完全二叉树一样，但多维护了一种性质<ul>
-<li>大顶堆：对于任意三元组，根结点值最大</li>
-<li>小顶堆：对于任意三元组，根结点值最小</li>
-</ul>
-</li>
-</ul>
-<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><p>一切操作都要维护自己的性质！</p>
-<ul>
-<li>尾部插入【+调整】<ul>
-<li>在尾部插入该元素，再自下向上调整，最远调整到根结点<ul>
-<li>在三元组里不断调整，依次与父结点比较，只要交换了就不停止，直到到达根结点</li>
-<li>交换时只会改变交换元素的相对大小，整个结构的相对大小关系不变</li>
-</ul>
-</li>
-<li>比较的编号其实就是i 与 i / 2</li>
-<li>时间复杂度：$ O(log_2N) $，即树高</li>
-</ul>
-</li>
-<li>头部弹出【+调整】<ul>
-<li>将最后一个元素拿到堆顶，再自上向下调整，直到该元素没有子结点<ul>
-<li>在三元组里不断调整，依次与孩子结点比较，只要交换了就不停止，直到没有孩子</li>
-<li>为什么选择最后一个元素放到堆顶？</li>
-<li>因为，如果拿其他位置的元素，谁来补这个元素的缺口呢</li>
-</ul>
-</li>
-<li>比较的编号其实就是i、2 * i 与 2 * i + 1</li>
-<li>时间复杂度：同为树高</li>
-</ul>
-</li>
-<li>[PS]<ul>
-<li>大顶堆：方便查找第1大和第2大的元素 [根结点、第二层中]<ul>
-<li>找第3大、第4大…就不那么简单，不方便确定所在层数</li>
-</ul>
-</li>
-<li>上面这个过程<ul>
-<li>队尾进元素，队首出元素-&gt;同队列</li>
-<li>而出队的元素是最值-&gt;又名优先队列</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">priority_queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> cnt, size;</span><br><span class="line">&#125; <span class="built_in">priority_queue</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">priority_queue</span> *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">priority_queue</span> *q = (<span class="built_in">priority_queue</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="built_in">priority_queue</span>));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    q-&gt;cnt = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;cnt == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(<span class="built_in">priority_queue</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;cnt == q-&gt;size) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[++(q-&gt;cnt)] = val;</span><br><span class="line">    <span class="keyword">int</span> ind = q-&gt;cnt;</span><br><span class="line">    <span class="keyword">while</span> (ind &gt;&gt; <span class="number">1</span> &amp;&amp; q-&gt;data[ind] &gt; q-&gt;data[ind &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[ind &gt;&gt; <span class="number">1</span>]);</span><br><span class="line">        ind &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[<span class="number">1</span>] = q-&gt;data[q-&gt;cnt--];</span><br><span class="line">    <span class="keyword">int</span> ind = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((ind &lt;&lt; <span class="number">1</span>) &lt;= q-&gt;cnt) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = ind, l = ind &lt;&lt; <span class="number">1</span>, r = ind &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;data[l] &gt; q-&gt;data[temp]) temp = l;</span><br><span class="line">        <span class="keyword">if</span> (r &lt;= q-&gt;cnt &amp;&amp; q-&gt;data[r] &gt; q-&gt;data[temp]) temp = r;</span><br><span class="line">        <span class="keyword">if</span> (temp == ind) <span class="keyword">break</span>;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[temp]);</span><br><span class="line">        ind = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    <span class="built_in">priority_queue</span>*q = init(max_op);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        push(q, val);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;insert %d to the priority_queue.\n&quot;</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, top(q));</span><br><span class="line">        pop(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
-<li>根据其性质，全部弹出，将得到一个排好序的序列</li>
-<li>思维转变：堆顶元素的弹出操作 ==&gt; 堆顶元素与堆尾元素交换<ul>
-<li><strong>大顶堆</strong>的元素全部弹出：<strong>原数组</strong>存储了一个<strong>从小到大</strong>的排序序列</li>
-<li>[至此，从大顶堆，得到一个特殊的小顶堆]</li>
-</ul>
-</li>
-<li>时间复杂度：$ O(NlogN) $<ul>
-<li>消耗的时间在于调整操作，每次调整的时间复杂度是 $ O(logN) $，共N个元素，需调整N - 1次</li>
-<li>弹出操作的时间复杂度是O(1)的</li>
-<li>时间效率一定不会退化</li>
-</ul>
-</li>
-</ul>
-<h3 id="建堆"><a href="#建堆" class="headerlink" title="建堆"></a>建堆</h3><ul>
-<li>若要使用堆排序，首先需要维护一个堆，也就是用普通的序列<strong>建堆</strong>，下面有2种思路</li>
-</ul>
-<h4 id="1-插入建堆法"><a href="#1-插入建堆法" class="headerlink" title="1. 插入建堆法"></a>1. 插入建堆法</h4><ul>
-<li>按照前述尾部插入的调整方法：自下向上<ul>
-<li>从第0层 [默认根结点在第0层] 开始，计算每一层的最多调整次数：</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100309.png" alt="图片" style="zoom:50%;"></li>
-<li>第 i 层元素的调整次数为 i，第 i 层的结点数为2 ^ i→ 第 i 层的总调整次数为 $ i * (2 ^ i) $</li>
-</ul>
-</li>
-<li>最坏的建堆时间复杂度O(NlogN)，计算过程如下：<ul>
-<li>总的调整次数 $ S = (n - 1) * 2 ^ {n + 1}+ 1 $，过程如下：<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100428.png" alt="图片"></li>
-<li>利用裂项相消法</li>
-</ul>
-</li>
-<li>上面的n对应层数 - 1 [从第0层开始的]，若令总的结点数为N，则 $ n ≈ log_2N $</li>
-<li>【层数n→结点数N的换算】将 $ n ≈ log_2N $代入S，得到 $ S ≈ Nlog_2N $</li>
-<li>即最坏的时间复杂度为：$ O(NlogN) $</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-线性建堆"><a href="#2-线性建堆" class="headerlink" title="2. 线性建堆"></a>2. 线性建堆</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100544.png" alt="图片"></p>
-<ul>
-<li><p>如图所示</p>
-<ul>
-<li>常规思路：越到下面层，需要的调整次数越多，也就是权重越大</li>
-<li>那是否可以思维反转，把大权重放到前面，让下面结点数多的层的权重减小</li>
-<li>线性思路：可以！从倒数第二层开始排，【自上向下】调整</li>
-</ul>
-</li>
-<li><p>最坏的建堆时间复杂度O(N)</p>
-<ul>
-<li>同样利用裂项相消法得到总的调整次数 $ S = 2 ^ {n + 1} - 2 - n $</li>
-<li>把层数n换算到结点数N，得到 $ S ≈ 2N - 2 - log_2N $</li>
-<li>即最坏的时间复杂度为：O(N)</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>线性建堆</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define swap(a, b) &#123;\</span><br><span class="line">    __typeof(a) __temp &#x3D; a;\</span><br><span class="line">    a &#x3D; b; b &#x3D; __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void downUpdate(int *arr, int n, int ind) &#123;</span><br><span class="line">    while ((ind &lt;&lt; 1) &lt;&#x3D; n) &#123;</span><br><span class="line">        int temp &#x3D; ind, l &#x3D; ind &lt;&lt; 1, r &#x3D; ind &lt;&lt; 1 | 1;</span><br><span class="line">        if (arr[l] &gt; arr[temp]) temp &#x3D; l;</span><br><span class="line">        if (r &lt;&#x3D; n &amp;&amp; arr[r] &gt; arr[temp]) temp &#x3D; r;</span><br><span class="line">        if (ind &#x3D;&#x3D; temp) break;</span><br><span class="line">        swap(arr[temp], arr[ind]);</span><br><span class="line">        ind &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void heap_sort(int *arr, int n) &#123;</span><br><span class="line">    arr -&#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n &gt;&gt; 1; i &gt;&#x3D; 1; i--) &#123;</span><br><span class="line">        downUpdate(arr, n, i);</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; n; i &gt; 1; i--) &#123;</span><br><span class="line">        swap(arr[i], arr[1]);</span><br><span class="line">        downUpdate(arr, i - 1, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void output(int *arr, int n) &#123;</span><br><span class="line">    printf(&quot;[&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        printf(&quot;%d &quot;, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;]&quot;);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    srand(time(0));</span><br><span class="line">    #define max_n 20</span><br><span class="line">    int *arr &#x3D; (int *)malloc(sizeof(int) * max_n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; max_n; i++) &#123;</span><br><span class="line">        arr[i] &#x3D; rand() % 100;</span><br><span class="line">    &#125;</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    heap_sort(arr,max_n);</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    free(arr);</span><br><span class="line">    #undef max_n</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>这里的【堆排序】考虑了【建堆】+【排序】: $ O(N) + O(NlogN) = O(NlogN)$</li>
-<li>没有定义堆结构，用数组模拟堆</li>
-</ul>
-<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100859.png" alt="img"></li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
@@ -1796,6 +1796,57 @@
       </tags>
   </entry>
   <entry>
+    <title>Linux 命令行解析</title>
+    <url>/2021/01/01/0016.%20Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Linux-命令行解析"><a href="#Linux-命令行解析" class="headerlink" title="Linux 命令行解析"></a>Linux 命令行解析</h1><h2 id="getopt函数"><a href="#getopt函数" class="headerlink" title="getopt函数"></a>getopt函数</h2><h4 id="getopt-函数-：命令行解析函数"><a href="#getopt-函数-：命令行解析函数" class="headerlink" title="getopt 函数 ：命令行解析函数"></a>getopt 函数 ：命令行解析函数</h4><ul>
+<li>头文件 ： &lt;unistd.h&gt;</li>
+<li>原型 ： <code>int</code> getopt(int argc, char * const argv[], const char *optstring);</li>
+</ul>
+<blockquote>
+<p>看到<code>int</code>很自然就可以想到是返回 成功 0，失败 -1， 或者返回个数</p>
+</blockquote>
+<ul>
+<li>argc argv：由 <code>main 函数</code>的参数<code>直接传递</code>而来</li>
+<li>optstring：一个包含准确选项字符的字符串</li>
+<li>返回值：返回下一个选项</li>
+</ul>
+<blockquote>
+<p>用 man 手册查询认识相关命令时，注重你要找的参数，不要过多的关注其变种。</p>
+</blockquote>
+<h4 id="getopt设置的一些全局变量"><a href="#getopt设置的一些全局变量" class="headerlink" title="getopt设置的一些全局变量"></a>getopt设置的一些全局变量</h4><ul>
+<li>char *optarg ：指向当前选项参数（如果有）的指针</li>
+<li>int optind  ：再次调用getopt()时的下一个argv 指针索引</li>
+<li>int optopt() ： 最有一个已知选项</li>
+<li>int opterr()  ：这个变量非零时，向stderr打印错误。默认为1。 </li>
+</ul>
+<h4 id="参数-optstring-详解"><a href="#参数-optstring-详解" class="headerlink" title="参数 optstring 详解"></a>参数 optstring 详解</h4><h5 id="getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。"><a href="#getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。" class="headerlink" title="getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。"></a>getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。</h5><ol>
+<li><code>单个</code>字符，表示<code>选项</code></li>
+<li>单个字符后加<code>一个冒号</code>“：”，表示该选项后<code>必须跟一个参数值</code>。参数<code>紧跟</code>在选项后或者<code>以空格</code>隔开。该参数的指针<code>赋给 optarg</code>。</li>
+<li>单个字符后跟<code>两个冒号</code>“：：”，表示该选项后<code>可以带</code>参数<code>也可以不带</code>参数。但参数<code>必须紧跟</code>在选项后不能以空格隔开。该参数的指针赋给optarg。</li>
+</ol>
+<p>例子： “<code>xy:z::</code>”表示 <code>x</code> 选项没有选项参数，<code>y</code> 选项必须有参数，中间可有空格可没，<code>z</code> 参数可有参数选项。也可没有参数选项，但是如果有选项参数的话必须紧跟在选项之后不能有空格。 </p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210101223051229.png" alt="image-20210101223051229"></p>
+<ol>
+<li><code>getopt</code> 内部有一个 <code>opt index</code> 指针（索引）的位置，指针会从 <code>0</code> 开始往后面扫描，<code>getopt</code> 每次会返回一个，直到找到最后一个的时候。会返回一个 <code>-1.</code></li>
+<li>当 <code>!= -1</code>的时候，返回的是一个<code>int</code> 型的选项字符，通过选项字符判断</li>
+</ol>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>双数组字典树</title>
     <url>/2021/01/14/0015.%20%E5%8F%8C%E6%95%B0%E7%BB%84%E5%AD%97%E5%85%B8%E6%A0%91/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="双数组字典树"><a href="#双数组字典树" class="headerlink" title="双数组字典树"></a>双数组字典树</h1><h2 id="传统字典树的缺点"><a href="#传统字典树的缺点" class="headerlink" title="传统字典树的缺点"></a>传统字典树的缺点</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309181251.png" alt="image-20210124153235264" style="zoom:50%;">
@@ -1878,57 +1929,6 @@
       </categories>
       <tags>
         <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux 命令行解析</title>
-    <url>/2021/01/01/0016.%20Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Linux-命令行解析"><a href="#Linux-命令行解析" class="headerlink" title="Linux 命令行解析"></a>Linux 命令行解析</h1><h2 id="getopt函数"><a href="#getopt函数" class="headerlink" title="getopt函数"></a>getopt函数</h2><h4 id="getopt-函数-：命令行解析函数"><a href="#getopt-函数-：命令行解析函数" class="headerlink" title="getopt 函数 ：命令行解析函数"></a>getopt 函数 ：命令行解析函数</h4><ul>
-<li>头文件 ： &lt;unistd.h&gt;</li>
-<li>原型 ： <code>int</code> getopt(int argc, char * const argv[], const char *optstring);</li>
-</ul>
-<blockquote>
-<p>看到<code>int</code>很自然就可以想到是返回 成功 0，失败 -1， 或者返回个数</p>
-</blockquote>
-<ul>
-<li>argc argv：由 <code>main 函数</code>的参数<code>直接传递</code>而来</li>
-<li>optstring：一个包含准确选项字符的字符串</li>
-<li>返回值：返回下一个选项</li>
-</ul>
-<blockquote>
-<p>用 man 手册查询认识相关命令时，注重你要找的参数，不要过多的关注其变种。</p>
-</blockquote>
-<h4 id="getopt设置的一些全局变量"><a href="#getopt设置的一些全局变量" class="headerlink" title="getopt设置的一些全局变量"></a>getopt设置的一些全局变量</h4><ul>
-<li>char *optarg ：指向当前选项参数（如果有）的指针</li>
-<li>int optind  ：再次调用getopt()时的下一个argv 指针索引</li>
-<li>int optopt() ： 最有一个已知选项</li>
-<li>int opterr()  ：这个变量非零时，向stderr打印错误。默认为1。 </li>
-</ul>
-<h4 id="参数-optstring-详解"><a href="#参数-optstring-详解" class="headerlink" title="参数 optstring 详解"></a>参数 optstring 详解</h4><h5 id="getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。"><a href="#getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。" class="headerlink" title="getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。"></a>getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。</h5><ol>
-<li><code>单个</code>字符，表示<code>选项</code></li>
-<li>单个字符后加<code>一个冒号</code>“：”，表示该选项后<code>必须跟一个参数值</code>。参数<code>紧跟</code>在选项后或者<code>以空格</code>隔开。该参数的指针<code>赋给 optarg</code>。</li>
-<li>单个字符后跟<code>两个冒号</code>“：：”，表示该选项后<code>可以带</code>参数<code>也可以不带</code>参数。但参数<code>必须紧跟</code>在选项后不能以空格隔开。该参数的指针赋给optarg。</li>
-</ol>
-<p>例子： “<code>xy:z::</code>”表示 <code>x</code> 选项没有选项参数，<code>y</code> 选项必须有参数，中间可有空格可没，<code>z</code> 参数可有参数选项。也可没有参数选项，但是如果有选项参数的话必须紧跟在选项之后不能有空格。 </p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210101223051229.png" alt="image-20210101223051229"></p>
-<ol>
-<li><code>getopt</code> 内部有一个 <code>opt index</code> 指针（索引）的位置，指针会从 <code>0</code> 开始往后面扫描，<code>getopt</code> 每次会返回一个，直到找到最后一个的时候。会返回一个 <code>-1.</code></li>
-<li>当 <code>!= -1</code>的时候，返回的是一个<code>int</code> 型的选项字符，通过选项字符判断</li>
-</ol>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -3304,6 +3304,229 @@
       </tags>
   </entry>
   <entry>
+    <title>运输层协议——TCP协议</title>
+    <url>/2021/01/12/0027.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94TCP%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议——TCP协议"><a href="#运输层协议——TCP协议" class="headerlink" title="运输层协议——TCP协议"></a>运输层协议——TCP协议</h1><h3 id="TCP发送缓存和接收缓存"><a href="#TCP发送缓存和接收缓存" class="headerlink" title="TCP发送缓存和接收缓存"></a>TCP发送缓存和接收缓存</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084629.png" alt="image-20210214194742308" style="zoom:50%;">
+
+<ul>
+<li>应用层与运输层直接间隔着<code>套接字</code></li>
+</ul>
+<h3 id="TCP报文"><a href="#TCP报文" class="headerlink" title="TCP报文"></a>TCP报文</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084634.png" alt="image-20210214194902383" style="zoom:50%;">
+
+<ul>
+<li>序号（32位）：当前发的字节流序号，比方当前的序号是1000，需要发1000个字节，则下次发送时，下一次的序号则从2000开始，这个序号是字节流的号。对方可以通过序号知道发送方发送的是哪个包。</li>
+<li><code>URG</code>：紧急数据</li>
+<li><code>PSH</code>：立即上交</li>
+<li><code>ACK</code>：确认</li>
+<li><code>RST</code>：这个端口不存在，选择其他端口连接</li>
+<li><code>SYN</code>：三次握手，建立连接</li>
+<li><code>FIN</code>：四次挥手，断开连接</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084642.png" alt="image-20210214195915981" style="zoom:50%;">
+
+<ul>
+<li>在终端上打开远程云主机，然后输入一个字符（”X”），从确认输入到终端显示这个字符的这段时间，发生了什么？（基础面试题目）</li>
+<li>从本地按了<code>X</code>之后，键盘感知到电流波动之后，键盘驱动程序（内核）感知到，然后在内核里面查询这个程序（标准输入）被谁打开了，知道了是被<code>itemto</code>发起了请求，则把<code>X</code>交给<code>itemto</code>，然后由<code>itemto</code>发送给远程云主机，远程云主机收到之后，回一个<code>ACK</code>，附带着把<code>X</code>给传输回来，本地收到<code>X</code>之后，就知道远程云主机已经收到了<code>X</code>， 就会在终端显示出<code>X</code>。</li>
+</ul>
+<h3 id="TCP往返时间估算"><a href="#TCP往返时间估算" class="headerlink" title="TCP往返时间估算"></a>TCP往返时间估算</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084649.png" alt="image-20210214201020087" style="zoom:50%;">
+
+<ul>
+<li><code>SampleRTT</code>：样本时间，单个包的往返时间；样本时间在整个交互过程中一直可以拿到。</li>
+<li><code>EstimatedRTT</code>：估算时间</li>
+<li><code>DevRTT</code>：真实时间与预估时间的差值，即容差</li>
+<li><code>TimeoutInterval</code>：超时时间</li>
+</ul>
+<p>如果只有一次样本时间比较长，并不会对超时时间有多大影响；如果由持续的样本超时，才会对超时时间造成影响。</p>
+<h3 id="流量控制：针对发送方来抑制发送速度"><a href="#流量控制：针对发送方来抑制发送速度" class="headerlink" title="流量控制：针对发送方来抑制发送速度"></a>流量控制：针对发送方来抑制发送速度</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084653.png" alt="image-20210214202148472" style="zoom:50%;">
+
+<ul>
+<li><p>两个缓冲区：发送缓冲区、接收缓冲区</p>
+</li>
+<li><p><code>rwnd</code>：接收缓冲区</p>
+</li>
+</ul>
+<h3 id="三次握手（面试常考）"><a href="#三次握手（面试常考）" class="headerlink" title="三次握手（面试常考）"></a>三次握手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084659.png" alt="image-20210214202647656" style="zoom:50%;">
+
+<ul>
+<li><p>客户端发起，发送<code>SYN</code>包</p>
+</li>
+<li><p>服务端原本阻塞在<code>accept</code>，感知到数据来临时，查看数据，发现是<code>SYN</code>包，即对方要跟自己<code>握手</code>，则服务端发送回一个<code>SYN+ACK</code>报文</p>
+</li>
+<li><p>客户端收到<code>SYN+ACK</code>报文，表明服务端已经是确认该客户端可以对服务端进行连接，此时连接就基本确定，则客户端给服务端回发一个<code>ACK</code>。</p>
+<blockquote>
+<p>记住发送的每个包的名字</p>
+<p>回答为什么是三次握手，不是两次握手，四次握手？</p>
+<ul>
+<li><p>从发起方的角度，三次握手中，客户端可以确认发送的信息能被服务端收到，服务端发送的信息，客户端能收到；</p>
+</li>
+<li><p>从接收方的角度，三次握手中，服务端可以确认发送的信息能被客户端收到，客户端发送的信息，服务端能收到；</p>
+<p>两端发送的信息，都能确认被收到，就成功了。</p>
+<p>假设最后一次握手取消，则服务端并不能确认自己发的数据，客户端有没有接收到，充满不确定性。</p>
+<p>至于超过三次的握手，其实是可以的，但是三次握手已经足够证明双方确认收到信息了，也就没什么必要握手超过三次了，不然就是没用的冗余操作了。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="四次挥手（面试常考）"><a href="#四次挥手（面试常考）" class="headerlink" title="四次挥手（面试常考）"></a>四次挥手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084706.png" alt="image-20210214204239720" style="zoom:50%;">
+
+<ul>
+<li><p>发起方（客户端）发送<code>FIN</code>给接收方（服务端）。</p>
+</li>
+<li><p>接收方收到<code>FIN</code>，确认了对方的<code>分手信息</code>后，会根据自己的情况，确定是否<code>分手</code>，如果确定则会回发一个<code>ACK</code>同意对方的操作；如果选择<code>不分手</code>，会出现异常，即客户端断开连接，但服务端没断开连接，这种叫<code>半关闭连接（半连接）</code>，会生成一种<code>有害的特殊状态的套接字</code>。</p>
+<blockquote>
+<p>假如一开始有100个连接断并形成这种半连接状态，而服务器只能维护1024个连接，则如果半连接的数目一直增多，最终服务器只能维护这些半连接，而无法建立新连接，从而无法与新连接进行交互。</p>
+<p>所以，<code>切记不能写出半连接联系方式！！！！</code></p>
+</blockquote>
+</li>
+<li><p>同时，接收方也会发送<code>FIN</code>给发起方，表明自己也会<code>断开连接</code></p>
+</li>
+<li><p>发起方收到<code>FIN</code>后，也会回发一个<code>ACK</code>同意对方的操作，同时等待<code>两个最大生存周期（30s到120s不等）</code>时间</p>
+<blockquote>
+<p>为什么要四次挥手呢？</p>
+<p>为什么最后发起方要等待<code>两个最大生存周期（30s到120s不等）</code>？</p>
+<ul>
+<li>因为最后的<code>ACK</code>可能会丢包，如果丢包失效，服务器会重新发送一个<code>FIN</code>信号给客户端确认，没有确认就一直发，所以需要等待，以防最后的<code>ACK</code>丢包失效，避免损耗服务器资源。同时，假如断开连接后，客户端的另一个进程恰巧重新打开这个端口，同时上次连接服务器发送的包延迟了，导致当前客户端收到了上一个客户端应该收到的包。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="TCP-状态转换序列"><a href="#TCP-状态转换序列" class="headerlink" title="TCP 状态转换序列"></a>TCP 状态转换序列</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084715.png" alt="image-20210214210354730" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084728.png" alt="image-20210214210442417" style="zoom:50%;">
+
+<ul>
+<li>写程序很有用</li>
+<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>connect</code>函数，发送<code>SYN</code></li>
+<li>切换成为<code>SYN_SENT</code>状态，表明已发送<code>SYN</code>，然后接收<code>SYNACK</code>，并发送<code>ACK</code></li>
+<li>切换成<code>ESTABLISHED</code>，此时三次握手已经完成，直到这里，都是<code>connect</code>函数在操作；</li>
+<li>连接之后就是关闭（四次挥手），发送<code>FIN</code>（第一次挥手），切换成<code>FIN_WAIT_1</code>，；</li>
+<li>接收<code>ACK</code>，切换成<code>FIN_WAIT_2</code>，然后等着对方继续发送（第二次挥手）；</li>
+<li>接收<code>FIN</code>并发送<code>ACK</code>，切换成<code>FIN_WAIT</code>，然后等待两个最大生存周期（第三、四次挥手）；</li>
+<li>恢复成默认状态（初始状态）<code>closed</code></li>
+</ul>
+<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084734.png" alt="image-20210214211805183" style="zoom:50%;">
+
+<ul>
+<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>bind与listen</code>函数</li>
+<li>切换成为<code>LISTEN</code>状态，此时就是<code>accept</code>函数阻塞中，然后接收<code>SYN</code>，并发送<code>SYNACK</code></li>
+<li>切换成<code>SYN_RCVD</code>，接收<code>ACK</code>（带着数据<code>data</code>），此时三次握手已经完成，切换成<code>ESTABLISHED</code>连接状态</li>
+<li>连接之后就是关闭（四次挥手），接收<code>FIN</code>，发送<code>ACK</code>（第一、二次挥手），切换成<code>CLOSE_WAIT</code>（等待时间极短，等待调用<code>close</code>函数）</li>
+<li>发送<code>FIN</code>，切换成<code>LAST_ACK</code>状态，然后等着对方继续发送（第三次挥手）</li>
+<li>接收<code>ACK</code>，切换成默认状态（初始状态）<code>closed</code>状态（第四次挥手）</li>
+</ul>
+<blockquote>
+<p><code>CLOSE_WAIT</code>、<code>TIME_WAIT</code>比较重要，用得比较多，并且两者均有实际意义。</p>
+</blockquote>
+<h3 id="拥塞控制方法："><a href="#拥塞控制方法：" class="headerlink" title="拥塞控制方法："></a>拥塞控制方法：</h3><p>在网络中，如果通过协议的方式，尽量减少当网络延迟、波动、网络断开之后，数据暴增或减少而引起的网络更加影响网络的情况。</p>
+<ul>
+<li>端到端拥塞控制：<code>TCP</code><ul>
+<li>超时：增加时延</li>
+<li>冗余ACK</li>
+<li>减小发送窗口来让数据变小</li>
+<li>流量控制，使得发送窗口减小</li>
+</ul>
+</li>
+<li>网络辅助的拥塞控制</li>
+</ul>
+<blockquote>
+<p>在底层<code>网络层</code>也支持这样的控制。</p>
+</blockquote>
+<h4 id="ATM、ABR拥塞控制"><a href="#ATM、ABR拥塞控制" class="headerlink" title="ATM、ABR拥塞控制"></a>ATM、ABR拥塞控制</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084742.png" alt="image-20210214221637878" style="zoom: 50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084747.png" alt="image-20210214221616763" style="zoom:50%;">
+
+<ul>
+<li>ATM是不同于分组网络之外的另一种网络。</li>
+<li>把数据包分成<code>数据信元</code>和<code>资源管理信元RM</code>，比例是32 ：1，即32个数据信元后就有一个管理信元</li>
+<li><code>资源管理信元RM</code>：夹杂在<code>数据信元</code>中，一起从客户端移动到服务器端，并记录下这一段路程哪里阻塞了，哪里不会，然后再原封不动的从服务器端返回客户端，通知客户端这段路是否阻塞。同时，没经过一个路由器的时候，都会被路由器感知到，并查看接下来的路是否发送阻塞，如果阻塞，则路由器会调整自己线路。<ul>
+<li>显示转发拥塞指示：<code>EFCI(1bit)</code>，只要这条链路中其中有一个点拥塞了，则会被置为1，让发送方、接收方跟路由器都知道这条链路已经存在问题。</li>
+<li>当目标主机收到大多数为<code>EFCI</code>，则会将其收到的<code>RM信元</code>的<code>CI（拥塞指示比特）</code>设置为<code>1</code></li>
+<li>显示速率<code>ER</code>（两字节）：指示整个链路的速度，经过每个交换机，都会被更新，目的是为了找到网络的吞吐量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="TCP拥塞窗口"><a href="#TCP拥塞窗口" class="headerlink" title="TCP拥塞窗口"></a>TCP拥塞窗口</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084753.png" alt="image-20210214223217108" style="zoom:50%;">
+
+<h3 id="TCP拥塞控制的指导思想"><a href="#TCP拥塞控制的指导思想" class="headerlink" title="TCP拥塞控制的指导思想"></a>TCP拥塞控制的指导思想</h3><ul>
+<li><p>一个丢失的报文段意味着拥塞，丢包就应该减小发送端的发送速率</p>
+</li>
+<li><p>一个确认的报文段表示网络正在向接收方交付报文段，因此，当收到对之前的报文段的<code>ACK</code>后，应该增加发送方速率</p>
+</li>
+<li><p>带宽探测（动态调整）：每次都应该尽可能的加大带宽，直到出现丢包现象才抑制。</p>
+<blockquote>
+<p>几个实验方式如下。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="实验方式一：拥塞控制之慢启动"><a href="#实验方式一：拥塞控制之慢启动" class="headerlink" title="实验方式一：拥塞控制之慢启动"></a>实验方式一：拥塞控制之慢启动</h3><ul>
+<li><p><code>TCP</code>连接建立之初，<code>cwnd</code>被设置为<code>1MSS</code>（一个最大报文段长度），每收到一个确认，将<code>cwnd</code>增加一个<code>MSS</code>。</p>
+</li>
+<li><p>在慢启动过程中，刚开始速度慢，但是会以指数级增长（1、2、4、8）</p>
+</li>
+<li><p>结束慢启动：</p>
+<ul>
+<li><p><code>timeout</code>：重新开始慢启动，慢启动阈值被设置为<code>cwnd/2</code></p>
+<blockquote>
+<p>就比如现在发送了16个MSS，其中一个超时（带宽探测），说明发送量太大，重新设置为8</p>
+</blockquote>
+</li>
+<li><p><code>cwnd &gt;= ssthresh</code>：进入拥塞避免模式</p>
+<blockquote>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><ul>
+<li>在拥塞避免状态下，<code>cwnd</code>每一个<code>RTT</code>增加一个<code>MSS</code>，线性增加（<code>指数增变成线性增</code>）</li>
+<li>结束：<ul>
+<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
+<li>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式（网络没问题，数据包可能出现异常）</p>
+<blockquote>
+<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><ul>
+<li>对收到的每一个<code>冗余ACK</code>，<code>cwnd</code>增加一个<code>MSS</code>（类似指数）</li>
+<li>结束：<ul>
+<li>收到<code>new ACK, cwnd = ssthresh</code>，并进入拥塞避免</li>
+<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084800.png" alt="image-20210214225741896" style="zoom:50%;">
+
+<h2 id="面试考点"><a href="#面试考点" class="headerlink" title="面试考点"></a>面试考点</h2><p>运输层核心重点：TCP、 UDP</p>
+<p>面试喜欢问的问题：</p>
+<ul>
+<li>TCP为主</li>
+<li>UDP：TCP与UDP有哪些区别，为什么有时选TCP，有时选UDP；<ul>
+<li>时间敏感</li>
+<li>丢包影响不大</li>
+<li>成本低</li>
+<li>对何时发数据，发什么数据，有更加精细的控制（想发就发，无须受到协议的限制）</li>
+<li>如果产生了网络风暴，想要发信息给局域网内的其他机器，让其停止转发一切消息，好停止网络风暴，这个时候，就需要用到UDP，否则用TCP的效率太低</li>
+<li>从整个网络来说，UDP对整个网络是不友好的，因为UDP从不考虑网络处于什么状态，自顾自的发送信息。</li>
+</ul>
+</li>
+</ul>
+<p>用远程终端，输入一个字符时，会发生什么事情？</p>
+<p>SYN攻击：<br>        在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了，使用如下命令可以让之现行：#netstat -nap | grep SYN_RECV</p>
+<p>四次挥手：不管时服务端还是客户端，都可以发起挥手</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>网络层</title>
     <url>/2021/01/13/0028.%20%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h1><h2 id="01-IP地址"><a href="#01-IP地址" class="headerlink" title="01 IP地址"></a>01 IP地址</h2><h3 id="IP地址的基本结构"><a href="#IP地址的基本结构" class="headerlink" title="IP地址的基本结构"></a>IP地址的基本结构</h3><ul>
@@ -3518,229 +3741,6 @@
 <li>路由器结构</li>
 <li>转发表</li>
 </ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>运输层协议——TCP协议</title>
-    <url>/2021/01/12/0027.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94TCP%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议——TCP协议"><a href="#运输层协议——TCP协议" class="headerlink" title="运输层协议——TCP协议"></a>运输层协议——TCP协议</h1><h3 id="TCP发送缓存和接收缓存"><a href="#TCP发送缓存和接收缓存" class="headerlink" title="TCP发送缓存和接收缓存"></a>TCP发送缓存和接收缓存</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084629.png" alt="image-20210214194742308" style="zoom:50%;">
-
-<ul>
-<li>应用层与运输层直接间隔着<code>套接字</code></li>
-</ul>
-<h3 id="TCP报文"><a href="#TCP报文" class="headerlink" title="TCP报文"></a>TCP报文</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084634.png" alt="image-20210214194902383" style="zoom:50%;">
-
-<ul>
-<li>序号（32位）：当前发的字节流序号，比方当前的序号是1000，需要发1000个字节，则下次发送时，下一次的序号则从2000开始，这个序号是字节流的号。对方可以通过序号知道发送方发送的是哪个包。</li>
-<li><code>URG</code>：紧急数据</li>
-<li><code>PSH</code>：立即上交</li>
-<li><code>ACK</code>：确认</li>
-<li><code>RST</code>：这个端口不存在，选择其他端口连接</li>
-<li><code>SYN</code>：三次握手，建立连接</li>
-<li><code>FIN</code>：四次挥手，断开连接</li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084642.png" alt="image-20210214195915981" style="zoom:50%;">
-
-<ul>
-<li>在终端上打开远程云主机，然后输入一个字符（”X”），从确认输入到终端显示这个字符的这段时间，发生了什么？（基础面试题目）</li>
-<li>从本地按了<code>X</code>之后，键盘感知到电流波动之后，键盘驱动程序（内核）感知到，然后在内核里面查询这个程序（标准输入）被谁打开了，知道了是被<code>itemto</code>发起了请求，则把<code>X</code>交给<code>itemto</code>，然后由<code>itemto</code>发送给远程云主机，远程云主机收到之后，回一个<code>ACK</code>，附带着把<code>X</code>给传输回来，本地收到<code>X</code>之后，就知道远程云主机已经收到了<code>X</code>， 就会在终端显示出<code>X</code>。</li>
-</ul>
-<h3 id="TCP往返时间估算"><a href="#TCP往返时间估算" class="headerlink" title="TCP往返时间估算"></a>TCP往返时间估算</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084649.png" alt="image-20210214201020087" style="zoom:50%;">
-
-<ul>
-<li><code>SampleRTT</code>：样本时间，单个包的往返时间；样本时间在整个交互过程中一直可以拿到。</li>
-<li><code>EstimatedRTT</code>：估算时间</li>
-<li><code>DevRTT</code>：真实时间与预估时间的差值，即容差</li>
-<li><code>TimeoutInterval</code>：超时时间</li>
-</ul>
-<p>如果只有一次样本时间比较长，并不会对超时时间有多大影响；如果由持续的样本超时，才会对超时时间造成影响。</p>
-<h3 id="流量控制：针对发送方来抑制发送速度"><a href="#流量控制：针对发送方来抑制发送速度" class="headerlink" title="流量控制：针对发送方来抑制发送速度"></a>流量控制：针对发送方来抑制发送速度</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084653.png" alt="image-20210214202148472" style="zoom:50%;">
-
-<ul>
-<li><p>两个缓冲区：发送缓冲区、接收缓冲区</p>
-</li>
-<li><p><code>rwnd</code>：接收缓冲区</p>
-</li>
-</ul>
-<h3 id="三次握手（面试常考）"><a href="#三次握手（面试常考）" class="headerlink" title="三次握手（面试常考）"></a>三次握手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084659.png" alt="image-20210214202647656" style="zoom:50%;">
-
-<ul>
-<li><p>客户端发起，发送<code>SYN</code>包</p>
-</li>
-<li><p>服务端原本阻塞在<code>accept</code>，感知到数据来临时，查看数据，发现是<code>SYN</code>包，即对方要跟自己<code>握手</code>，则服务端发送回一个<code>SYN+ACK</code>报文</p>
-</li>
-<li><p>客户端收到<code>SYN+ACK</code>报文，表明服务端已经是确认该客户端可以对服务端进行连接，此时连接就基本确定，则客户端给服务端回发一个<code>ACK</code>。</p>
-<blockquote>
-<p>记住发送的每个包的名字</p>
-<p>回答为什么是三次握手，不是两次握手，四次握手？</p>
-<ul>
-<li><p>从发起方的角度，三次握手中，客户端可以确认发送的信息能被服务端收到，服务端发送的信息，客户端能收到；</p>
-</li>
-<li><p>从接收方的角度，三次握手中，服务端可以确认发送的信息能被客户端收到，客户端发送的信息，服务端能收到；</p>
-<p>两端发送的信息，都能确认被收到，就成功了。</p>
-<p>假设最后一次握手取消，则服务端并不能确认自己发的数据，客户端有没有接收到，充满不确定性。</p>
-<p>至于超过三次的握手，其实是可以的，但是三次握手已经足够证明双方确认收到信息了，也就没什么必要握手超过三次了，不然就是没用的冗余操作了。</p>
-</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-<h3 id="四次挥手（面试常考）"><a href="#四次挥手（面试常考）" class="headerlink" title="四次挥手（面试常考）"></a>四次挥手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084706.png" alt="image-20210214204239720" style="zoom:50%;">
-
-<ul>
-<li><p>发起方（客户端）发送<code>FIN</code>给接收方（服务端）。</p>
-</li>
-<li><p>接收方收到<code>FIN</code>，确认了对方的<code>分手信息</code>后，会根据自己的情况，确定是否<code>分手</code>，如果确定则会回发一个<code>ACK</code>同意对方的操作；如果选择<code>不分手</code>，会出现异常，即客户端断开连接，但服务端没断开连接，这种叫<code>半关闭连接（半连接）</code>，会生成一种<code>有害的特殊状态的套接字</code>。</p>
-<blockquote>
-<p>假如一开始有100个连接断并形成这种半连接状态，而服务器只能维护1024个连接，则如果半连接的数目一直增多，最终服务器只能维护这些半连接，而无法建立新连接，从而无法与新连接进行交互。</p>
-<p>所以，<code>切记不能写出半连接联系方式！！！！</code></p>
-</blockquote>
-</li>
-<li><p>同时，接收方也会发送<code>FIN</code>给发起方，表明自己也会<code>断开连接</code></p>
-</li>
-<li><p>发起方收到<code>FIN</code>后，也会回发一个<code>ACK</code>同意对方的操作，同时等待<code>两个最大生存周期（30s到120s不等）</code>时间</p>
-<blockquote>
-<p>为什么要四次挥手呢？</p>
-<p>为什么最后发起方要等待<code>两个最大生存周期（30s到120s不等）</code>？</p>
-<ul>
-<li>因为最后的<code>ACK</code>可能会丢包，如果丢包失效，服务器会重新发送一个<code>FIN</code>信号给客户端确认，没有确认就一直发，所以需要等待，以防最后的<code>ACK</code>丢包失效，避免损耗服务器资源。同时，假如断开连接后，客户端的另一个进程恰巧重新打开这个端口，同时上次连接服务器发送的包延迟了，导致当前客户端收到了上一个客户端应该收到的包。</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-<h3 id="TCP-状态转换序列"><a href="#TCP-状态转换序列" class="headerlink" title="TCP 状态转换序列"></a>TCP 状态转换序列</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084715.png" alt="image-20210214210354730" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084728.png" alt="image-20210214210442417" style="zoom:50%;">
-
-<ul>
-<li>写程序很有用</li>
-<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>connect</code>函数，发送<code>SYN</code></li>
-<li>切换成为<code>SYN_SENT</code>状态，表明已发送<code>SYN</code>，然后接收<code>SYNACK</code>，并发送<code>ACK</code></li>
-<li>切换成<code>ESTABLISHED</code>，此时三次握手已经完成，直到这里，都是<code>connect</code>函数在操作；</li>
-<li>连接之后就是关闭（四次挥手），发送<code>FIN</code>（第一次挥手），切换成<code>FIN_WAIT_1</code>，；</li>
-<li>接收<code>ACK</code>，切换成<code>FIN_WAIT_2</code>，然后等着对方继续发送（第二次挥手）；</li>
-<li>接收<code>FIN</code>并发送<code>ACK</code>，切换成<code>FIN_WAIT</code>，然后等待两个最大生存周期（第三、四次挥手）；</li>
-<li>恢复成默认状态（初始状态）<code>closed</code></li>
-</ul>
-<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084734.png" alt="image-20210214211805183" style="zoom:50%;">
-
-<ul>
-<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>bind与listen</code>函数</li>
-<li>切换成为<code>LISTEN</code>状态，此时就是<code>accept</code>函数阻塞中，然后接收<code>SYN</code>，并发送<code>SYNACK</code></li>
-<li>切换成<code>SYN_RCVD</code>，接收<code>ACK</code>（带着数据<code>data</code>），此时三次握手已经完成，切换成<code>ESTABLISHED</code>连接状态</li>
-<li>连接之后就是关闭（四次挥手），接收<code>FIN</code>，发送<code>ACK</code>（第一、二次挥手），切换成<code>CLOSE_WAIT</code>（等待时间极短，等待调用<code>close</code>函数）</li>
-<li>发送<code>FIN</code>，切换成<code>LAST_ACK</code>状态，然后等着对方继续发送（第三次挥手）</li>
-<li>接收<code>ACK</code>，切换成默认状态（初始状态）<code>closed</code>状态（第四次挥手）</li>
-</ul>
-<blockquote>
-<p><code>CLOSE_WAIT</code>、<code>TIME_WAIT</code>比较重要，用得比较多，并且两者均有实际意义。</p>
-</blockquote>
-<h3 id="拥塞控制方法："><a href="#拥塞控制方法：" class="headerlink" title="拥塞控制方法："></a>拥塞控制方法：</h3><p>在网络中，如果通过协议的方式，尽量减少当网络延迟、波动、网络断开之后，数据暴增或减少而引起的网络更加影响网络的情况。</p>
-<ul>
-<li>端到端拥塞控制：<code>TCP</code><ul>
-<li>超时：增加时延</li>
-<li>冗余ACK</li>
-<li>减小发送窗口来让数据变小</li>
-<li>流量控制，使得发送窗口减小</li>
-</ul>
-</li>
-<li>网络辅助的拥塞控制</li>
-</ul>
-<blockquote>
-<p>在底层<code>网络层</code>也支持这样的控制。</p>
-</blockquote>
-<h4 id="ATM、ABR拥塞控制"><a href="#ATM、ABR拥塞控制" class="headerlink" title="ATM、ABR拥塞控制"></a>ATM、ABR拥塞控制</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084742.png" alt="image-20210214221637878" style="zoom: 50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084747.png" alt="image-20210214221616763" style="zoom:50%;">
-
-<ul>
-<li>ATM是不同于分组网络之外的另一种网络。</li>
-<li>把数据包分成<code>数据信元</code>和<code>资源管理信元RM</code>，比例是32 ：1，即32个数据信元后就有一个管理信元</li>
-<li><code>资源管理信元RM</code>：夹杂在<code>数据信元</code>中，一起从客户端移动到服务器端，并记录下这一段路程哪里阻塞了，哪里不会，然后再原封不动的从服务器端返回客户端，通知客户端这段路是否阻塞。同时，没经过一个路由器的时候，都会被路由器感知到，并查看接下来的路是否发送阻塞，如果阻塞，则路由器会调整自己线路。<ul>
-<li>显示转发拥塞指示：<code>EFCI(1bit)</code>，只要这条链路中其中有一个点拥塞了，则会被置为1，让发送方、接收方跟路由器都知道这条链路已经存在问题。</li>
-<li>当目标主机收到大多数为<code>EFCI</code>，则会将其收到的<code>RM信元</code>的<code>CI（拥塞指示比特）</code>设置为<code>1</code></li>
-<li>显示速率<code>ER</code>（两字节）：指示整个链路的速度，经过每个交换机，都会被更新，目的是为了找到网络的吞吐量。</li>
-</ul>
-</li>
-</ul>
-<h3 id="TCP拥塞窗口"><a href="#TCP拥塞窗口" class="headerlink" title="TCP拥塞窗口"></a>TCP拥塞窗口</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084753.png" alt="image-20210214223217108" style="zoom:50%;">
-
-<h3 id="TCP拥塞控制的指导思想"><a href="#TCP拥塞控制的指导思想" class="headerlink" title="TCP拥塞控制的指导思想"></a>TCP拥塞控制的指导思想</h3><ul>
-<li><p>一个丢失的报文段意味着拥塞，丢包就应该减小发送端的发送速率</p>
-</li>
-<li><p>一个确认的报文段表示网络正在向接收方交付报文段，因此，当收到对之前的报文段的<code>ACK</code>后，应该增加发送方速率</p>
-</li>
-<li><p>带宽探测（动态调整）：每次都应该尽可能的加大带宽，直到出现丢包现象才抑制。</p>
-<blockquote>
-<p>几个实验方式如下。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="实验方式一：拥塞控制之慢启动"><a href="#实验方式一：拥塞控制之慢启动" class="headerlink" title="实验方式一：拥塞控制之慢启动"></a>实验方式一：拥塞控制之慢启动</h3><ul>
-<li><p><code>TCP</code>连接建立之初，<code>cwnd</code>被设置为<code>1MSS</code>（一个最大报文段长度），每收到一个确认，将<code>cwnd</code>增加一个<code>MSS</code>。</p>
-</li>
-<li><p>在慢启动过程中，刚开始速度慢，但是会以指数级增长（1、2、4、8）</p>
-</li>
-<li><p>结束慢启动：</p>
-<ul>
-<li><p><code>timeout</code>：重新开始慢启动，慢启动阈值被设置为<code>cwnd/2</code></p>
-<blockquote>
-<p>就比如现在发送了16个MSS，其中一个超时（带宽探测），说明发送量太大，重新设置为8</p>
-</blockquote>
-</li>
-<li><p><code>cwnd &gt;= ssthresh</code>：进入拥塞避免模式</p>
-<blockquote>
-<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><ul>
-<li>在拥塞避免状态下，<code>cwnd</code>每一个<code>RTT</code>增加一个<code>MSS</code>，线性增加（<code>指数增变成线性增</code>）</li>
-<li>结束：<ul>
-<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
-<li>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-</li>
-<li><p>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式（网络没问题，数据包可能出现异常）</p>
-<blockquote>
-<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><ul>
-<li>对收到的每一个<code>冗余ACK</code>，<code>cwnd</code>增加一个<code>MSS</code>（类似指数）</li>
-<li>结束：<ul>
-<li>收到<code>new ACK, cwnd = ssthresh</code>，并进入拥塞避免</li>
-<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
-</ul>
-</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084800.png" alt="image-20210214225741896" style="zoom:50%;">
-
-<h2 id="面试考点"><a href="#面试考点" class="headerlink" title="面试考点"></a>面试考点</h2><p>运输层核心重点：TCP、 UDP</p>
-<p>面试喜欢问的问题：</p>
-<ul>
-<li>TCP为主</li>
-<li>UDP：TCP与UDP有哪些区别，为什么有时选TCP，有时选UDP；<ul>
-<li>时间敏感</li>
-<li>丢包影响不大</li>
-<li>成本低</li>
-<li>对何时发数据，发什么数据，有更加精细的控制（想发就发，无须受到协议的限制）</li>
-<li>如果产生了网络风暴，想要发信息给局域网内的其他机器，让其停止转发一切消息，好停止网络风暴，这个时候，就需要用到UDP，否则用TCP的效率太低</li>
-<li>从整个网络来说，UDP对整个网络是不友好的，因为UDP从不考虑网络处于什么状态，自顾自的发送信息。</li>
-</ul>
-</li>
-</ul>
-<p>用远程终端，输入一个字符时，会发生什么事情？</p>
-<p>SYN攻击：<br>        在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了，使用如下命令可以让之现行：#netstat -nap | grep SYN_RECV</p>
-<p>四次挥手：不管时服务端还是客户端，都可以发起挥手</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
