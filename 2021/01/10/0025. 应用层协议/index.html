@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lobster:300,300italic,400,400italic,700,700italic|Pacifico:300,300italic,400,400italic,700,700italic|Ma Shan Zheng:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="应用层协议网络应用程序的体系结构CS结构：客户端——服务端结构 微信、QQ、钉钉等  客户端直接通过网络跟服务器进行交互，而服务器则为我们提供一些功能。  比较常见，比如微信，都是先把信息发到服务器，再由服务器转发给目标人物 这个体系中的服务端，更多的时候，并不是一台机器，而是企业搭建的数据中心，然后组成虚拟服务器为客户服务，比如百度搜索服务。  P2P结构：端——端结构 百度网盘等    可以把">
+<meta property="og:type" content="article">
+<meta property="og:title" content="应用层协议">
+<meta property="og:url" content="http://example.com/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="Alin&#39;s Blog">
+<meta property="og:description" content="应用层协议网络应用程序的体系结构CS结构：客户端——服务端结构 微信、QQ、钉钉等  客户端直接通过网络跟服务器进行交互，而服务器则为我们提供一些功能。  比较常见，比如微信，都是先把信息发到服务器，再由服务器转发给目标人物 这个体系中的服务端，更多的时候，并不是一台机器，而是企业搭建的数据中心，然后组成虚拟服务器为客户服务，比如百度搜索服务。  P2P结构：端——端结构 百度网盘等    可以把">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223519.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223536.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223547.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223557.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223607.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223622.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223631.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223641.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223648.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223719.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223749.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223802.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223813.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223826.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223836.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223847.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223856.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223907.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223918.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084419.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084356.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084408.png">
+<meta property="article:published_time" content="2021-01-10T03:32:25.000Z">
+<meta property="article:modified_time" content="2021-03-22T10:25:28.078Z">
+<meta property="article:author" content="Alin">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223519.png">
+
+<link rel="canonical" href="http://example.com/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>应用层协议 | Alin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js"></script>
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/a872456824" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alin's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-book fa-fw"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Alin">
+      <meta itemprop="description" content="好好享受生活，慢慢来，一切都会变好的！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          应用层协议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-10 11:32:25" itemprop="dateCreated datePublished" datetime="2021-01-10T11:32:25+08:00">2021-01-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-22 18:25:28" itemprop="dateModified" datetime="2021-03-22T18:25:28+08:00">2021-03-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">系统编程与网络编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/" class="post-meta-item leancloud_visitors" data-flag-title="应用层协议" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="应用层协议"><a href="#应用层协议" class="headerlink" title="应用层协议"></a>应用层协议</h1><h2 id="网络应用程序的体系结构"><a href="#网络应用程序的体系结构" class="headerlink" title="网络应用程序的体系结构"></a>网络应用程序的体系结构</h2><h3 id="CS结构：客户端——服务端结构"><a href="#CS结构：客户端——服务端结构" class="headerlink" title="CS结构：客户端——服务端结构"></a>CS结构：客户端——服务端结构</h3><ul>
+<li>微信、QQ、钉钉等</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223519.png" alt="image-20210213124310552" style="zoom:50%;"></li>
+<li>客户端直接通过网络跟服务器进行交互，而服务器则为我们提供一些功能。 </li>
+<li>比较常见，比如微信，都是先把信息发到服务器，再由服务器转发给目标人物</li>
+<li>这个体系中的服务端，更多的时候，并不是一台机器，而是企业搭建的数据中心，然后组成虚拟服务器为客户服务，比如百度搜索服务。</li>
+</ul>
+<h3 id="P2P结构：端——端结构"><a href="#P2P结构：端——端结构" class="headerlink" title="P2P结构：端——端结构"></a>P2P结构：端——端结构</h3><ul>
+<li><p>百度网盘等</p>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223536.png" alt="image-20210213124755785" style="zoom:50%;">
+</li>
+<li><p>可以把所有的用户通过这种服务连接在一起。两主机为对等方，其扩展性较强，可以做到流量密集。一方下载数据可能会从另一方那里下载。</p>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li><p><code>ISP</code>友好性很差，所有<code>ISP</code>都想限制<code>P2P</code>的流量，因为网络趋向于一个上下流不对等的情况。 </p>
+<blockquote>
+<p>虽然使用了上载流量，但不能给<code>ISP</code>网络提供商带来效益。</p>
+</blockquote>
+</li>
+<li><p>安全性：因为是对等的，即无论是下载还是上传，都需要放开更大的权限，这就对安全性存在着一定的考验。</p>
+</li>
+<li><p>合适的激励</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程间通信："><a href="#进程间通信：" class="headerlink" title="进程间通信："></a>进程间通信：</h3><ul>
+<li><p>所有<code>CS</code>结构的网络应用程序，都是由成对的进程组构成；</p>
+</li>
+<li><p>在<code>P2P</code>结构中，发起通信的为客户端，等待服务的进程为服务器；</p>
+<blockquote>
+<p>本地的<code>进程间通信（IPC）</code>使用共享内存，共享信号，条件变量等。</p>
+<p>这里讲的是两个不同主机之间的进程间通信。</p>
+<p><code>P2P</code>并不像<code>CS</code>，有明确的客户端与服务端，所以谁发起，谁就是客户端</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="进程与计算机网络之间的接口："><a href="#进程与计算机网络之间的接口：" class="headerlink" title="进程与计算机网络之间的接口："></a>进程与计算机网络之间的接口：</h3><ul>
+<li><code>Socket</code>是应用程序与网络之间的<code>API</code>；</li>
+<li>应用程序对于运输层的控制仅限于：<ul>
+<li>选择运输层协议</li>
+<li>设定参数</li>
+</ul>
+</li>
+</ul>
+<h3 id="进程寻址："><a href="#进程寻址：" class="headerlink" title="进程寻址："></a>进程寻址：</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223547.png" alt="image-20210213130639520" style="zoom:50%;">
+
+<h3 id="可供应用程序使用的运输服务："><a href="#可供应用程序使用的运输服务：" class="headerlink" title="可供应用程序使用的运输服务："></a>可供应用程序使用的运输服务：</h3><ul>
+<li><p>应用程序服务要求：</p>
+<ul>
+<li><p>可靠数据传输（<code>TCP</code>）</p>
+</li>
+<li><p>吞吐量 </p>
+</li>
+<li><p>定时</p>
+</li>
+<li><p>安全性：避免传输的信息在网络上裸奔。</p>
+<blockquote>
+<p>像之前的程序，都没有考虑安全性，信息都是在网络上裸奔，只要劫持了该信息，就可以知道信息内容。</p>
+</blockquote>
+<blockquote>
+<p>举例：比如要劫持某个人在网络的信息，可以做<code>wify</code>伪装（接入点伪装，这也是不推荐大家使用公共网络的原因），可以把自己<code>wify</code>的<code>SSID与密码</code>设置跟对方需要想要连接的<code>wify</code>相同，只要自己的热点信号比公共<code>wify</code>的信号强，则对方的网络会<code>优先选择</code>你的<code>wify</code>，这样对方的所有数据都会经由你的设备进入互联网，这个时候如果在你的设备上有一个<code>抓包</code>工具，就可以抓到对方的数据包，这样就可以对对方的数据进行<code>拆包解析</code>，从而查看对方的信息。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用程序的网络服务要求："><a href="#应用程序的网络服务要求：" class="headerlink" title="应用程序的网络服务要求："></a>应用程序的网络服务要求：</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223557.png" alt="image-20210213132019302" style="zoom:50%;">
+
+<ul>
+<li>不同的选择决定选择<code>TCP</code>还是<code>UDP</code>。</li>
+<li>文件传输、电子邮件、Web文档、即时讯息：<code>TCP</code>；</li>
+</ul>
+<h3 id="应用程序及其协议，支持的运输层协议："><a href="#应用程序及其协议，支持的运输层协议：" class="headerlink" title="应用程序及其协议，支持的运输层协议："></a>应用程序及其协议，支持的运输层协议：</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223607.png" alt="image-20210213132318740" style="zoom:50%;">
+
+<ul>
+<li>文件传输也有使用<code>UDP</code>的，此时就出现了一个问题，即<code>UDP</code>能否实现可靠数据传输？理论上是可以的，可以在上层自己做一个判断，判断数据包是否完整，不完整则重发，再由<code>UDP</code>发送出去。</li>
+</ul>
+<h3 id="应用层协议定义："><a href="#应用层协议定义：" class="headerlink" title="应用层协议定义："></a>应用层协议定义：</h3><ul>
+<li><p>交换报文类型，例如请求报文和响应报文</p>
+</li>
+<li><p>各种报文类型的<code>语法</code>，如报文中各个字段的定义以及这些字段的描述</p>
+</li>
+<li><p>字段的<code>语义</code>，即这些字段中包含信息的含义</p>
+</li>
+<li><p><code>同步</code>：一个进程何时以及如何发送报文，对报文进行响应的规则</p>
+<blockquote>
+<p>很多协议，包括后续的项目，都会把数据交互过程封装成一个类似协议的东西。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="WEB与HTTP协议："><a href="#WEB与HTTP协议：" class="headerlink" title="WEB与HTTP协议："></a>WEB与HTTP协议：</h2><h3 id="WEB服务的应用层协议："><a href="#WEB服务的应用层协议：" class="headerlink" title="WEB服务的应用层协议："></a>WEB服务的应用层协议：</h3><ul>
+<li><p>HTTP（超文本传输协议，HyperText Transfer Protocol）</p>
+</li>
+<li><p>客户程序和服务器程序运行在不同的端系统中，通过交换<code>HTTP</code>报文进行会话 </p>
+<blockquote>
+<p>上网用的就是<code>HTTP</code>或者<code>HTTPS</code>。 </p>
+</blockquote>
+</li>
+</ul>
+<h3 id="WEB术语"><a href="#WEB术语" class="headerlink" title="WEB术语"></a>WEB术语</h3><ul>
+<li><code>Web</code>页面（Web page，文档）：通过浏览器解析出来的源码</li>
+<li>对象：一切皆对象</li>
+<li><code>HTML</code>基本文件</li>
+<li><code>URL</code>：统一资源定位服务，在<code>HTTP</code>中下载资源、访问资源，都是基于<code>URL</code>，通过这个服务，可以得知需要的资源放在什么地方。</li>
+<li><code>Web</code>浏览器：替用户发起请求响应，收到响应后将其解析展示出来。</li>
+<li><code>Web</code>服务器：安装在服务器上的<code>HTTPD</code>等，是一个应用程序，监听在80端口，等着用户发起请求报文，收到后解析出来，如果本地有相关资源或者数据，则读取出来并通过响应报文发回来，如果没有则会给用户发送<code>404</code>。</li>
+</ul>
+<h3 id="HTTP的请求-响应行为"><a href="#HTTP的请求-响应行为" class="headerlink" title="HTTP的请求-响应行为"></a>HTTP的请求-响应行为</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223622.png" alt="image-20210213210955646" style="zoom:50%;">
+
+<ul>
+<li>请求：请求报文</li>
+<li>响应：响应报文，至于响应报文对不对，比如<code>404</code>等，都是在响应报文中定义的</li>
+</ul>
+<h3 id="HTTP特点"><a href="#HTTP特点" class="headerlink" title="HTTP特点"></a>HTTP特点</h3><ul>
+<li><p>底层使用了<code>TCP</code>协议</p>
+</li>
+<li><p><code>HTTP</code>协议不用担心数据丢失，也不用关注<code>TCP</code>在网络中的数据丢失和乱序故障等细节</p>
+</li>
+<li><p><code>HTTP</code>是一个无状态协议，<code>服务器不存储关于客户的状态信息</code></p>
+<blockquote>
+<p>即刚下载了一个文件，从新下载的时候，依旧照常下，<code>HTTP</code>不会记录已经下载了。</p>
+<p>像平时出现的那种刚跟别人说想去哪旅游，一上网就被推送了，这种类似被监听了的现象，并不是<code>HTTP</code>的锅，而是<code>附加服务</code>，<code>HTTP</code>本身是一个无状态协议。</p>
+</blockquote>
+</li>
+<li><p><code>HTTP</code>服务器总是处于打开状态，具有一个固定<code>IP</code></p>
+</li>
+<li><p><code>HTTP</code>使用了<code>CS</code>应用程序结构</p>
+</li>
+</ul>
+<h3 id="非持续连接与持续连接"><a href="#非持续连接与持续连接" class="headerlink" title="非持续连接与持续连接"></a>非持续连接与持续连接</h3><ul>
+<li><p>非持续连续也叫<code>短连接</code>，持续连接也叫<code>长连接</code></p>
+</li>
+<li><p><code>HTTP</code>客户进程发起一个到服务器的<code>TCP</code>连接，使用默认端口<code>8.0</code>，在服务器上和客户端上都有一个套接字与之对应；</p>
+</li>
+<li><p><code>HTTP</code>客户经它的套接字向服务器发送请求报文。报文中包好了要请求的对象；</p>
+</li>
+<li><p><code>HTTP</code>服务器接收该报文，从服务器上检索对象，在<code>HTTP</code>响应报文中封装该对象，并通过套接字发送</p>
+</li>
+<li><p><code>HTTP</code>服务器通知<code>TCP</code>断开<code>TCP</code>连接</p>
+</li>
+<li><p><code>HTTP</code>客户接收响应报文，<code>TCP</code>连接关闭</p>
+</li>
+<li><p>对于多个对象重复以上步骤 </p>
+</li>
+<li><p>三次握手连接连接如下：</p>
+</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223631.png" alt="image-20210213212356884" style="zoom:50%;">
+
+<blockquote>
+<p><code>TCP</code>连接为什么是<code>三次握手</code>，而不是<code>二次握手</code>或者<code>四次握手</code>？</p>
+</blockquote>
+<ul>
+<li><p>第三次握手中就包含了<code>请求数据</code>。</p>
+</li>
+<li><p>服务端在第三次握手之后开始检索数据，并发送</p>
+</li>
+<li><p><code>TCP</code>请求报文样式：</p>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223641.png" alt="image-20210213212712640" style="zoom:50%;">
+</li>
+<li><p>方法：请求方法，包括<code>get获取数据</code>，<code>post提交表单</code>，<code>head测试</code>，<code>put把本地数据放在远端</code>，<code>delete从远端删除数据 </code></p>
+</li>
+<li><p> <code>url</code>：要处理的资源的具体连接</p>
+</li>
+<li><p>版本：当前协议的版本 </p>
+</li>
+<li><p>首部字段名：请求的浏览器类型</p>
+<blockquote>
+<p>比如用<code>mac</code>系统下载<code>zoom</code>安装包，网络不会推送<code>win</code>版本，这是因为发送请求时，带了<code>浏览器类型</code>的原因。</p>
+</blockquote>
+</li>
+<li><p>实体主体：真实的数据，比如上传数据，则把数据放在实体主体里面 </p>
+</li>
+<li><p><code>TCP</code>响应报文样式：</p>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223648.png" alt="image-20210213213643331" style="zoom:50%;">
+</li>
+<li><p>状态码：比如<code>404没有找到</code>，<code>200找到数据</code></p>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223719.png" alt="image-20210213213819803" style="zoom:50%;">
+
+</li>
+</ul>
+<h3 id="用户与服务器的交互——COOKIE"><a href="#用户与服务器的交互——COOKIE" class="headerlink" title="用户与服务器的交互——COOKIE"></a>用户与服务器的交互——COOKIE</h3><ul>
+<li><p>在<code>HTTP</code>响应报文中的一个<code>cookie</code>首部行</p>
+</li>
+<li><p>在<code>HTTP</code>请求报文中的一个<code>cookie</code>首部行</p>
+</li>
+<li><p>在用户端由浏览器管理的<code>cookie</code>文件</p>
+</li>
+<li><p>位于<code>WEB</code>后端的一个数据库</p>
+<blockquote>
+<p>由于<code>cookie</code>，导致当你一开始搜索一个话题时，后续几天系统会不断自动推送与之相关的话题链接或者广告</p>
+</blockquote>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223749.png" alt="image-20210213214339303" style="zoom:50%;">
+
+</li>
+</ul>
+<blockquote>
+<p>比如第一次进京东浏览书籍的时候，如果没有登录，京东服务器发现自身并无该账户的信息，则会发响应报文，并为该账户建立一个初始的<code>cookie</code>8888，并保存在本地中，当下次再进入京东的时候，<code>cookie</code>会自动检索本地中该账户的相关信息，包括曾经做过的所有操作，浏览了什么商品等等，然后针对这些操作为该账户推送相关的内容。然后这个时候如果注册并登录了账户，则该账户会与该<code>cookie8888</code>绑定在一起，该账户的所有信息都会与<code>cookie8888</code>绑定在一起。</p>
+<p>上面是单个站点的情况，同时大部分信息都是由服务器存储，用于做数据分析。</p>
+<p>而现在很多的商业模式是大家互相买数据，比如腾讯跟淘宝共享数据的话，则腾讯的用户就是淘宝的用户，这些用户在腾讯的所有操作都会被移植到淘宝，即<code>每个人都在网络裸奔</code>。</p>
+</blockquote>
+<h3 id="WEB缓存区（代理服务器）"><a href="#WEB缓存区（代理服务器）" class="headerlink" title="WEB缓存区（代理服务器）"></a>WEB缓存区（代理服务器）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223802.png" alt="image-20210213215721744" style="zoom:50%;">
+
+<ul>
+<li>需要一个资源，并不一定需要从资源最原始的地方下载，可以把所有的请求都设置成为经过一个<code>WEB服务器</code>，如果<code>WEB服务器</code>没有该资源，则会帮忙从更上一级的<code>WEB服务器</code>请求资源。</li>
+<li>可以在局域网中建立一个<code>WEB服务器</code>，然后把局域网中所有电脑的请求都设置成为经过该<code>WEB服务器</code>，这样所有的需要经过<code>WEB服务器</code>的时候，如果本地服务器中有，则直接给与发起请求的客户端，如果服务器没有，则<code>WEB服务器</code>会向更高一级发送请求，直到找到给资源，并保存在<code>WEB服务器</code>中，然后让发起请求方从<code>WEB服务器</code>中下载，下次再有客户端发送相同请求，则直接将该保存资源给与对方下载。</li>
+<li><code>WEB服务器</code>中的资源可能会过期，所以为了避免过期，则该服务器与资源最原始的地方需要进行定期的沟通，避免过期。比如客户端发送一个请求响应，<code>WEB</code>服务器会发送一个<code>modify</code>的请求报文给资源最初的地方，如果没有修改，则会给<code>WEB服务器</code>返回一个空报文，通知<code>WEB服务器</code>直接给客户端下载即可；如果有修改更新，则会发送个<code>WEB服务器</code>一个修改更新版本。</li>
+<li>WEB缓存器的优点：<ul>
+<li>大大减少对客户请求的响应时间（从资源最初所在服务器响应变成本地服务器响应）</li>
+<li>减少了机构的接入链路到因特网的通信量</li>
+<li>从整体上大大减少因特网上的<code>WEB</code>流量，改善所有应用的性能。</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP协议与HTTPS协议"><a href="#HTTP协议与HTTPS协议" class="headerlink" title="HTTP协议与HTTPS协议"></a>HTTP协议与HTTPS协议</h2><h3 id="HTTPS-SECURE-HTTP"><a href="#HTTPS-SECURE-HTTP" class="headerlink" title="HTTPS(SECURE HTTP)"></a>HTTPS(SECURE HTTP)</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223813.png" alt="image-20210214103820579" style="zoom:50%;">
+
+<ul>
+<li><p>与<code>HTTP</code>的区别就是中间多了一层<code>加密\解密</code>，避免在网络上裸奔</p>
+</li>
+<li><p><code>https</code>协议需要到<code>ca</code>申请证书，一般免费证书很少，需要交费（价格不便宜）</p>
+</li>
+<li><p><code>http</code>是超文本传输协议，信息是明文传输（容易被解密），<code>https</code>则是具有安全性的<code>ssl</code>加密传输协议（能解密，较难）</p>
+</li>
+<li><p><code>http</code>和<code>https</code>使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443</p>
+<blockquote>
+<p>小于<code>1024</code>的端口，称之为<code>周知端口</code>，即给全世界有名的系统服务开辟的端口，即<code>VIP</code>端口，类似<code>110</code>，只有<code>超管</code>才能用这些端口。</p>
+</blockquote>
+</li>
+<li><p><code>http</code>的连接很简单，是无状态的</p>
+</li>
+<li><p><code>https</code>协议是由<code>ssl+http</code>协议构建的可进行加密传输、身份认证的网络协议，要比<code>http</code>协议安全</p>
+</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223826.png" alt="image-20210214104805530" style="zoom: 33%;">
+
+<ul>
+<li>变化：把一条一条的短连接封装在一条<code>TCP</code>连接中，所有对象都封装在这一条连接中传输，这叫连接的复用。</li>
+<li><code>HTTP</code>是一个短连接，数据传输完成后就会立马断开连接，一问一答。</li>
+<li>每建立一个连接都会消耗一点资源，而如果在类似<code>百度</code>这种大型网站的情况下，一秒钟可能会建立<code>上亿</code>的连接，这样就会浪费极大的资源，这种情况可以考虑一条连接在数据传输完成后不会立马断开连接，使得后面如果其他客户端也要建立连接，可以直接使用该连接，而不用重新建立，浪费资源。</li>
+<li><code>http/2</code>把多个对象封装在一起，由一条<code>TCP</code>直接连接传输过去，交给对方去解析。</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223836.png" alt="image-20210214105812431" style="zoom:33%;">
+
+</li>
+</ul>
+<h2 id="FTP协议"><a href="#FTP协议" class="headerlink" title="FTP协议"></a>FTP协议</h2><ul>
+<li>现在使用较少，主要用在本地局域网。</li>
+<li>现在变成了服务其他应用的功能，个人用户用的比较少</li>
+<li>打开之后就类似于一个远程文件夹</li>
+</ul>
+<h3 id="FTP文本传输协议"><a href="#FTP文本传输协议" class="headerlink" title="FTP文本传输协议"></a>FTP文本传输协议</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223847.png" alt="image-20210214110215434" style="zoom:33%;">
+</li>
+<li><p>组成：本地文件系统，FTP服务器对应的远程文件系统，本地FTP客户端（提供给用户一些接口，可以是浏览器，也可以是终端等）</p>
+</li>
+<li><p>用户通过命令的形式登录远程服务器，查看有哪些需要用到的数据，再传输到本地使用；或者把本地的数据传输到远程服务器中。</p>
+</li>
+</ul>
+<h3 id="FTP的TCP连接（双连接）"><a href="#FTP的TCP连接（双连接）" class="headerlink" title="FTP的TCP连接（双连接）"></a>FTP的TCP连接（双连接）</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223856.png" alt="image-20210214113243409" style="zoom:33%;">
+</li>
+<li><p>第一条连接（长连接）：控制连接，<code>一直存在</code>，该连接走<code>控制指令</code></p>
+</li>
+<li><p>第二条连接（短连接）：数据连接，<code>临时存在</code>，该连接走数据，数据传输完成，就断开该连接</p>
+</li>
+<li><p>好处：</p>
+<ul>
+<li>在这里，使用<code>TCP</code>的发起者是人，并不是浏览器，这也就意味着<code>FTP</code>并不会有<code>很多的连接</code>，所以，这个双连接不会有太多的成本，甚至可以说这点成本服务器是感知不到的，同时，也没有一个<code>FTP服务器</code>会支持特别多的<code>并发</code>，如果需要特别高的<code>并发</code>，也不会选择<code>FTP</code>，而是选择其他方案了。</li>
+<li>双连接会使得业务实现变得更加简单。先不从安全性等方面考虑，如果只是简单的随便抓一条连接就来充当数据连接，一方面，如果数据丢失，不好找出谁是发起者；另一方面，从何时为传输停止时间考虑，如果不额外建立一条数据连接，单单用控制连接来充当数据连接，那控制连接需要是不是的做一个判断，判断是否已经传输完成，这样的操作成本更改，还不如用一短连接，数据传输完成就会发送对应信号通知已经传输完成。</li>
+</ul>
+<blockquote>
+<p>为什么一定要双连接呢？在你需要传数据的时候，此时的控制连接是空着的，闲置的，那为什么不能直接用该控制连接传数据呢？</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="FTP命令和回答"><a href="#FTP命令和回答" class="headerlink" title="FTP命令和回答"></a>FTP命令和回答</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223907.png" alt="image-20210214120733270" style="zoom: 50%;">
+
+<h3 id="FTP典型回答"><a href="#FTP典型回答" class="headerlink" title="FTP典型回答"></a>FTP典型回答</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223918.png" alt="image-20210214120755829" style="zoom: 50%;">
+
+<h2 id="SMTP、POP3、IMAP协议（邮件）"><a href="#SMTP、POP3、IMAP协议（邮件）" class="headerlink" title="SMTP、POP3、IMAP协议（邮件）"></a>SMTP、POP3、IMAP协议（邮件）</h2><ul>
+<li>早期的互联网主要业务是邮件。</li>
+</ul>
+<h3 id="SMTP简单邮件传输协议"><a href="#SMTP简单邮件传输协议" class="headerlink" title="SMTP简单邮件传输协议"></a>SMTP简单邮件传输协议</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084419.png" alt="image-20210214121350250" style="zoom:50%;">
+
+<ul>
+<li><p>用户 A 的代理：网页，邮件客户端等</p>
+</li>
+<li><p>由<code>SMTP</code>把信息通过<code>TCP</code>协议发送到<code>用户A的邮件服务器</code></p>
+<blockquote>
+<p>比方说本地用户为<code>126</code>，当<code>126</code>账户编辑好邮件点击发送时，本地客户端就会建立起一条连接，连接到<code>126服务器</code>上（底层是<code>TCP</code>连接，上层是<code>SMTP</code>协议），从应用层角度，会匹配账户跟密码，正确了才准许连接。</p>
+<p>从底层<code>tcp</code>层面看，先建立一条<code>tcp</code>连接，再发送登录指令，依次发送账户跟密码的相关信息，正确了，这条连接才准许传输数据，再告诉应用层连接成功，应用层再把数据封装好，最后重新回到<code>tcp</code>连接中，把数据源源不断的发送到<code>126</code>服务器中。</p>
+</blockquote>
+</li>
+<li><p>从用户 A 的代理发送过来的数据会先放在<code>任务队列</code>中排队，避免在满负荷的情况还继续工作从而崩溃。</p>
+</li>
+<li><p><code>用户A的邮件服务器</code>中会拆开数据包，查看数据的目的地以及是否合理等，都没问题了，才会发送给<code>用户B的邮件服务器</code>，然后等着客户端主动来提取数据，查看邮件。</p>
+<blockquote>
+<p>比方说上邮箱中选择接收所有邮件等类似操作，都是代理发起的请求，请求<code>用户B的邮件服务器</code>发送近期的的所有邮件。</p>
+<p>而诸如对方一发送邮件，另一方就收到新邮件提示的原因，就是因为代理是频繁的访问<code>用户B的邮件服务器</code>，间隔时间较短，所以使得人们觉得，一方刚发送，另一方就收到通知。而这个过程，其实会耗费较多资源。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="DNS协议（域名解析符）"><a href="#DNS协议（域名解析符）" class="headerlink" title="DNS协议（域名解析符）"></a>DNS协议（域名解析符）</h2><ul>
+<li><p>作用：将主域名与<code>IP</code>地址做一个转换，唯一值</p>
+<blockquote>
+<p>比如访问百度，需要知道百度的<code>IP</code>地址。</p>
+<p>不管是真名还是别名，均能通过<code>DNS</code>得到真实的目的地。</p>
+</blockquote>
+</li>
+<li><p>DNS 提供的服务</p>
+<ul>
+<li><p>主机名到<code>IP</code>地址的转换</p>
+</li>
+<li><p>主机别名</p>
+</li>
+<li><p>邮件服务器别名</p>
+</li>
+<li><p>负载均衡：将服务分散开，避免过于集中，从而导致负载过大。</p>
+<blockquote>
+<p>比方说，百度的服务肯定不止一个，因为如果只有一个的话，那很容易就因为高负荷而使得百度系统崩溃了。所以百度的域名后面应该牵扯到了很多的域名或者<code>IP地址</code>，而每个用户的请求都需要通过一套方案最终落到一个唯一的机器上，这就是<code>负载均衡</code>。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="集中式DNS可能遇到的问题（即全球只有一个DNS服务器）"><a href="#集中式DNS可能遇到的问题（即全球只有一个DNS服务器）" class="headerlink" title="集中式DNS可能遇到的问题（即全球只有一个DNS服务器）"></a>集中式DNS可能遇到的问题（即全球只有一个DNS服务器）</h3><ul>
+<li><p>单点故障：一个点出现问题，导致整个系统出了问题，应该避免。</p>
+<blockquote>
+<p>通过多次冗余（看似没用）的操作来维护。</p>
+</blockquote>
+</li>
+<li><p>通信容量大</p>
+</li>
+<li><p>远距离集中式数据库，时延高</p>
+</li>
+<li><p>维护不易</p>
+</li>
+</ul>
+<blockquote>
+<p>设计应用时，<code>集中式</code>有好处，但也有<code>巨大的隐患</code>，所以，业务要低耦合，或者尽量不耦合，即没有过多的连续性，尽可能不依赖其他方面，这样哪怕一方面出故障了，也不会影响整个系统。</p>
+</blockquote>
+<h3 id="DNS域名系统"><a href="#DNS域名系统" class="headerlink" title="DNS域名系统"></a>DNS域名系统</h3><ul>
+<li><p>根DNS服务器</p>
+<ul>
+<li>因特网上有13个</li>
+</ul>
+</li>
+<li><p>顶级域DNS服务器（TLD、com、cn）</p>
+</li>
+<li><p>权威DNS服务器</p>
+</li>
+<li><p>本地DNS服务器</p>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084356.png" alt="image-20210214130322577" style="zoom:50%;">
+</li>
+<li><p>本地DNS可能有很多个，不止一个</p>
+</li>
+<li><p>请求主机发送请求，本地DNS发现本地没有，就一一查询根DNS、TLD、权威DNS等，直到查到域名，返回给本地DNS备份，并发送回请求主机。备份会保存一段时间。</p>
+<blockquote>
+<p>2、3、4、5、6、7是<code>迭代</code>还是<code>递归</code>呢？</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="DNS记录"><a href="#DNS记录" class="headerlink" title="DNS记录"></a>DNS记录</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084408.png" alt="image-20210214131033596" style="zoom: 50%;">
+
+<ul>
+<li>该记录会保存一段时间，这段时间内都可以直接使用，如果超过该时间，则记录会被清除，请求主机如果想再次拿到该域名，需要重新查找。</li>
+</ul>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><ul>
+<li>如何通过应用层协议做到进程间通信/远程通信？</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+    </div>
+
+    
+    
+    
+
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Alin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/" title="应用层协议">http://example.com/2021/01/10/0025. 应用层协议/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/" rel="prev" title="计算机网络概论">
+      <i class="fa fa-chevron-left"></i> 计算机网络概论
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/10/0011.%20%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/" rel="next" title="哈夫曼编码">
+      哈夫曼编码 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">应用层协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">网络应用程序的体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CS%E7%BB%93%E6%9E%84%EF%BC%9A%E5%AE%A2%E6%88%B7%E7%AB%AF%E2%80%94%E2%80%94%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">CS结构：客户端——服务端结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P2P%E7%BB%93%E6%9E%84%EF%BC%9A%E7%AB%AF%E2%80%94%E2%80%94%E7%AB%AF%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.2.</span> <span class="nav-text">P2P结构：端——端结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%EF%BC%9A"><span class="nav-number">1.1.3.</span> <span class="nav-text">进程间通信：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B9%8B%E9%97%B4%E7%9A%84%E6%8E%A5%E5%8F%A3%EF%BC%9A"><span class="nav-number">1.1.4.</span> <span class="nav-text">进程与计算机网络之间的接口：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%AF%BB%E5%9D%80%EF%BC%9A"><span class="nav-number">1.1.5.</span> <span class="nav-text">进程寻址：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%BE%9B%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%90%E8%BE%93%E6%9C%8D%E5%8A%A1%EF%BC%9A"><span class="nav-number">1.1.6.</span> <span class="nav-text">可供应用程序使用的运输服务：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E8%A6%81%E6%B1%82%EF%BC%9A"><span class="nav-number">1.1.7.</span> <span class="nav-text">应用程序的网络服务要求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%8F%8A%E5%85%B6%E5%8D%8F%E8%AE%AE%EF%BC%8C%E6%94%AF%E6%8C%81%E7%9A%84%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%EF%BC%9A"><span class="nav-number">1.1.8.</span> <span class="nav-text">应用程序及其协议，支持的运输层协议：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="nav-number">1.1.9.</span> <span class="nav-text">应用层协议定义：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WEB%E4%B8%8EHTTP%E5%8D%8F%E8%AE%AE%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">WEB与HTTP协议：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WEB%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">WEB服务的应用层协议：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WEB%E6%9C%AF%E8%AF%AD"><span class="nav-number">1.2.2.</span> <span class="nav-text">WEB术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E7%9A%84%E8%AF%B7%E6%B1%82-%E5%93%8D%E5%BA%94%E8%A1%8C%E4%B8%BA"><span class="nav-number">1.2.3.</span> <span class="nav-text">HTTP的请求-响应行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E7%89%B9%E7%82%B9"><span class="nav-number">1.2.4.</span> <span class="nav-text">HTTP特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E6%8C%81%E7%BB%AD%E8%BF%9E%E6%8E%A5%E4%B8%8E%E6%8C%81%E7%BB%AD%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.5.</span> <span class="nav-text">非持续连接与持续连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BA%A4%E4%BA%92%E2%80%94%E2%80%94COOKIE"><span class="nav-number">1.2.6.</span> <span class="nav-text">用户与服务器的交互——COOKIE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WEB%E7%BC%93%E5%AD%98%E5%8C%BA%EF%BC%88%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%89"><span class="nav-number">1.2.7.</span> <span class="nav-text">WEB缓存区（代理服务器）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP%E5%8D%8F%E8%AE%AE%E4%B8%8EHTTPS%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.3.</span> <span class="nav-text">HTTP协议与HTTPS协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS-SECURE-HTTP"><span class="nav-number">1.3.1.</span> <span class="nav-text">HTTPS(SECURE HTTP)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FTP%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.4.</span> <span class="nav-text">FTP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.4.1.</span> <span class="nav-text">FTP文本传输协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E7%9A%84TCP%E8%BF%9E%E6%8E%A5%EF%BC%88%E5%8F%8C%E8%BF%9E%E6%8E%A5%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">FTP的TCP连接（双连接）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E5%91%BD%E4%BB%A4%E5%92%8C%E5%9B%9E%E7%AD%94"><span class="nav-number">1.4.3.</span> <span class="nav-text">FTP命令和回答</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FTP%E5%85%B8%E5%9E%8B%E5%9B%9E%E7%AD%94"><span class="nav-number">1.4.4.</span> <span class="nav-text">FTP典型回答</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SMTP%E3%80%81POP3%E3%80%81IMAP%E5%8D%8F%E8%AE%AE%EF%BC%88%E9%82%AE%E4%BB%B6%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">SMTP、POP3、IMAP协议（邮件）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SMTP%E7%AE%80%E5%8D%95%E9%82%AE%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.5.1.</span> <span class="nav-text">SMTP简单邮件传输协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS%E5%8D%8F%E8%AE%AE%EF%BC%88%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E7%AC%A6%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">DNS协议（域名解析符）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E5%BC%8FDNS%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%88%E5%8D%B3%E5%85%A8%E7%90%83%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AADNS%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%89"><span class="nav-number">1.6.1.</span> <span class="nav-text">集中式DNS可能遇到的问题（即全球只有一个DNS服务器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.6.2.</span> <span class="nav-text">DNS域名系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS%E8%AE%B0%E5%BD%95"><span class="nav-number">1.6.3.</span> <span class="nav-text">DNS记录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">1.7.</span> <span class="nav-text">思考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Alin"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Alin</p>
+  <div class="site-description" itemprop="description">好好享受生活，慢慢来，一切都会变好的！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021- – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-star"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alin</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>-->
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <!--<span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数 <span id="busuanzi_value_site_uv"></span> 人</span>
+    <span class="post-meta-divider">|</span>-->
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<!---->
+<!---->
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/gh/HCLonely/Valine@latest/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'oiaHYqQjE4QQBGP5H8XmxO8z-gzGzoHsz',
+      appKey     : 'xrK4f5nYeGyJ0MgOfkcC5cOD',
+      placeholder: "",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+</body>
+
+  <!-- require APlayer -->
+<div class="aplayer" 
+  data-id="486899256" 
+  data-server="netease" 
+  data-type="playlist" 
+  data-fixed="true" 
+  data-autoplay="true" 
+  data-order="random" 
+  data-volume="0.55" 
+  data-theme="#cc543a" 
+  data-preload="auto" >
+</div>
+
+</html>

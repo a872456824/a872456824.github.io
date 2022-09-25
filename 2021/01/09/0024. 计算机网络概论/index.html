@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lobster:300,300italic,400,400italic,700,700italic|Pacifico:300,300italic,400,400italic,700,700italic|Ma Shan Zheng:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="计算机网络概论OSI 七层模型  计算机网络传输数据的封装过程（数据封装、解封） 当你在网站输入一个网站域名，点击回车后，会发送什么事情？ （面试常问）     第一个设备（源）：应用层产生一个message报文，到传输层贴上端口信息，到网络层贴上目的地IP信息，到数据链路层（本地局域网） 贴上mark地址，此时数据准备发出，并已经知道目的地在哪，即局域网这部机器最终到哪台机器去，最后到物理层。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络概论">
+<meta property="og:url" content="http://example.com/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/index.html">
+<meta property="og:site_name" content="Alin&#39;s Blog">
+<meta property="og:description" content="计算机网络概论OSI 七层模型  计算机网络传输数据的封装过程（数据封装、解封） 当你在网站输入一个网站域名，点击回车后，会发送什么事情？ （面试常问）     第一个设备（源）：应用层产生一个message报文，到传输层贴上端口信息，到网络层贴上目的地IP信息，到数据链路层（本地局域网） 贴上mark地址，此时数据准备发出，并已经知道目的地在哪，即局域网这部机器最终到哪台机器去，最后到物理层。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223201.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223241.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223252.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223259.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223306.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223313.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223351.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223400.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223431.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223446.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223455.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223505.png">
+<meta property="article:published_time" content="2021-01-09T03:32:25.000Z">
+<meta property="article:modified_time" content="2021-03-22T10:25:17.559Z">
+<meta property="article:author" content="Alin">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223201.png">
+
+<link rel="canonical" href="http://example.com/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>计算机网络概论 | Alin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js"></script>
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/a872456824" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alin's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-book fa-fw"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Alin">
+      <meta itemprop="description" content="好好享受生活，慢慢来，一切都会变好的！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机网络概论
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-09 11:32:25" itemprop="dateCreated datePublished" datetime="2021-01-09T11:32:25+08:00">2021-01-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-22 18:25:17" itemprop="dateModified" datetime="2021-03-22T18:25:17+08:00">2021-03-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">系统编程与网络编程</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/" class="post-meta-item leancloud_visitors" data-flag-title="计算机网络概论" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="计算机网络概论"><a href="#计算机网络概论" class="headerlink" title="计算机网络概论"></a>计算机网络概论</h1><h2 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223201.png" alt="image-20210211102215302" style="zoom:50%;">
+
+<h2 id="计算机网络传输数据的封装过程（数据封装、解封）"><a href="#计算机网络传输数据的封装过程（数据封装、解封）" class="headerlink" title="计算机网络传输数据的封装过程（数据封装、解封）"></a>计算机网络传输数据的封装过程（数据封装、解封）</h2><blockquote>
+<p>当你在网站输入一个网站域名，点击回车后，会发送什么事情？ （<code>面试常问</code>）</p>
+</blockquote>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223241.png" alt="image-20210211102316913" style="zoom: 50%;">
+
+<ul>
+<li><p>第一个设备（源）：应用层产生一个<code>message报文</code>，到传输层贴上<code>端口信息</code>，到网络层贴上<code>目的地IP信息</code>，到数据链路层（<code>本地局域网</code>） 贴上<code>mark地址</code>，此时数据准备发出，并已经知道<code>目的地</code>在哪，即<code>局域网</code>这部机器最终到<code>哪台机器</code>去，最后到物理层。</p>
+<blockquote>
+<p><code>message报文</code>的大小不定，未必就是一个大的数据，需要考虑底层是怎么运行的！</p>
+<p>比如发一个<code>12M</code>的图片，这个图片未必就是一个<code>message</code>。</p>
+<p>再比如写一个<code>send</code>函数，可以直接把<code>12M</code>的函数一下子都发出去，这个逻辑看起来并无问题，因为并没有限制，但是，针对底层来说，这种写法是否真的合适呢？有什么好处或者坏处呢？</p>
+<p>发送一个<code>12M</code>的数据，<code>TCP</code>底层一定会把数据切片再发送出去；也可以在发送之前，先自己将其切成一个一个的小片<code>message</code>，再发出去，这样的操作效率可能更高。 </p>
+<p>所以，有时可以通过对计算机网络与底层的了解来微调程序，从而可以使得程序的效率更佳。</p>
+</blockquote>
+</li>
+<li><p>第二个设备（链路交换机）：判断这个数据包需要去哪个地方，即拿出<code>mark地址</code>，从而知道了是去<code>出口路由器</code>。</p>
+<blockquote>
+<p>​         比方在局域网中，当前主机的<code>IP地址</code>为<code>192.168.0.3</code>，目的地是谷歌的<code>DNS服务:8.8.8.8的80端口</code>，所以，第一个设备的传输层是贴上<code>80端口</code>标签，网络层贴上<code>8.8.8.8</code>标签；然后到链路层，由于<code>本机</code>不知道<code>8.8.8.8</code>在哪，所以只能借助其他的网络连接。</p>
+<p>本地局域网，相当于本地所有的机器都连在一起，本地通信靠在局域网内喊一声，如果有回应，说明对方就是要找的目标，就可以开始与对方通信。</p>
+<p>子网掩码 &amp; 目标<code>IP地址</code>，如果得到的地址与自己的一样，说明当前机子是在本地局域网内，否则则说明当前机子不是在本地局域网，这个时候就需要给网关（<code>初始路由</code>）发信息说<code>目的地址</code>不在局域网内（不在交换机所连接的机器中，不能靠”吼”一嗓子就可以传达信息）。所以这个时候需要通过第三个设备<code>路由器</code>来实施了。</p>
+</blockquote>
+</li>
+<li><p>第三个设备（路由器）： 路由器的定位是通过<code>网关地址 Gateway</code>，如果判断不是本地局域网，则把数据交给<code>网关</code>，网关则从物理层、数据链路层把相关的外套拆除之后，露出网络层的信息，得到<code>目的IP地址8.8.8.8</code>，然后在自己的<code>路由表</code>中，用<code>最长字符串匹配</code>，查询去哪里对应目的地，就可以找到如果要找<code>8.8.0.0</code>（后面两位不管）的地址中时，都需要转到另一个路由器中，则会把数据传到那个路由器中去寻找目的地。如果路由器直接连接目标主机，则可以直接把数据传给目标主机。</p>
+<blockquote>
+<p>这整个过程涉及到一层一层拨开读取信息寻找目标，以及一层一层封装成属于自己的数据包。</p>
+<p>图中属于简化路线图，真正的情况是极有可能需要经过好几个路由器，一层一层找，才能到达目标主机。</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>分层带来的好处：</p>
+<ul>
+<li>各层之间是独立的</li>
+<li>灵活性好</li>
+<li>结构上可以分割开</li>
+<li>易于实现与维护</li>
+<li>能促进标准化工作</li>
+</ul>
+</li>
+<li><p>各层的功能：（各层都可能提供这样的服务）</p>
+<ul>
+<li><p>差错控制：对传入数据的正误进行判断</p>
+</li>
+<li><p>流量控制：针对对端的数据容量大小，进行数据传输量的控制。</p>
+<blockquote>
+<p>​          己端发送数据给对端时，对端发回来的信息中会包含有对端容量剩余量的信息，己端根据当前已经发送的数据量判断当前发送量是否已经超过对端数据容量，从而决定是否还要发送数据。</p>
+</blockquote>
+</li>
+<li><p>分段和复用</p>
+<ul>
+<li>分段：数据的分段</li>
+<li>复用：对某种概念的复用</li>
+</ul>
+</li>
+<li><p>复用与分用</p>
+</li>
+<li><p>连接建立和释放</p>
+<blockquote>
+<p>​          所有的网络，并无存在真实的连接。所有的连接，都是两端维护一些变量，通过这些变量的变化来确认连接的好坏。 </p>
+<p>​          如果己端发送断连信息，对端没有任何回应，就属于半连接状态。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="网络协议的组成要素"><a href="#网络协议的组成要素" class="headerlink" title="网络协议的组成要素"></a>网络协议的组成要素</h3><ul>
+<li>语法：两端共同认同的交互方式。</li>
+<li>语义： 确定语法的某种特殊信息怎么解析出其代表的特殊意义。</li>
+<li>同步：指事件发生的顺序是有迹可循的，是可以预知的。</li>
+</ul>
+<h2 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h2><ul>
+<li><p>现在整个互联网（通用互联网）使用的都是分组交换网络</p>
+</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223252.png" alt="image-20210211112015313" style="zoom:50%;">
+</li>
+<li><p><code>TCP</code>把一个<code>message</code>切成一个一个单独的<code>Packet</code>，这些<code>Packet</code>都是一个一个单独走的，都会各自选择自己要去的<code>目的地</code>前进（大多数情况下都会选择同一条网络，但是加入有外力干预，比如服务器关闭等，都会使得路线的选择不同），<code>路线选择</code>表面看上去是<code>packet</code>自己选的，实际上是<code>路由协议</code>替它选的，<code>packet</code>每到一个路由器，都会根据<code>路由器的配置</code>，被动的选择一条适合自己的线路。<code>路由协议</code>会控制路由器，路由器每收到一个数据包，都会对照下数据包的目的地与自己的路由表，从而得到数据包目的地。</p>
+<blockquote>
+<p><code>路由协议</code>：如果路由表中的某个目的地的线路断了，当前路由器就会把数据传输给另一个路由器，由另一个路由器决定数据的走向，这种路由器与路由器之间的沟通就叫做路由协议。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="存储转发机制"><a href="#存储转发机制" class="headerlink" title="存储转发机制"></a>存储转发机制</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223259.png" alt="image-20210211113515327" style="zoom:50%;">
+</li>
+<li><p>等到所有数据都收到了，再判断数据的正误，数据有误（被人劫持污染）则被丢弃，如果是<code>TCP</code>协议，就会重传（重传的两种机制）。如果数据无误，则会被转发机制发送给目标。</p>
+<ul>
+<li><p>超时重传：发送方如果没收到对方确认信息，则会重新再发一次同样的数据包补救。</p>
+</li>
+<li><p>三次冗余ACK重传：发送方三次发送数据后，接收方均回复信息表示需要同一个数据包，则表面该数据包丢失，需要重新传送。</p>
+<blockquote>
+<p>两种机制只会出现一个，不会同时出现，超时是后面的数据包完全不见，意味着整个网络出现了问题，可能是中间某个路由器坏了；<code>冗余ACK</code>则是中途有一个数据包丢失，后续的数据包并没丢失。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="排队时延和分组丢失："><a href="#排队时延和分组丢失：" class="headerlink" title="排队时延和分组丢失："></a>排队时延和分组丢失：</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223306.png" alt="image-20210211114731608" style="zoom:50%;">
+</li>
+<li><p>中间部分属于路由器。</p>
+</li>
+<li><p>路由器本身存在很多的网卡，每个网卡中都有一个<code>输入缓冲区、输出缓冲区</code>， 当短时间内有太多的数据，超过<code>输入缓冲区</code>的容量，数据处理速度跟不上数据到来速度，这个时候，<code>路由器</code>只能丢弃多余的数据包，丢弃的方式有两种，一种是直接丢弃后面到来的数据，一种是从存放数据的队列中选一个丢弃； 数据被丢掉后，就会触发<code>重传</code>的两种机制<code>超时重传</code>、<code>三次ACK重传</code>，在这种情况下，大多数都是超时重传。</p>
+</li>
+<li><p>如果在数据传输的多个路由器中，有一个路由器出现问题导致效率较低，其输入队列与输出队列有排队现象，使得信息到达的时间超过预期，比如，正常信息传输<code>30ms</code>即可，<code>100ms</code>超时，由于出现问题，超时了，这个时候，发送方在<code>重传</code>的同时，也会增加超时时间，变成<code>200ms</code>，再超时，再增加等待时间，直到最后无法交付任务为止。</p>
+<blockquote>
+<p>如果不增加时长，可能出现一开始发送的包最终都能到达目的地，但是发送方不知道，每次超过<code>100ms</code>就重新发，一直不断重复，而使得中间出问题的<code>路由器</code>问题加剧，原本处理信息效率慢会变得更慢，最终导致整个<code>网络瘫痪</code>。所以<code>tcp</code>协议会自动调整<code>超时时长</code>，保证如果数据最终能到达目的地，不会损坏中间处理效率较慢的路由器。</p>
+</blockquote>
+</li>
+<li><p>排队时延：整个数据包，从发送出去，到对方发送确认收到信息，整个过程延迟了。</p>
+<blockquote>
+<p>排队时延是整个时延中，最不可控，并且出现波动最多的时延。</p>
+<p>游戏使用的协议是<code>UDP</code>协议，因为游戏追求的是<code>时效</code>，讲究<code>时间效率</code>，需要的是<code>快速交付</code>，所以不能搞得像<code>tcp</code>那样复杂，出现丢包现象也无所谓，只要不会延迟特别特别长就行。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="转发表、路由显示协议"><a href="#转发表、路由显示协议" class="headerlink" title="转发表、路由显示协议"></a>转发表、路由显示协议</h3><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223313.png" alt="image-20210211174113224" style="zoom:50%;">
+</li>
+<li><p>当数据包到达路由器时，路由器会通过转发表（路由显示协议）会根据这个数据包的目的地从而判断出该数据包应该从当前的哪条网络线路出发。</p>
+</li>
+<li><p>转发表：<code>局部</code>概念</p>
+</li>
+<li><p>路由选择协议：<code>宏观</code>概念</p>
+</li>
+</ul>
+<h2 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h2><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223351.png" alt="image-20210213113216047" style="zoom:50%;">
+</li>
+<li><p>类似早期的电话，中间依次有<code>接线员</code>把接通前往目的地的电路，使得起点与终点最终相连</p>
+</li>
+<li><p>现在的是通过中间的路由器来维护这个状态，即路由器起到了中间接线员的工作</p>
+</li>
+<li><p>特点：可以看到资源有否优先，比如图中的四条线路一旦被占满，则无法再分配资源（缺陷）</p>
+</li>
+</ul>
+<h2 id="频分复用（FTM）"><a href="#频分复用（FTM）" class="headerlink" title="频分复用（FTM）"></a>频分复用（FTM）</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223400.png" alt="image-20210213113736972" style="zoom:50%;">
+
+<ul>
+<li>根据频率的不同划分可以传达什么信息，上面图中的四条分界线是<code>0451</code></li>
+</ul>
+<h2 id="时分复用"><a href="#时分复用" class="headerlink" title="时分复用"></a>时分复用</h2> <img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223431.png" alt="image-20210213114037117" style="zoom: 50%;">
+
+<ul>
+<li><p>把时间段分成一个个小片</p>
+</li>
+<li><p>优点：确定了时间段，即该时间段归谁使用</p>
+</li>
+<li><p>缺点：可能某个资源在当时的时间段里无需使用，而另外的资源迫切需要用到资源，则另外的资源只能被迫等到当前时间段过去了才能使用。</p>
+<blockquote>
+<p>对比<code>电路交换</code>，时分复用还是有希望可以用到资源，而<code>电路交换</code>的，则可能资源一直被人霸占着，用不了。</p>
+<p><code>时分复用</code>之后就是<code>分组交换</code>，即有数据就丢出去，不管数据包怎么走，只要数据包能到<code>目的地</code>就行。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="分组交换与电路交换的对比："><a href="#分组交换与电路交换的对比：" class="headerlink" title="分组交换与电路交换的对比："></a>分组交换与电路交换的对比：</h2><ul>
+<li>分组交换有更好的<code>带宽共享</code>，比电路交换更好，同时实现的<code>成本</code>更低。</li>
+</ul>
+<h2 id="时延、丢包和吞吐率"><a href="#时延、丢包和吞吐率" class="headerlink" title="时延、丢包和吞吐率"></a>时延、丢包和吞吐率</h2><h3 id="时延："><a href="#时延：" class="headerlink" title="时延："></a>时延：</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223446.png" alt="image-20210213121215837" style="zoom:50%;">
+
+<ul>
+<li>结点处理时延：数据包到达某一个节点，先被拆开看看目的地是哪，再加入新的信息并重新包装发出去。</li>
+<li>排队时延：从数据包进去到正式处理的过程中，会先被放到缓冲区排队等待，直到轮到数据包被处理。</li>
+<li>传输时延：从开始发数据，到数据最终被发出去的时间<ul>
+<li>时延是一个网络状态的评判标准，而传输时延会使得这个标准变得不可琢磨。</li>
+<li>如果数据极大，就会使得传输时延极大，这样就不好作为一个评判标注，所以，建议讲传输时延的时候，就<code>只讲究一个数据包</code></li>
+</ul>
+</li>
+<li>传播时延：信号从当前主机发送到目标主机，并回来的过程中，信号经历的传输介质中传输的时间。</li>
+</ul>
+<h3 id="排队时延与丢包："><a href="#排队时延与丢包：" class="headerlink" title="排队时延与丢包："></a>排队时延与丢包：</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223455.png" alt="image-20210213122206034" style="zoom:50%;">
+
+<ul>
+<li><code>a</code>：分组到达出队列的平均速率</li>
+<li><code>L</code>：所有分组都由<code>L</code>比特构成</li>
+<li><code>R</code>：传输速率</li>
+<li>平均排队时延最长，越容易丢包</li>
+</ul>
+<h3 id="吞吐量："><a href="#吞吐量：" class="headerlink" title="吞吐量："></a>吞吐量：</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223505.png" alt="image-20210213122502660" style="zoom:50%;">
+
+<ul>
+<li><p>所有线路中，最小的传输速率<code>R</code>。</p>
+</li>
+<li><p>如果一开始数据量较大，可是后面的线路能容纳的数据量较小，则<code>tcp</code>协议会发送负反馈，反过来抑制一开始的发送量，直到最终发送量是所有线路中，最小的传输速率<code>R</code>。</p>
+</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+    </div>
+
+    
+    
+    
+
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Alin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/01/09/0024.%20%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA/" title="计算机网络概论">http://example.com/2021/01/09/0024. 计算机网络概论/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/09/0010.%20%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="红黑树">
+      <i class="fa fa-chevron-left"></i> 红黑树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/10/0025.%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE/" rel="next" title="应用层协议">
+      应用层协议 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">计算机网络概论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSI-%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">OSI 七层模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE%E7%9A%84%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B%EF%BC%88%E6%95%B0%E6%8D%AE%E5%B0%81%E8%A3%85%E3%80%81%E8%A7%A3%E5%B0%81%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">计算机网络传输数据的封装过程（数据封装、解封）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%84%E6%88%90%E8%A6%81%E7%B4%A0"><span class="nav-number">1.2.1.</span> <span class="nav-text">网络协议的组成要素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.3.</span> <span class="nav-text">分组交换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%BD%AC%E5%8F%91%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">存储转发机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E9%98%9F%E6%97%B6%E5%BB%B6%E5%92%8C%E5%88%86%E7%BB%84%E4%B8%A2%E5%A4%B1%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">排队时延和分组丢失：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E8%A1%A8%E3%80%81%E8%B7%AF%E7%94%B1%E6%98%BE%E7%A4%BA%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.3.3.</span> <span class="nav-text">转发表、路由显示协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2"><span class="nav-number">1.4.</span> <span class="nav-text">电路交换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%91%E5%88%86%E5%A4%8D%E7%94%A8%EF%BC%88FTM%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">频分复用（FTM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E5%88%86%E5%A4%8D%E7%94%A8"><span class="nav-number">1.6.</span> <span class="nav-text">时分复用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2%E4%B8%8E%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2%E7%9A%84%E5%AF%B9%E6%AF%94%EF%BC%9A"><span class="nav-number">1.7.</span> <span class="nav-text">分组交换与电路交换的对比：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E5%BB%B6%E3%80%81%E4%B8%A2%E5%8C%85%E5%92%8C%E5%90%9E%E5%90%90%E7%8E%87"><span class="nav-number">1.8.</span> <span class="nav-text">时延、丢包和吞吐率</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E5%BB%B6%EF%BC%9A"><span class="nav-number">1.8.1.</span> <span class="nav-text">时延：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E9%98%9F%E6%97%B6%E5%BB%B6%E4%B8%8E%E4%B8%A2%E5%8C%85%EF%BC%9A"><span class="nav-number">1.8.2.</span> <span class="nav-text">排队时延与丢包：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%9E%E5%90%90%E9%87%8F%EF%BC%9A"><span class="nav-number">1.8.3.</span> <span class="nav-text">吞吐量：</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Alin"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Alin</p>
+  <div class="site-description" itemprop="description">好好享受生活，慢慢来，一切都会变好的！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021- – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-star"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alin</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>-->
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <!--<span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数 <span id="busuanzi_value_site_uv"></span> 人</span>
+    <span class="post-meta-divider">|</span>-->
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<!---->
+<!---->
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/gh/HCLonely/Valine@latest/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'oiaHYqQjE4QQBGP5H8XmxO8z-gzGzoHsz',
+      appKey     : 'xrK4f5nYeGyJ0MgOfkcC5cOD',
+      placeholder: "",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+</body>
+
+  <!-- require APlayer -->
+<div class="aplayer" 
+  data-id="486899256" 
+  data-server="netease" 
+  data-type="playlist" 
+  data-fixed="true" 
+  data-autoplay="true" 
+  data-order="random" 
+  data-volume="0.55" 
+  data-theme="#cc543a" 
+  data-preload="auto" >
+</div>
+
+</html>

@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lobster:300,300italic,400,400italic,700,700italic|Pacifico:300,300italic,400,400italic,700,700italic|Ma Shan Zheng:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="森林与并查集 并查集：合并集合[建立连通关系]、查找集合中的连通关系[判断某两个点是否连通]  连通性问题   规则：已经具有连通关系的点不能重复连接 将所有点分成了2个集合：①、② [PS] 点与点的关系(合并、判断连通)→也可以是→集合与集合的关系  Quick-Find算法 核心思想：染色 一个颜色，对应一个类别 初始化：个体独立，都写成自己的索引，属于一个独立的集合里 把和自己连通的所有点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="森林与并查集">
+<meta property="og:url" content="http://example.com/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/index.html">
+<meta property="og:site_name" content="Alin&#39;s Blog">
+<meta property="og:description" content="森林与并查集 并查集：合并集合[建立连通关系]、查找集合中的连通关系[判断某两个点是否连通]  连通性问题   规则：已经具有连通关系的点不能重复连接 将所有点分成了2个集合：①、② [PS] 点与点的关系(合并、判断连通)→也可以是→集合与集合的关系  Quick-Find算法 核心思想：染色 一个颜色，对应一个类别 初始化：个体独立，都写成自己的索引，属于一个独立的集合里 把和自己连通的所有点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100924.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104709.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104750.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104756.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104800.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104837.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095131.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095140.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095149.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095157.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104933.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105338.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105330.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105325.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105114.png">
+<meta property="article:published_time" content="2021-01-06T03:32:25.000Z">
+<meta property="article:modified_time" content="2021-03-22T10:28:52.077Z">
+<meta property="article:author" content="Alin">
+<meta property="article:tag" content="手撕数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100924.png">
+
+<link rel="canonical" href="http://example.com/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>森林与并查集 | Alin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js"></script>
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/a872456824" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alin's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-book fa-fw"></i>留言板</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Alin">
+      <meta itemprop="description" content="好好享受生活，慢慢来，一切都会变好的！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          森林与并查集
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-06 11:32:25" itemprop="dateCreated datePublished" datetime="2021-01-06T11:32:25+08:00">2021-01-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-22 18:28:52" itemprop="dateModified" datetime="2021-03-22T18:28:52+08:00">2021-03-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">基础数据结构</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/" class="post-meta-item leancloud_visitors" data-flag-title="森林与并查集" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="森林与并查集"><a href="#森林与并查集" class="headerlink" title="森林与并查集"></a>森林与并查集</h1><ul>
+<li>并查集：合<strong>并</strong>集合[建立连通关系]、<strong>查</strong>找<strong>集</strong>合中的连通关系[判断某两个点是否连通]</li>
+</ul>
+<h2 id="连通性问题"><a href="#连通性问题" class="headerlink" title="连通性问题"></a>连通性问题</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100924.png" alt="图片" style="zoom: 67%;">
+
+<ul>
+<li>规则：已经具有连通关系的点不能重复连接</li>
+<li>将所有点分成了2个集合：①、②</li>
+<li>[PS] 点与点的关系(合并、判断连通)→也可以是→集合与集合的关系</li>
+</ul>
+<h2 id="Quick-Find算法"><a href="#Quick-Find算法" class="headerlink" title="Quick-Find算法"></a>Quick-Find算法</h2><ul>
+<li>核心思想：染色<ul>
+<li>一个颜色，对应一个类别</li>
+<li>初始化：个体独立，都写成自己的索引，属于一个独立的集合里</li>
+<li>把和自己<strong>连通的所有</strong>点的颜色改成要染的颜色</li>
+</ul>
+</li>
+<li>时间复杂度<ul>
+<li>连通判断：O(1)——查找快，所以叫Quick-Find</li>
+<li>合并操作：O(N)——需要遍历所有的点才能确定是否要合并</li>
+</ul>
+</li>
+<li>引发思考：为什么又叫森林呢？<ul>
+<li>关键在于<strong>合并</strong>操作，几个点与几个点的合并，集合与集合的合并</li>
+<li>类似于子树与子树之间的合并，或是将一棵树作为另一棵树的子树</li>
+<li>所有的集合放在一起，类似于所有的树放在一起，就是森林</li>
+</ul>
+</li>
+<li>那么，除了染色还有其他方式吗？<ul>
+<li>思考：染成了什么颜色并不重要，只需要知道和哪些点的颜色相同，即连通</li>
+</ul>
+</li>
+</ul>
+<h2 id="Quick-Union算法"><a href="#Quick-Union算法" class="headerlink" title="Quick-Union算法"></a>Quick-Union算法</h2><ul>
+<li>生活启发：找大哥，找领导</li>
+<li>核心思想：找代表元素 [根结点]<ul>
+<li>存的值就是其代表元素</li>
+<li>初始化：个体独立，都写成自己的索引，属于一个独立的集合里</li>
+<li>找到<strong>两点的代表元素</strong>，修改其中一个代表元素<strong>里的值</strong>为另一个代表元素里的值</li>
+<li>代表元素：里面的值就是它自己</li>
+<li>联想：大哥或他的小弟叛变了，都从大哥开始叛变，叛变到另一个小弟的大哥那<ul>
+<li>与Quick-Find的结果一样，都是把一棵子树整体合并到另一棵子树，不过是通过代表元素来实现的</li>
+<li>只能是根结点指向根结点</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>时间复杂度<ul>
+<li>都得找根结点，与树高相关</li>
+<li>连通操作：O(树高)</li>
+<li>合并操作：O(树高)</li>
+<li>2种情况<ul>
+<li>正常状态→均为O(logN)</li>
+<li>退化为一个链表→均为O(N)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对于退化情况，如何解决呢 ：weighted Quick-Union</li>
+</ul>
+<h2 id="weighted-Quick-Union算法【按秩合并】"><a href="#weighted-Quick-Union算法【按秩合并】" class="headerlink" title="weighted Quick-Union算法【按秩合并】"></a>weighted Quick-Union算法【按秩合并】</h2><ul>
+<li>如何避免退化？→保证枝繁叶茂<ul>
+<li>合并依据1：树高，矮树挂在高树下[两两结合]<ul>
+<li>高度为 h 的树，至少需要的结点个数N为2 ^ (h - 1)</li>
+<li>即树高h = log[2]N + 1 ≈ log[2]N</li>
+<li>[PS] 只有两棵一样树高的树合并，才会使高度增加</li>
+</ul>
+</li>
+<li>合并依据2：结点数量，结点少的树挂在结点多的树下</li>
+<li>两种优化方式都能得到O(logN)，但是合并依据2【结点数量】更优秀一些</li>
+</ul>
+</li>
+<li>为什么合并依据2更优秀<ul>
+<li>【示例】什么是平均查找次数<ul>
+<li>如下图所示，计算了A、B树的平均查找次数</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104709.png" alt="image-20210306104701093"></li>
+<li>结点深度即为结点的查找次数，平均查找次数 = 总查找次数 / 总结点数</li>
+<li>此示例，B树的查找操作更快</li>
+</ul>
+</li>
+<li>【推导】合并依据2直接决定平均查找次数<ul>
+<li>对于有SA、SB个结点的A、B树，它们的总查找次数LA、LB分别为：<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104750.png" alt="图片"></li>
+<li>其中，li 代表第 i 个结点的深度</li>
+</ul>
+</li>
+<li>此时进行合并操作，分别计算①A→B和②B→A的平均查找次数<ul>
+<li>①当A树作为子树合并到B树时，为<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104756.png" alt="图片"></li>
+<li>A树中的所有结点需要多查找一次</li>
+</ul>
+</li>
+<li>②当B树作为子树合并到A树时，为<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104800.png" alt="图片"></li>
+<li>B树中的所有结点需要多查找一次</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>【比较两种方式的平均查找次数】<ul>
+<li>和树高[LA、LB]没有直接关系，而分子的结点数量[SA、SB]【直接】决定查找次数，次数越小越好</li>
+<li>谁的结点数少，就作为子树被合并</li>
+<li>思考：上面的推导是否证明高度无法作为合并依据呢？<ul>
+<li>否，高度间接影响着结点数量，一般情况高度越低，结点数量越少</li>
+<li><strong>但是</strong>，对于特殊情况，A树比B树高，而A树结点数量却比B树少时，还是按照【结点数量】作为合并依据，将A树作为子树合并到B树里</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>所以以结点数作为合并依据更优秀！合并思路如下</li>
+</ul>
+</li>
+<li>在合并两棵子树时<ul>
+<li>如果结点数一样，就按照普通Quick-Union的思路换</li>
+<li>如果不一样，结点数少的子树的根结点接在：结点数多的子树的根结点下面</li>
+</ul>
+</li>
+<li>[PS]换句话说<ul>
+<li>在换大哥时</li>
+<li>如果小弟数量一样，就按照普通Quick-Union的思路换</li>
+<li>如果不一样，小弟少的大哥得跟：小弟多的大哥混</li>
+</ul>
+</li>
+</ul>
+<h2 id="路径压缩"><a href="#路径压缩" class="headerlink" title="+ 路径压缩"></a>+ 路径压缩</h2><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104837.png" alt="图片"></li>
+<li>0的位置有些尴尬</li>
+<li>不管0的代表元素为1还是3，并没区别，将0直接挂载3的下面，还能减小树高</li>
+<li>【方法】让每一个非根结点直接指向根结点，让结构扁平化</li>
+</ul>
+<p><strong>上述算法的效率比较</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095131.png" alt="图片"></p>
+<h3 id="随堂练习"><a href="#随堂练习" class="headerlink" title="随堂练习"></a>随堂练习</h3><h2 id="Quick-Find-vs-Quick-Union"><a href="#Quick-Find-vs-Quick-Union" class="headerlink" title="Quick-Find vs. Quick-Union"></a>Quick-Find vs. Quick-Union</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095140.png" alt="图片"></p>
+<ul>
+<li>【关键】理解Quick-Union<ul>
+<li>0-&gt;1-&gt;2-&gt;4-&gt;5、3-&gt;4-&gt;5；8-&gt;9-&gt;7-&gt;6</li>
+<li>查找、合并边界：自己的代表元素就是本身时，停止</li>
+</ul>
+</li>
+</ul>
+<h2 id="Quick-Union-vs-weighted-Quick-Union"><a href="#Quick-Union-vs-weighted-Quick-Union" class="headerlink" title="Quick-Union vs. weighted Quick-Union"></a>Quick-Union vs. weighted Quick-Union</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095149.png" alt="图片"></p>
+<ul>
+<li>【关键】理解weighted的含义<ul>
+<li>当两个集合的元素个数不一样时</li>
+<li>元素少的集合的代表元素的值：元素多的集合的代表元素的值</li>
+<li>小弟少的大哥得跟着小弟多的大哥混</li>
+</ul>
+</li>
+<li>结果可视化<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309095157.png" alt="图片"></li>
+<li>很明显，weighted方法得到的树更矮，合并、查找效率更高</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h3><h4 id="HZOJ-71：朋友圈"><a href="#HZOJ-71：朋友圈" class="headerlink" title="HZOJ-71：朋友圈"></a>HZOJ-71：朋友圈</h4><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306104933.png" alt="图片"></p>
+<p><strong>样例输入</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">6</span> <span class="number">5</span></span><br><span class="line"><span class="number">1</span> <span class="number">1</span> <span class="number">2</span></span><br><span class="line"><span class="number">2</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">4</span></span><br><span class="line"><span class="number">1</span> <span class="number">4</span> <span class="number">3</span></span><br><span class="line"><span class="number">2</span> <span class="number">1</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p><strong>样例输出</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">No</span><br><span class="line">Yes</span><br></pre></td></tr></table></figure>
+<ul>
+<li>思路<ul>
+<li>使用数据结构——并查集</li>
+<li>1即合并操作，2即查找操作</li>
+<li>分别测试Quick-Find、Quick-Union [+weighted、+路径压缩、-weighted]的算法效率</li>
+</ul>
+</li>
+</ul>
+<h3 id="Quick-Find"><a href="#Quick-Find" class="headerlink" title="Quick-Find"></a>Quick-Find</h3><p>查找、合并策略：基于染色</p>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">UnionSet</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *color;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; UnionSet;</span><br><span class="line"></span><br><span class="line"><span class="function">UnionSet *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    UnionSet *u = (UnionSet *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(UnionSet));</span><br><span class="line">    u-&gt;color = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    u-&gt;n = n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        u-&gt;color[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> u;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(UnionSet *u, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> u-&gt;color[x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">merge</span><span class="params">(UnionSet *u, <span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (find(u, a) == find(u, b)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> color_a = u-&gt;color[a];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= u-&gt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (u-&gt;color[i] - color_a) <span class="keyword">continue</span>;</span><br><span class="line">        u-&gt;color[i] = u-&gt;color[b];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(UnionSet *u)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (u == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(u-&gt;color);</span><br><span class="line">    <span class="built_in">free</span>(u);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    UnionSet *u = init(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> a, b, c;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>, &amp;a, &amp;b, &amp;c);</span><br><span class="line">        <span class="keyword">switch</span>(a) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> : merge(u, b, c); <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, find(u, b) == find(u, c) ? <span class="string">&quot;Yes&quot;</span> : <span class="string">&quot;No&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    clear(u);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h3 id="Quick-Union"><a href="#Quick-Union" class="headerlink" title="Quick-Union"></a>Quick-Union</h3><ul>
+<li>基于Quick-find<ul>
+<li>修改结构定义的color为代表元素father</li>
+<li>修改查找操作：需要找到底</li>
+<li>修改合并操作：也要找到两个元素的底，才合并</li>
+</ul>
+</li>
+<li>易出现退化为链表的问题，下面进行优化</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105338.png" alt="图片"></p>
+<ul>
+<li>基于Quick-find<ul>
+<li>修改结构定义的color为代表元素father</li>
+<li>修改查找操作：需要找到底</li>
+<li>修改合并操作：也要找到两个元素的底，才合并</li>
+</ul>
+</li>
+<li>易出现退化为链表的问题，下面进行优化</li>
+</ul>
+<h3 id="weighted"><a href="#weighted" class="headerlink" title="+ weighted"></a>+ weighted</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105330.png" alt="图片"></p>
+<ul>
+<li>基于Quick-Union</li>
+<li>添加size属性，记录结点所在集合的结点个数，以此作为合并策略</li>
+</ul>
+<h3 id="路径压缩-1"><a href="#路径压缩-1" class="headerlink" title="+ 路径压缩"></a>+ 路径压缩</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105325.png" alt="图片"></p>
+<ul>
+<li>每次查找就会做一次路径压缩，将【查找元素】到【根代表元素】区间的所有元素都指向根代表元素 [根结点]</li>
+</ul>
+<h3 id="－weighted"><a href="#－weighted" class="headerlink" title="－weighted"></a>－weighted</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a ,b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">UnionSet</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *father;</span><br><span class="line">    <span class="comment">//int *size;</span></span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">&#125; UnionSet;</span><br><span class="line"></span><br><span class="line"><span class="function">UnionSet *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    UnionSet *u = (UnionSet *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(UnionSet));</span><br><span class="line">    u-&gt;father = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    <span class="comment">//u-&gt;size = (int *)malloc(sizeof(int) * (n + 1));</span></span><br><span class="line">    u-&gt;n = n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        u-&gt;father[i] = i;</span><br><span class="line">        <span class="comment">//u-&gt;size[i] = 1;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> u;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(UnionSet *u, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> u-&gt;father[x] = (u-&gt;father[x] == x ? x : find(u, u-&gt;father[x]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">merge</span><span class="params">(UnionSet *u, <span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fa = find(u, a), fb = find(u, b);</span><br><span class="line">    <span class="keyword">if</span> (fa == fb) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//if (u-&gt;size[fa] &lt; u-&gt;size[fb]) swap(fa, fb);</span></span><br><span class="line">    u-&gt;father[fb] = fa;</span><br><span class="line">    <span class="comment">//u-&gt;size[fa] += u-&gt;size[fb];</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(UnionSet *u)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (u == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(u-&gt;father);</span><br><span class="line">    <span class="comment">//free(u-&gt;size);</span></span><br><span class="line">    <span class="built_in">free</span>(u);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, m;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    UnionSet *u = init(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> a, b, c;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>, &amp;a, &amp;b, &amp;c);</span><br><span class="line">        <span class="keyword">switch</span>(a) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> : merge(u, b, c); <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, find(u, b) == find(u, c) ? <span class="string">&quot;Yes&quot;</span> : <span class="string">&quot;No&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    clear(u);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>抹掉所有与size相关的操作</li>
+<li>有了路径压缩后，不按秩合并[去除size属性]也能达到很好的效果</li>
+</ul>
+<p><strong>HZOJ平台上题目测试用时</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>方法</strong></th>
+<th align="left">Quick-Find</th>
+<th align="left">Quick-Union</th>
+<th align="left">+weighted</th>
+<th align="left">+路径压缩</th>
+<th align="left">weighted</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>用时(ms)</strong></td>
+<td align="left">744</td>
+<td align="left">2020</td>
+<td align="left">164</td>
+<td align="left">172</td>
+<td align="left">188</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Quick-Union出现了退化问题</li>
+<li>加了路径压缩后，不按秩合并也能达到很好的效果</li>
+<li><strong>后三个方法</strong>都有不错的效果！</li>
+</ul>
+<h3 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h3><ul>
+<li>在weighted Quick-Union算法部分，结点数更优秀的推导是否证明高度无法作为合并依据呢？<ul>
+<li>否，高度间接影响着结点数量，一般情况高度越低，结点数量越少</li>
+<li>但是，对于特殊情况，A树比B树高，而A树结点数量却比B树少时<ul>
+<li>需按照【结点数量】作为合并依据：将A树作为子树合并到B树里</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105114.png" alt="图片"></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+    </div>
+
+    
+    
+    
+
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Alin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/" title="森林与并查集">http://example.com/2021/01/06/0007. 森林与并查集/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%89%8B%E6%92%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 手撕数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/06/0021.%20%E8%BF%9B%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/" rel="prev" title="进程间的通信（共享内存）">
+      <i class="fa fa-chevron-left"></i> 进程间的通信（共享内存）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/07/0008.%20BS%E6%A0%91/" rel="next" title="平衡二叉查找树——BS树">
+      平衡二叉查找树——BS树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">森林与并查集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E9%80%9A%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">连通性问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Find%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">Quick-Find算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Union%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">Quick-Union算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#weighted-Quick-Union%E7%AE%97%E6%B3%95%E3%80%90%E6%8C%89%E7%A7%A9%E5%90%88%E5%B9%B6%E3%80%91"><span class="nav-number">1.4.</span> <span class="nav-text">weighted Quick-Union算法【按秩合并】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.5.</span> <span class="nav-text">+ 路径压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E5%A0%82%E7%BB%83%E4%B9%A0"><span class="nav-number">1.5.1.</span> <span class="nav-text">随堂练习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Find-vs-Quick-Union"><span class="nav-number">1.6.</span> <span class="nav-text">Quick-Find vs. Quick-Union</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Union-vs-weighted-Quick-Union"><span class="nav-number">1.7.</span> <span class="nav-text">Quick-Union vs. weighted Quick-Union</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA"><span class="nav-number">1.7.1.</span> <span class="nav-text">代码演示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HZOJ-71%EF%BC%9A%E6%9C%8B%E5%8F%8B%E5%9C%88"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">HZOJ-71：朋友圈</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quick-Find"><span class="nav-number">1.7.2.</span> <span class="nav-text">Quick-Find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quick-Union"><span class="nav-number">1.7.3.</span> <span class="nav-text">Quick-Union</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weighted"><span class="nav-number">1.7.4.</span> <span class="nav-text">+ weighted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9-1"><span class="nav-number">1.7.5.</span> <span class="nav-text">+ 路径压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%8Dweighted"><span class="nav-number">1.7.6.</span> <span class="nav-text">－weighted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E7%82%B9"><span class="nav-number">1.7.7.</span> <span class="nav-text">思考点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tips"><span class="nav-number">2.</span> <span class="nav-text">Tips</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Alin"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Alin</p>
+  <div class="site-description" itemprop="description">好好享受生活，慢慢来，一切都会变好的！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021- – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-star"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alin</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>-->
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <!--<span id="busuanzi_container_site_pv">总访问量 <span id="busuanzi_value_site_pv"></span> 次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数 <span id="busuanzi_value_site_uv"></span> 人</span>
+    <span class="post-meta-divider">|</span>-->
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<!---->
+<!---->
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/gh/HCLonely/Valine@latest/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'oiaHYqQjE4QQBGP5H8XmxO8z-gzGzoHsz',
+      appKey     : 'xrK4f5nYeGyJ0MgOfkcC5cOD',
+      placeholder: "",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+    </div>
+</body>
+
+  <!-- require APlayer -->
+<div class="aplayer" 
+  data-id="486899256" 
+  data-server="netease" 
+  data-type="playlist" 
+  data-fixed="true" 
+  data-autoplay="true" 
+  data-order="random" 
+  data-volume="0.55" 
+  data-theme="#cc543a" 
+  data-preload="auto" >
+</div>
+
+</html>
