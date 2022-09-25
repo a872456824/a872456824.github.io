@@ -1211,7 +1211,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #57831f;
+  background: #4fd5d7;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2499,7 +2499,7 @@ strong {
   padding: 10px;
 }
 article p {
-  font-family: 'Ma Shan Zheng', 'Microsoft YaHei';
+  font-family: 'Ma Shan Zheng', 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
   font-size: 16px;
   background: rgba(255,255,255,0) none repeat scroll !important;
   color: #000;
@@ -2508,7 +2508,7 @@ article p {
   margin: 0 0 16px;
 }
 article code {
-  font-family: 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
+  font-family: 'Ma Shan Zheng', 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
   background: #fff none repeat scroll !important;
   color: #ff7070;
 }
