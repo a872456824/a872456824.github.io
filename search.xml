@@ -3163,147 +3163,6 @@
       </tags>
   </entry>
   <entry>
-    <title>运输层协议</title>
-    <url>/2021/01/11/0026.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议（重要）"><a href="#运输层协议（重要）" class="headerlink" title="运输层协议（重要）"></a>运输层协议（重要）</h1><blockquote>
-<p>应用层协议大部分只是用，不会做太多的深入，但是运输层协议是计算机网络中最核心的部分，也是跟程序员最息息相关的部分。</p>
-</blockquote>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084428.png" alt="image-20210214150950405" style="zoom:50%;">
-
-<p>图中展示的是，左边的主机想跟右边的主机进行通讯，在<code>应用层</code>看来就是两个应用在通讯；而在<code>运输层</code>呢？</p>
-<blockquote>
-<p>网络层：一个<code>IP</code>到另一个<code>IP</code>，即主机到主机之间的逻辑通信；</p>
-<p>应用层：工作在主机之上的进程之间的逻辑通信，<code>套接字</code>（四元组）跟<code>套接字</code>之间的通信；</p>
-<p>运输层：<code>端口</code>到<code>端口</code>之间的通信。</p>
-</blockquote>
-<h3 id="运输层的协议概述"><a href="#运输层的协议概述" class="headerlink" title="运输层的协议概述"></a>运输层的协议概述</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084437.png" alt="image-20210214152000511" style="zoom:50%;">
-
-<ul>
-<li><p>被<code>IP</code>地址到<code>IP</code>地址之间的沟通方式扩展到运输层中。</p>
-</li>
-<li><p>不管是<code>TCP</code>还是<code>UDP</code>，他们的最低限度的<code>运输层服务</code>则是<code>交付</code>与<code>差错检验</code>。</p>
-<blockquote>
-<p>不是说<code>UDP</code>不可靠就没有<code>差错检验</code>。可不可靠的评判标准是有没有丢包，没有丢包则说明可靠；但是无论有没有丢包，接收到的数据包，必须是准确的。</p>
-<p><code>差错检验</code>与<code>纠错</code>：如果数据包存在错误，则可能可以通过算法或者现有的数据实现<code>纠错</code>。</p>
-</blockquote>
-<blockquote>
-<p>使用<code>UDP</code>的时候，往往需要在<code>UDP</code>上面再封装一层，即对应用层进行封装，否则，如果对方不在线，那数据不止到不了对方，还会给网络造成压力。</p>
-<p><code>UDP</code>对整个网络来说并不友好，因为另一端如果下线不收取数据了，这一端还能继续发送数据。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="多路复用与多路分解"><a href="#多路复用与多路分解" class="headerlink" title="多路复用与多路分解"></a>多路复用与多路分解</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084451.png" alt="image-20210214154536090" style="zoom: 50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084456.png" alt="image-20210214154604591" style="zoom:50%;">
-
-<ul>
-<li>运输层：只关注<code>目的端口</code>与<code>源端口</code></li>
-<li>网络层：只关注<code>目的地</code>与<code>来源地</code></li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084503.png" alt="image-20210214154912818" style="zoom:50%;">
-
-<h3 id="为什么会选择无连接运输：UDP"><a href="#为什么会选择无连接运输：UDP" class="headerlink" title="为什么会选择无连接运输：UDP"></a>为什么会选择无连接运输：UDP</h3><ul>
-<li>关于何时、发送什么数据的应用层控制更为精细</li>
-<li>无需建立连接</li>
-<li>无状态连接</li>
-<li>分组开销小</li>
-</ul>
-<blockquote>
-<p><code>SNMP</code>：简单网络管理协议。</p>
-<p>网络风暴：数据中心有大量的数据在转圈出不去。</p>
-</blockquote>
-<h3 id="UDP报文段"><a href="#UDP报文段" class="headerlink" title="UDP报文段"></a>UDP报文段</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084512.png" alt="image-20210214160154511" style="zoom:50%;">
-
-<h3 id="怎么构建一个可靠的传输协议？"><a href="#怎么构建一个可靠的传输协议？" class="headerlink" title="怎么构建一个可靠的传输协议？"></a>怎么构建一个可靠的传输协议？</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084517.png" alt="image-20210214163516288" style="zoom:50%;">
-
-<ul>
-<li>信道：底层传输的逻辑或者链路</li>
-</ul>
-<ol>
-<li>如果是基于<code>可靠信道（tcp）</code>建立的传输，则无需在上层考虑<code>丢包以及乱序</code>的问题。</li>
-<li>如果是基于<code>不可靠信道</code>建立的传输，则需要在这个基础上，考虑在上层应该做什么事情才能使得传输变得可靠，即基于<code>不可靠信道</code>建立的<code>可靠发送与接收</code>的封装（图中绿色部分）。</li>
-</ol>
-<h4 id="第一版：基于完全可靠信道（tcp）"><a href="#第一版：基于完全可靠信道（tcp）" class="headerlink" title="第一版：基于完全可靠信道（tcp）"></a>第一版：基于完全可靠信道（tcp）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084525.png" alt="image-20210214164246923" style="zoom:50%;">
-
-<ul>
-<li>虚线：默认位置；</li>
-<li>实线：状态转换</li>
-<li>实线旁边：真实做的事，蓝线上方是封装的功能，下方是封装的具体细节。</li>
-<li>流程：创建一个数据包并发送给对方，对方接收到数据包，解析数据包并提交给上层。</li>
-</ul>
-<h4 id="第二版：基于不可靠信道"><a href="#第二版：基于不可靠信道" class="headerlink" title="第二版：基于不可靠信道"></a>第二版：基于不可靠信道</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084533.png" alt="image-20210214164906937" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084539.png" alt="image-20210214165550506" style="zoom:50%;">
-
-<ul>
-<li>能够感知到<code>比特级</code>的错误信息，具有一定差错控制的信道</li>
-<li>刚开始协议处于<code>阻塞</code>状态，等着上层的调用，上层通过<code>rdt_send</code>来调用协议，给协议传了一个<code>data</code>，协议会把<code>data</code>跟<code>校验和checksum</code>一起打包封装成一个数据包发给对方（可能会创建很多包，发送很多包，这里以单次为例）。</li>
-<li>对方收到之后，发送方就会处于<code>等待状态</code>，等待来自下层的调用，当下层数据来临时，会通知让其对数据进行解析并提交给上层。</li>
-<li>对方一开始处于<code>等待状态</code>，当对方收到数据时，会对数据的校验和进行检验，如果不对，会返回一个<code>NAK（错误回馈）</code>；如果检验无误，则会将数据包拆开，舍弃校验和，读取数据，将数据提交给上层，并给发送方返回一个<code>ACK（成功）</code>。</li>
-<li>此时发送方处于<code>等待状态</code>，收到对方的反馈后，如果是<code>NAK</code>，则会重新发送数据包；如果是<code>ACK</code>，则什么都不做，继续处于<code>等待状态</code>。</li>
-</ul>
-<blockquote>
-<p>这样虽然确保了数据的可靠传输，但是效率较慢，因为需要等待对方反馈。</p>
-</blockquote>
-<h4 id="第三版：基于不可靠信道（RDT2-1）"><a href="#第三版：基于不可靠信道（RDT2-1）" class="headerlink" title="第三版：基于不可靠信道（RDT2.1）"></a>第三版：基于不可靠信道（RDT2.1）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084548.png" alt="image-20210214170640861" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084556.png" alt="image-20210214174626714" style="zoom:50%;">
-
-<ul>
-<li><p>与上一版的差别在于多了编号，可以<code>0 1</code>这样的发，这样话，可以明确对方的每次反馈是给谁的，同时也能发送更多的信息。</p>
-</li>
-<li><p>好处：保证可靠的两点要素，一点是能够到达目的地，另一点是接收的顺序是准确的，即将<code>所有的数据</code>都要<code>按顺序</code>到达。而这一版，可以保证数据的<code>到达顺序</code>。</p>
-<blockquote>
-<p>单单01是不够的，后续的实现过程中，像<code>TCP</code>这种，它的序号是连续的，每个字节都有一个序号，这个序号就单次连接的字节流，即字节的位置。</p>
-</blockquote>
-</li>
-</ul>
-<h4 id="第四版：基于不可靠信道（RDT2-2）"><a href="#第四版：基于不可靠信道（RDT2-2）" class="headerlink" title="第四版：基于不可靠信道（RDT2.2）"></a>第四版：基于不可靠信道（RDT2.2）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084603.png" alt="image-20210214175242593" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084609.png" alt="image-20210214175531244" style="zoom:50%;">
-
-<ul>
-<li>少了<code>NAK</code>，只保留<code>ACK</code>，只确认收到的东西，不确认错误的数据。</li>
-<li>如果<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则说明数据不对，<code>ACK0</code>会重新发送一份数据，直到<code>等待ACK0</code>收到回复。</li>
-<li>接收方如果收到的数据没错，编号对应，则回一个<code>ACK</code>；而如果，比如接收方的<code>1</code>收到<code>0</code>包，则会再发送一个<code>ACK1</code>，此时发送方的<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则会触发机制，使得<code>ACK0</code>重发一份数据。（冗余<code>ACK</code>）</li>
-<li>缺陷：等待时间可能过长</li>
-</ul>
-<h4 id="第五版：基于不可靠信道（RDT3-0）"><a href="#第五版：基于不可靠信道（RDT3-0）" class="headerlink" title="第五版：基于不可靠信道（RDT3.0）"></a>第五版：基于不可靠信道（RDT3.0）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084618.png" alt="image-20210214180309300" style="zoom:50%;">
-
-<ul>
-<li><p>加上定时器，避免等待时间过长</p>
-</li>
-<li><p>此时基本已经是一个可靠的传输协议，只不过效率依然较低。</p>
-</li>
-<li><p>每次发送数据包，则会启动计时器，如果超时没收到回应，立马重发数据包，一直循环，直到收到确认信息，才会停止计时器，并发送下一个包。</p>
-</li>
-<li><p>问题：</p>
-<ul>
-<li><p>如果传输时间较长，以至于超时一直重新发送，而对方都会收到并返回<code>ACK</code>，这样的话，就会使得<code>等待ACK</code>收到很多回复，需要在收到第一个回复之后，丢弃后续的回复</p>
-</li>
-<li><p>可能存在，当前的<code>等待ACK1</code>收到的是上一个循环的<code>ACK1</code>回复。这是序号太少的缘故，只有<code>0 1</code>两个序号，无法分辨，可以对序号进行一个扩展，使其变成跟<code>TCP</code>一样。</p>
-<blockquote>
-<p><code>TCP</code>刚开始的序号（即三次握手后的序号）是随机生成的，然后每发一个字节，序号增一，则序号从一开始就不是从零开始，而且每次序号都会往上加，这样发送冲突的可能性就大大降低。</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="其余方法："><a href="#其余方法：" class="headerlink" title="其余方法："></a>其余方法：</h4><ul>
-<li>回退N路法（<code>TCP</code>正常协议）</li>
-<li>选择重传法（<code>TCP</code>正常协议）：效率较高</li>
-<li>流量控制</li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>运输层协议——TCP协议</title>
     <url>/2021/01/12/0027.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94TCP%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议——TCP协议"><a href="#运输层协议——TCP协议" class="headerlink" title="运输层协议——TCP协议"></a>运输层协议——TCP协议</h1><h3 id="TCP发送缓存和接收缓存"><a href="#TCP发送缓存和接收缓存" class="headerlink" title="TCP发送缓存和接收缓存"></a>TCP发送缓存和接收缓存</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084629.png" alt="image-20210214194742308" style="zoom:50%;">
@@ -3517,6 +3376,147 @@
 <p>用远程终端，输入一个字符时，会发生什么事情？</p>
 <p>SYN攻击：<br>        在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了，使用如下命令可以让之现行：#netstat -nap | grep SYN_RECV</p>
 <p>四次挥手：不管时服务端还是客户端，都可以发起挥手</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>运输层协议</title>
+    <url>/2021/01/11/0026.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议（重要）"><a href="#运输层协议（重要）" class="headerlink" title="运输层协议（重要）"></a>运输层协议（重要）</h1><blockquote>
+<p>应用层协议大部分只是用，不会做太多的深入，但是运输层协议是计算机网络中最核心的部分，也是跟程序员最息息相关的部分。</p>
+</blockquote>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084428.png" alt="image-20210214150950405" style="zoom:50%;">
+
+<p>图中展示的是，左边的主机想跟右边的主机进行通讯，在<code>应用层</code>看来就是两个应用在通讯；而在<code>运输层</code>呢？</p>
+<blockquote>
+<p>网络层：一个<code>IP</code>到另一个<code>IP</code>，即主机到主机之间的逻辑通信；</p>
+<p>应用层：工作在主机之上的进程之间的逻辑通信，<code>套接字</code>（四元组）跟<code>套接字</code>之间的通信；</p>
+<p>运输层：<code>端口</code>到<code>端口</code>之间的通信。</p>
+</blockquote>
+<h3 id="运输层的协议概述"><a href="#运输层的协议概述" class="headerlink" title="运输层的协议概述"></a>运输层的协议概述</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084437.png" alt="image-20210214152000511" style="zoom:50%;">
+
+<ul>
+<li><p>被<code>IP</code>地址到<code>IP</code>地址之间的沟通方式扩展到运输层中。</p>
+</li>
+<li><p>不管是<code>TCP</code>还是<code>UDP</code>，他们的最低限度的<code>运输层服务</code>则是<code>交付</code>与<code>差错检验</code>。</p>
+<blockquote>
+<p>不是说<code>UDP</code>不可靠就没有<code>差错检验</code>。可不可靠的评判标准是有没有丢包，没有丢包则说明可靠；但是无论有没有丢包，接收到的数据包，必须是准确的。</p>
+<p><code>差错检验</code>与<code>纠错</code>：如果数据包存在错误，则可能可以通过算法或者现有的数据实现<code>纠错</code>。</p>
+</blockquote>
+<blockquote>
+<p>使用<code>UDP</code>的时候，往往需要在<code>UDP</code>上面再封装一层，即对应用层进行封装，否则，如果对方不在线，那数据不止到不了对方，还会给网络造成压力。</p>
+<p><code>UDP</code>对整个网络来说并不友好，因为另一端如果下线不收取数据了，这一端还能继续发送数据。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="多路复用与多路分解"><a href="#多路复用与多路分解" class="headerlink" title="多路复用与多路分解"></a>多路复用与多路分解</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084451.png" alt="image-20210214154536090" style="zoom: 50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084456.png" alt="image-20210214154604591" style="zoom:50%;">
+
+<ul>
+<li>运输层：只关注<code>目的端口</code>与<code>源端口</code></li>
+<li>网络层：只关注<code>目的地</code>与<code>来源地</code></li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084503.png" alt="image-20210214154912818" style="zoom:50%;">
+
+<h3 id="为什么会选择无连接运输：UDP"><a href="#为什么会选择无连接运输：UDP" class="headerlink" title="为什么会选择无连接运输：UDP"></a>为什么会选择无连接运输：UDP</h3><ul>
+<li>关于何时、发送什么数据的应用层控制更为精细</li>
+<li>无需建立连接</li>
+<li>无状态连接</li>
+<li>分组开销小</li>
+</ul>
+<blockquote>
+<p><code>SNMP</code>：简单网络管理协议。</p>
+<p>网络风暴：数据中心有大量的数据在转圈出不去。</p>
+</blockquote>
+<h3 id="UDP报文段"><a href="#UDP报文段" class="headerlink" title="UDP报文段"></a>UDP报文段</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084512.png" alt="image-20210214160154511" style="zoom:50%;">
+
+<h3 id="怎么构建一个可靠的传输协议？"><a href="#怎么构建一个可靠的传输协议？" class="headerlink" title="怎么构建一个可靠的传输协议？"></a>怎么构建一个可靠的传输协议？</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084517.png" alt="image-20210214163516288" style="zoom:50%;">
+
+<ul>
+<li>信道：底层传输的逻辑或者链路</li>
+</ul>
+<ol>
+<li>如果是基于<code>可靠信道（tcp）</code>建立的传输，则无需在上层考虑<code>丢包以及乱序</code>的问题。</li>
+<li>如果是基于<code>不可靠信道</code>建立的传输，则需要在这个基础上，考虑在上层应该做什么事情才能使得传输变得可靠，即基于<code>不可靠信道</code>建立的<code>可靠发送与接收</code>的封装（图中绿色部分）。</li>
+</ol>
+<h4 id="第一版：基于完全可靠信道（tcp）"><a href="#第一版：基于完全可靠信道（tcp）" class="headerlink" title="第一版：基于完全可靠信道（tcp）"></a>第一版：基于完全可靠信道（tcp）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084525.png" alt="image-20210214164246923" style="zoom:50%;">
+
+<ul>
+<li>虚线：默认位置；</li>
+<li>实线：状态转换</li>
+<li>实线旁边：真实做的事，蓝线上方是封装的功能，下方是封装的具体细节。</li>
+<li>流程：创建一个数据包并发送给对方，对方接收到数据包，解析数据包并提交给上层。</li>
+</ul>
+<h4 id="第二版：基于不可靠信道"><a href="#第二版：基于不可靠信道" class="headerlink" title="第二版：基于不可靠信道"></a>第二版：基于不可靠信道</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084533.png" alt="image-20210214164906937" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084539.png" alt="image-20210214165550506" style="zoom:50%;">
+
+<ul>
+<li>能够感知到<code>比特级</code>的错误信息，具有一定差错控制的信道</li>
+<li>刚开始协议处于<code>阻塞</code>状态，等着上层的调用，上层通过<code>rdt_send</code>来调用协议，给协议传了一个<code>data</code>，协议会把<code>data</code>跟<code>校验和checksum</code>一起打包封装成一个数据包发给对方（可能会创建很多包，发送很多包，这里以单次为例）。</li>
+<li>对方收到之后，发送方就会处于<code>等待状态</code>，等待来自下层的调用，当下层数据来临时，会通知让其对数据进行解析并提交给上层。</li>
+<li>对方一开始处于<code>等待状态</code>，当对方收到数据时，会对数据的校验和进行检验，如果不对，会返回一个<code>NAK（错误回馈）</code>；如果检验无误，则会将数据包拆开，舍弃校验和，读取数据，将数据提交给上层，并给发送方返回一个<code>ACK（成功）</code>。</li>
+<li>此时发送方处于<code>等待状态</code>，收到对方的反馈后，如果是<code>NAK</code>，则会重新发送数据包；如果是<code>ACK</code>，则什么都不做，继续处于<code>等待状态</code>。</li>
+</ul>
+<blockquote>
+<p>这样虽然确保了数据的可靠传输，但是效率较慢，因为需要等待对方反馈。</p>
+</blockquote>
+<h4 id="第三版：基于不可靠信道（RDT2-1）"><a href="#第三版：基于不可靠信道（RDT2-1）" class="headerlink" title="第三版：基于不可靠信道（RDT2.1）"></a>第三版：基于不可靠信道（RDT2.1）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084548.png" alt="image-20210214170640861" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084556.png" alt="image-20210214174626714" style="zoom:50%;">
+
+<ul>
+<li><p>与上一版的差别在于多了编号，可以<code>0 1</code>这样的发，这样话，可以明确对方的每次反馈是给谁的，同时也能发送更多的信息。</p>
+</li>
+<li><p>好处：保证可靠的两点要素，一点是能够到达目的地，另一点是接收的顺序是准确的，即将<code>所有的数据</code>都要<code>按顺序</code>到达。而这一版，可以保证数据的<code>到达顺序</code>。</p>
+<blockquote>
+<p>单单01是不够的，后续的实现过程中，像<code>TCP</code>这种，它的序号是连续的，每个字节都有一个序号，这个序号就单次连接的字节流，即字节的位置。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="第四版：基于不可靠信道（RDT2-2）"><a href="#第四版：基于不可靠信道（RDT2-2）" class="headerlink" title="第四版：基于不可靠信道（RDT2.2）"></a>第四版：基于不可靠信道（RDT2.2）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084603.png" alt="image-20210214175242593" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084609.png" alt="image-20210214175531244" style="zoom:50%;">
+
+<ul>
+<li>少了<code>NAK</code>，只保留<code>ACK</code>，只确认收到的东西，不确认错误的数据。</li>
+<li>如果<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则说明数据不对，<code>ACK0</code>会重新发送一份数据，直到<code>等待ACK0</code>收到回复。</li>
+<li>接收方如果收到的数据没错，编号对应，则回一个<code>ACK</code>；而如果，比如接收方的<code>1</code>收到<code>0</code>包，则会再发送一个<code>ACK1</code>，此时发送方的<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则会触发机制，使得<code>ACK0</code>重发一份数据。（冗余<code>ACK</code>）</li>
+<li>缺陷：等待时间可能过长</li>
+</ul>
+<h4 id="第五版：基于不可靠信道（RDT3-0）"><a href="#第五版：基于不可靠信道（RDT3-0）" class="headerlink" title="第五版：基于不可靠信道（RDT3.0）"></a>第五版：基于不可靠信道（RDT3.0）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084618.png" alt="image-20210214180309300" style="zoom:50%;">
+
+<ul>
+<li><p>加上定时器，避免等待时间过长</p>
+</li>
+<li><p>此时基本已经是一个可靠的传输协议，只不过效率依然较低。</p>
+</li>
+<li><p>每次发送数据包，则会启动计时器，如果超时没收到回应，立马重发数据包，一直循环，直到收到确认信息，才会停止计时器，并发送下一个包。</p>
+</li>
+<li><p>问题：</p>
+<ul>
+<li><p>如果传输时间较长，以至于超时一直重新发送，而对方都会收到并返回<code>ACK</code>，这样的话，就会使得<code>等待ACK</code>收到很多回复，需要在收到第一个回复之后，丢弃后续的回复</p>
+</li>
+<li><p>可能存在，当前的<code>等待ACK1</code>收到的是上一个循环的<code>ACK1</code>回复。这是序号太少的缘故，只有<code>0 1</code>两个序号，无法分辨，可以对序号进行一个扩展，使其变成跟<code>TCP</code>一样。</p>
+<blockquote>
+<p><code>TCP</code>刚开始的序号（即三次握手后的序号）是随机生成的，然后每发一个字节，序号增一，则序号从一开始就不是从零开始，而且每次序号都会往上加，这样发送冲突的可能性就大大降低。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="其余方法："><a href="#其余方法：" class="headerlink" title="其余方法："></a>其余方法：</h4><ul>
+<li>回退N路法（<code>TCP</code>正常协议）</li>
+<li>选择重传法（<code>TCP</code>正常协议）：效率较高</li>
+<li>流量控制</li>
+</ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
