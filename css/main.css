@@ -433,7 +433,7 @@ pre {
 }
 pre,
 code {
-  font-family: consolas, Menlo, monospace, "PingFang SC", "Microsoft YaHei";
+  font-family: 'Microsoft YaHei', consolas, Menlo, monospace, "PingFang SC", "Microsoft YaHei";
 }
 code {
   background: #eee;
@@ -1025,7 +1025,7 @@ pre .javascript .function {
   color: var(--brand-hover-color);
 }
 .site-title {
-  font-family: 'Pacifico', 'Microsoft YaHei', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Microsoft YaHei', 'Microsoft YaHei', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 2em;
   font-weight: normal;
   margin: 0;
@@ -1211,7 +1211,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffb32f;
+  background: #ec54ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
