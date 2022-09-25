@@ -818,163 +818,6 @@
       </tags>
   </entry>
   <entry>
-    <title>堆与优先队列</title>
-    <url>/2021/01/05/0006.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
-
-<ul>
-<li><p>完全二叉树默认从1开始编号</p>
-<ul>
-<li>这样可以保证左孩子、右孩子编号简洁</li>
-<li>[否则] 左孩子编号需为2 * i + 1，右孩子编号需为2 * i + 2</li>
-</ul>
-</li>
-<li><p>可编号的性质→可用顺序结构存储，而不需要保存下一个结点的地址</p>
-<ul>
-<li><img src="https://i.loli.net/2020/12/02/DnX8VaTRLbd7mox.png" alt="图片" style="zoom:50%;"></li>
-</ul>
-</li>
-<li><p>二叉树→数组的转换</p>
-<ul>
-<li>按层序遍历的顺序存储在数组中，每一层的结点存储是连续的</li>
-</ul>
-</li>
-</ul>
-<h2 id="堆-优先队列"><a href="#堆-优先队列" class="headerlink" title="堆[优先队列]"></a>堆[优先队列]</h2><p>优先队列是堆的一个别名；堆是在<strong>完全二叉树</strong>的基础上维护的</p>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
-<li>结构与完全二叉树一样，但多维护了一种性质<ul>
-<li>大顶堆：对于任意三元组，根结点值最大</li>
-<li>小顶堆：对于任意三元组，根结点值最小</li>
-</ul>
-</li>
-</ul>
-<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><p>一切操作都要维护自己的性质！</p>
-<ul>
-<li>尾部插入【+调整】<ul>
-<li>在尾部插入该元素，再自下向上调整，最远调整到根结点<ul>
-<li>在三元组里不断调整，依次与父结点比较，只要交换了就不停止，直到到达根结点</li>
-<li>交换时只会改变交换元素的相对大小，整个结构的相对大小关系不变</li>
-</ul>
-</li>
-<li>比较的编号其实就是i 与 i / 2</li>
-<li>时间复杂度：$ O(log_2N) $，即树高</li>
-</ul>
-</li>
-<li>头部弹出【+调整】<ul>
-<li>将最后一个元素拿到堆顶，再自上向下调整，直到该元素没有子结点<ul>
-<li>在三元组里不断调整，依次与孩子结点比较，只要交换了就不停止，直到没有孩子</li>
-<li>为什么选择最后一个元素放到堆顶？</li>
-<li>因为，如果拿其他位置的元素，谁来补这个元素的缺口呢</li>
-</ul>
-</li>
-<li>比较的编号其实就是i、2 * i 与 2 * i + 1</li>
-<li>时间复杂度：同为树高</li>
-</ul>
-</li>
-<li>[PS]<ul>
-<li>大顶堆：方便查找第1大和第2大的元素 [根结点、第二层中]<ul>
-<li>找第3大、第4大…就不那么简单，不方便确定所在层数</li>
-</ul>
-</li>
-<li>上面这个过程<ul>
-<li>队尾进元素，队首出元素-&gt;同队列</li>
-<li>而出队的元素是最值-&gt;又名优先队列</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">priority_queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> cnt, size;</span><br><span class="line">&#125; <span class="built_in">priority_queue</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">priority_queue</span> *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">priority_queue</span> *q = (<span class="built_in">priority_queue</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="built_in">priority_queue</span>));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    q-&gt;cnt = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;cnt == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(<span class="built_in">priority_queue</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;cnt == q-&gt;size) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[++(q-&gt;cnt)] = val;</span><br><span class="line">    <span class="keyword">int</span> ind = q-&gt;cnt;</span><br><span class="line">    <span class="keyword">while</span> (ind &gt;&gt; <span class="number">1</span> &amp;&amp; q-&gt;data[ind] &gt; q-&gt;data[ind &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[ind &gt;&gt; <span class="number">1</span>]);</span><br><span class="line">        ind &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[<span class="number">1</span>] = q-&gt;data[q-&gt;cnt--];</span><br><span class="line">    <span class="keyword">int</span> ind = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((ind &lt;&lt; <span class="number">1</span>) &lt;= q-&gt;cnt) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = ind, l = ind &lt;&lt; <span class="number">1</span>, r = ind &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;data[l] &gt; q-&gt;data[temp]) temp = l;</span><br><span class="line">        <span class="keyword">if</span> (r &lt;= q-&gt;cnt &amp;&amp; q-&gt;data[r] &gt; q-&gt;data[temp]) temp = r;</span><br><span class="line">        <span class="keyword">if</span> (temp == ind) <span class="keyword">break</span>;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[temp]);</span><br><span class="line">        ind = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    <span class="built_in">priority_queue</span>*q = init(max_op);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        push(q, val);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;insert %d to the priority_queue.\n&quot;</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, top(q));</span><br><span class="line">        pop(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
-<li>根据其性质，全部弹出，将得到一个排好序的序列</li>
-<li>思维转变：堆顶元素的弹出操作 ==&gt; 堆顶元素与堆尾元素交换<ul>
-<li><strong>大顶堆</strong>的元素全部弹出：<strong>原数组</strong>存储了一个<strong>从小到大</strong>的排序序列</li>
-<li>[至此，从大顶堆，得到一个特殊的小顶堆]</li>
-</ul>
-</li>
-<li>时间复杂度：$ O(NlogN) $<ul>
-<li>消耗的时间在于调整操作，每次调整的时间复杂度是 $ O(logN) $，共N个元素，需调整N - 1次</li>
-<li>弹出操作的时间复杂度是O(1)的</li>
-<li>时间效率一定不会退化</li>
-</ul>
-</li>
-</ul>
-<h3 id="建堆"><a href="#建堆" class="headerlink" title="建堆"></a>建堆</h3><ul>
-<li>若要使用堆排序，首先需要维护一个堆，也就是用普通的序列<strong>建堆</strong>，下面有2种思路</li>
-</ul>
-<h4 id="1-插入建堆法"><a href="#1-插入建堆法" class="headerlink" title="1. 插入建堆法"></a>1. 插入建堆法</h4><ul>
-<li>按照前述尾部插入的调整方法：自下向上<ul>
-<li>从第0层 [默认根结点在第0层] 开始，计算每一层的最多调整次数：</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100309.png" alt="图片" style="zoom:50%;"></li>
-<li>第 i 层元素的调整次数为 i，第 i 层的结点数为2 ^ i→ 第 i 层的总调整次数为 $ i * (2 ^ i) $</li>
-</ul>
-</li>
-<li>最坏的建堆时间复杂度O(NlogN)，计算过程如下：<ul>
-<li>总的调整次数 $ S = (n - 1) * 2 ^ {n + 1}+ 1 $，过程如下：<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100428.png" alt="图片"></li>
-<li>利用裂项相消法</li>
-</ul>
-</li>
-<li>上面的n对应层数 - 1 [从第0层开始的]，若令总的结点数为N，则 $ n ≈ log_2N $</li>
-<li>【层数n→结点数N的换算】将 $ n ≈ log_2N $代入S，得到 $ S ≈ Nlog_2N $</li>
-<li>即最坏的时间复杂度为：$ O(NlogN) $</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-线性建堆"><a href="#2-线性建堆" class="headerlink" title="2. 线性建堆"></a>2. 线性建堆</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100544.png" alt="图片"></p>
-<ul>
-<li><p>如图所示</p>
-<ul>
-<li>常规思路：越到下面层，需要的调整次数越多，也就是权重越大</li>
-<li>那是否可以思维反转，把大权重放到前面，让下面结点数多的层的权重减小</li>
-<li>线性思路：可以！从倒数第二层开始排，【自上向下】调整</li>
-</ul>
-</li>
-<li><p>最坏的建堆时间复杂度O(N)</p>
-<ul>
-<li>同样利用裂项相消法得到总的调整次数 $ S = 2 ^ {n + 1} - 2 - n $</li>
-<li>把层数n换算到结点数N，得到 $ S ≈ 2N - 2 - log_2N $</li>
-<li>即最坏的时间复杂度为：O(N)</li>
-</ul>
-</li>
-</ul>
-<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>线性建堆</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define swap(a, b) &#123;\</span><br><span class="line">    __typeof(a) __temp &#x3D; a;\</span><br><span class="line">    a &#x3D; b; b &#x3D; __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void downUpdate(int *arr, int n, int ind) &#123;</span><br><span class="line">    while ((ind &lt;&lt; 1) &lt;&#x3D; n) &#123;</span><br><span class="line">        int temp &#x3D; ind, l &#x3D; ind &lt;&lt; 1, r &#x3D; ind &lt;&lt; 1 | 1;</span><br><span class="line">        if (arr[l] &gt; arr[temp]) temp &#x3D; l;</span><br><span class="line">        if (r &lt;&#x3D; n &amp;&amp; arr[r] &gt; arr[temp]) temp &#x3D; r;</span><br><span class="line">        if (ind &#x3D;&#x3D; temp) break;</span><br><span class="line">        swap(arr[temp], arr[ind]);</span><br><span class="line">        ind &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void heap_sort(int *arr, int n) &#123;</span><br><span class="line">    arr -&#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n &gt;&gt; 1; i &gt;&#x3D; 1; i--) &#123;</span><br><span class="line">        downUpdate(arr, n, i);</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; n; i &gt; 1; i--) &#123;</span><br><span class="line">        swap(arr[i], arr[1]);</span><br><span class="line">        downUpdate(arr, i - 1, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void output(int *arr, int n) &#123;</span><br><span class="line">    printf(&quot;[&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        printf(&quot;%d &quot;, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;]&quot;);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    srand(time(0));</span><br><span class="line">    #define max_n 20</span><br><span class="line">    int *arr &#x3D; (int *)malloc(sizeof(int) * max_n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; max_n; i++) &#123;</span><br><span class="line">        arr[i] &#x3D; rand() % 100;</span><br><span class="line">    &#125;</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    heap_sort(arr,max_n);</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    free(arr);</span><br><span class="line">    #undef max_n</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>这里的【堆排序】考虑了【建堆】+【排序】: $ O(N) + O(NlogN) = O(NlogN)$</li>
-<li>没有定义堆结构，用数组模拟堆</li>
-</ul>
-<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100859.png" alt="img"></li>
-</ul>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>森林与并查集</title>
     <url>/2021/01/06/0007.%20%E6%A3%AE%E6%9E%97%E4%B8%8E%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="森林与并查集"><a href="#森林与并查集" class="headerlink" title="森林与并查集"></a>森林与并查集</h1><ul>
@@ -1235,6 +1078,163 @@
 </ul>
 <h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
 <li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306105114.png" alt="图片"></li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆与优先队列</title>
+    <url>/2021/01/05/0006.%20%E5%A0%86%E4%B8%8E%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h1><h2 id="回顾-完全二叉树"><a href="#回顾-完全二叉树" class="headerlink" title="回顾[完全二叉树]"></a>回顾[完全二叉树]</h2><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306095959.png" alt="图片" style="zoom:50%;">
+
+<ul>
+<li><p>完全二叉树默认从1开始编号</p>
+<ul>
+<li>这样可以保证左孩子、右孩子编号简洁</li>
+<li>[否则] 左孩子编号需为2 * i + 1，右孩子编号需为2 * i + 2</li>
+</ul>
+</li>
+<li><p>可编号的性质→可用顺序结构存储，而不需要保存下一个结点的地址</p>
+<ul>
+<li><img src="https://i.loli.net/2020/12/02/DnX8VaTRLbd7mox.png" alt="图片" style="zoom:50%;"></li>
+</ul>
+</li>
+<li><p>二叉树→数组的转换</p>
+<ul>
+<li>按层序遍历的顺序存储在数组中，每一层的结点存储是连续的</li>
+</ul>
+</li>
+</ul>
+<h2 id="堆-优先队列"><a href="#堆-优先队列" class="headerlink" title="堆[优先队列]"></a>堆[优先队列]</h2><p>优先队列是堆的一个别名；堆是在<strong>完全二叉树</strong>的基础上维护的</p>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a>结构定义</h3><ul>
+<li>结构与完全二叉树一样，但多维护了一种性质<ul>
+<li>大顶堆：对于任意三元组，根结点值最大</li>
+<li>小顶堆：对于任意三元组，根结点值最小</li>
+</ul>
+</li>
+</ul>
+<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a>结构操作</h3><p>一切操作都要维护自己的性质！</p>
+<ul>
+<li>尾部插入【+调整】<ul>
+<li>在尾部插入该元素，再自下向上调整，最远调整到根结点<ul>
+<li>在三元组里不断调整，依次与父结点比较，只要交换了就不停止，直到到达根结点</li>
+<li>交换时只会改变交换元素的相对大小，整个结构的相对大小关系不变</li>
+</ul>
+</li>
+<li>比较的编号其实就是i 与 i / 2</li>
+<li>时间复杂度：$ O(log_2N) $，即树高</li>
+</ul>
+</li>
+<li>头部弹出【+调整】<ul>
+<li>将最后一个元素拿到堆顶，再自上向下调整，直到该元素没有子结点<ul>
+<li>在三元组里不断调整，依次与孩子结点比较，只要交换了就不停止，直到没有孩子</li>
+<li>为什么选择最后一个元素放到堆顶？</li>
+<li>因为，如果拿其他位置的元素，谁来补这个元素的缺口呢</li>
+</ul>
+</li>
+<li>比较的编号其实就是i、2 * i 与 2 * i + 1</li>
+<li>时间复杂度：同为树高</li>
+</ul>
+</li>
+<li>[PS]<ul>
+<li>大顶堆：方便查找第1大和第2大的元素 [根结点、第二层中]<ul>
+<li>找第3大、第4大…就不那么简单，不方便确定所在层数</li>
+</ul>
+</li>
+<li>上面这个过程<ul>
+<li>队尾进元素，队首出元素-&gt;同队列</li>
+<li>而出队的元素是最值-&gt;又名优先队列</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123;\</span></span><br><span class="line">    __typeof(a) __temp = a;\</span><br><span class="line">    a = b; b = __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">priority_queue</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;</span><br><span class="line">    <span class="keyword">int</span> cnt, size;</span><br><span class="line">&#125; <span class="built_in">priority_queue</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">priority_queue</span> *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">priority_queue</span> *q = (<span class="built_in">priority_queue</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="built_in">priority_queue</span>));</span><br><span class="line">    q-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (n + <span class="number">1</span>));</span><br><span class="line">    q-&gt;cnt = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = n;</span><br><span class="line">    <span class="keyword">return</span> q;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">empty</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;cnt == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q-&gt;data[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">push</span><span class="params">(<span class="built_in">priority_queue</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (q-&gt;cnt == q-&gt;size) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[++(q-&gt;cnt)] = val;</span><br><span class="line">    <span class="keyword">int</span> ind = q-&gt;cnt;</span><br><span class="line">    <span class="keyword">while</span> (ind &gt;&gt; <span class="number">1</span> &amp;&amp; q-&gt;data[ind] &gt; q-&gt;data[ind &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[ind &gt;&gt; <span class="number">1</span>]);</span><br><span class="line">        ind &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (empty(q)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    q-&gt;data[<span class="number">1</span>] = q-&gt;data[q-&gt;cnt--];</span><br><span class="line">    <span class="keyword">int</span> ind = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((ind &lt;&lt; <span class="number">1</span>) &lt;= q-&gt;cnt) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = ind, l = ind &lt;&lt; <span class="number">1</span>, r = ind &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;data[l] &gt; q-&gt;data[temp]) temp = l;</span><br><span class="line">        <span class="keyword">if</span> (r &lt;= q-&gt;cnt &amp;&amp; q-&gt;data[r] &gt; q-&gt;data[temp]) temp = r;</span><br><span class="line">        <span class="keyword">if</span> (temp == ind) <span class="keyword">break</span>;</span><br><span class="line">        swap(q-&gt;data[ind], q-&gt;data[temp]);</span><br><span class="line">        ind = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(<span class="built_in">priority_queue</span> *q)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (q == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(q-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    <span class="built_in">priority_queue</span>*q = init(max_op);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        push(q, val);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;insert %d to the priority_queue.\n&quot;</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, top(q));</span><br><span class="line">        pop(q);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(q);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><ul>
+<li>根据其性质，全部弹出，将得到一个排好序的序列</li>
+<li>思维转变：堆顶元素的弹出操作 ==&gt; 堆顶元素与堆尾元素交换<ul>
+<li><strong>大顶堆</strong>的元素全部弹出：<strong>原数组</strong>存储了一个<strong>从小到大</strong>的排序序列</li>
+<li>[至此，从大顶堆，得到一个特殊的小顶堆]</li>
+</ul>
+</li>
+<li>时间复杂度：$ O(NlogN) $<ul>
+<li>消耗的时间在于调整操作，每次调整的时间复杂度是 $ O(logN) $，共N个元素，需调整N - 1次</li>
+<li>弹出操作的时间复杂度是O(1)的</li>
+<li>时间效率一定不会退化</li>
+</ul>
+</li>
+</ul>
+<h3 id="建堆"><a href="#建堆" class="headerlink" title="建堆"></a>建堆</h3><ul>
+<li>若要使用堆排序，首先需要维护一个堆，也就是用普通的序列<strong>建堆</strong>，下面有2种思路</li>
+</ul>
+<h4 id="1-插入建堆法"><a href="#1-插入建堆法" class="headerlink" title="1. 插入建堆法"></a>1. 插入建堆法</h4><ul>
+<li>按照前述尾部插入的调整方法：自下向上<ul>
+<li>从第0层 [默认根结点在第0层] 开始，计算每一层的最多调整次数：</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100309.png" alt="图片" style="zoom:50%;"></li>
+<li>第 i 层元素的调整次数为 i，第 i 层的结点数为2 ^ i→ 第 i 层的总调整次数为 $ i * (2 ^ i) $</li>
+</ul>
+</li>
+<li>最坏的建堆时间复杂度O(NlogN)，计算过程如下：<ul>
+<li>总的调整次数 $ S = (n - 1) * 2 ^ {n + 1}+ 1 $，过程如下：<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100428.png" alt="图片"></li>
+<li>利用裂项相消法</li>
+</ul>
+</li>
+<li>上面的n对应层数 - 1 [从第0层开始的]，若令总的结点数为N，则 $ n ≈ log_2N $</li>
+<li>【层数n→结点数N的换算】将 $ n ≈ log_2N $代入S，得到 $ S ≈ Nlog_2N $</li>
+<li>即最坏的时间复杂度为：$ O(NlogN) $</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-线性建堆"><a href="#2-线性建堆" class="headerlink" title="2. 线性建堆"></a>2. 线性建堆</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100544.png" alt="图片"></p>
+<ul>
+<li><p>如图所示</p>
+<ul>
+<li>常规思路：越到下面层，需要的调整次数越多，也就是权重越大</li>
+<li>那是否可以思维反转，把大权重放到前面，让下面结点数多的层的权重减小</li>
+<li>线性思路：可以！从倒数第二层开始排，【自上向下】调整</li>
+</ul>
+</li>
+<li><p>最坏的建堆时间复杂度O(N)</p>
+<ul>
+<li>同样利用裂项相消法得到总的调整次数 $ S = 2 ^ {n + 1} - 2 - n $</li>
+<li>把层数n换算到结点数N，得到 $ S ≈ 2N - 2 - log_2N $</li>
+<li>即最坏的时间复杂度为：O(N)</li>
+</ul>
+</li>
+</ul>
+<h3 id="代码演示：-1"><a href="#代码演示：-1" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>线性建堆</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">#define swap(a, b) &#123;\</span><br><span class="line">    __typeof(a) __temp &#x3D; a;\</span><br><span class="line">    a &#x3D; b; b &#x3D; __temp;\</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void downUpdate(int *arr, int n, int ind) &#123;</span><br><span class="line">    while ((ind &lt;&lt; 1) &lt;&#x3D; n) &#123;</span><br><span class="line">        int temp &#x3D; ind, l &#x3D; ind &lt;&lt; 1, r &#x3D; ind &lt;&lt; 1 | 1;</span><br><span class="line">        if (arr[l] &gt; arr[temp]) temp &#x3D; l;</span><br><span class="line">        if (r &lt;&#x3D; n &amp;&amp; arr[r] &gt; arr[temp]) temp &#x3D; r;</span><br><span class="line">        if (ind &#x3D;&#x3D; temp) break;</span><br><span class="line">        swap(arr[temp], arr[ind]);</span><br><span class="line">        ind &#x3D; temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void heap_sort(int *arr, int n) &#123;</span><br><span class="line">    arr -&#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n &gt;&gt; 1; i &gt;&#x3D; 1; i--) &#123;</span><br><span class="line">        downUpdate(arr, n, i);</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; n; i &gt; 1; i--) &#123;</span><br><span class="line">        swap(arr[i], arr[1]);</span><br><span class="line">        downUpdate(arr, i - 1, 1);</span><br><span class="line">    &#125;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void output(int *arr, int n) &#123;</span><br><span class="line">    printf(&quot;[&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        printf(&quot;%d &quot;, arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;]&quot;);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    srand(time(0));</span><br><span class="line">    #define max_n 20</span><br><span class="line">    int *arr &#x3D; (int *)malloc(sizeof(int) * max_n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; max_n; i++) &#123;</span><br><span class="line">        arr[i] &#x3D; rand() % 100;</span><br><span class="line">    &#125;</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    heap_sort(arr,max_n);</span><br><span class="line">    output(arr, max_n);</span><br><span class="line">    free(arr);</span><br><span class="line">    #undef max_n</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>这里的【堆排序】考虑了【建堆】+【排序】: $ O(N) + O(NlogN) = O(NlogN)$</li>
+<li>没有定义堆结构，用数组模拟堆</li>
+</ul>
+<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306100859.png" alt="img"></li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
@@ -1881,57 +1881,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Linux 命令行解析</title>
-    <url>/2021/01/01/0016.%20Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Linux-命令行解析"><a href="#Linux-命令行解析" class="headerlink" title="Linux 命令行解析"></a>Linux 命令行解析</h1><h2 id="getopt函数"><a href="#getopt函数" class="headerlink" title="getopt函数"></a>getopt函数</h2><h4 id="getopt-函数-：命令行解析函数"><a href="#getopt-函数-：命令行解析函数" class="headerlink" title="getopt 函数 ：命令行解析函数"></a>getopt 函数 ：命令行解析函数</h4><ul>
-<li>头文件 ： &lt;unistd.h&gt;</li>
-<li>原型 ： <code>int</code> getopt(int argc, char * const argv[], const char *optstring);</li>
-</ul>
-<blockquote>
-<p>看到<code>int</code>很自然就可以想到是返回 成功 0，失败 -1， 或者返回个数</p>
-</blockquote>
-<ul>
-<li>argc argv：由 <code>main 函数</code>的参数<code>直接传递</code>而来</li>
-<li>optstring：一个包含准确选项字符的字符串</li>
-<li>返回值：返回下一个选项</li>
-</ul>
-<blockquote>
-<p>用 man 手册查询认识相关命令时，注重你要找的参数，不要过多的关注其变种。</p>
-</blockquote>
-<h4 id="getopt设置的一些全局变量"><a href="#getopt设置的一些全局变量" class="headerlink" title="getopt设置的一些全局变量"></a>getopt设置的一些全局变量</h4><ul>
-<li>char *optarg ：指向当前选项参数（如果有）的指针</li>
-<li>int optind  ：再次调用getopt()时的下一个argv 指针索引</li>
-<li>int optopt() ： 最有一个已知选项</li>
-<li>int opterr()  ：这个变量非零时，向stderr打印错误。默认为1。 </li>
-</ul>
-<h4 id="参数-optstring-详解"><a href="#参数-optstring-详解" class="headerlink" title="参数 optstring 详解"></a>参数 optstring 详解</h4><h5 id="getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。"><a href="#getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。" class="headerlink" title="getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。"></a>getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。</h5><ol>
-<li><code>单个</code>字符，表示<code>选项</code></li>
-<li>单个字符后加<code>一个冒号</code>“：”，表示该选项后<code>必须跟一个参数值</code>。参数<code>紧跟</code>在选项后或者<code>以空格</code>隔开。该参数的指针<code>赋给 optarg</code>。</li>
-<li>单个字符后跟<code>两个冒号</code>“：：”，表示该选项后<code>可以带</code>参数<code>也可以不带</code>参数。但参数<code>必须紧跟</code>在选项后不能以空格隔开。该参数的指针赋给optarg。</li>
-</ol>
-<p>例子： “<code>xy:z::</code>”表示 <code>x</code> 选项没有选项参数，<code>y</code> 选项必须有参数，中间可有空格可没，<code>z</code> 参数可有参数选项。也可没有参数选项，但是如果有选项参数的话必须紧跟在选项之后不能有空格。 </p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210101223051229.png" alt="image-20210101223051229"></p>
-<ol>
-<li><code>getopt</code> 内部有一个 <code>opt index</code> 指针（索引）的位置，指针会从 <code>0</code> 开始往后面扫描，<code>getopt</code> 每次会返回一个，直到找到最后一个的时候。会返回一个 <code>-1.</code></li>
-<li>当 <code>!= -1</code>的时候，返回的是一个<code>int</code> 型的选项字符，通过选项字符判断</li>
-</ol>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>文件及目录</title>
     <url>/2021/01/02/0017.%20%E6%96%87%E4%BB%B6%E5%8F%8A%E7%9B%AE%E5%BD%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="文件及目录"><a href="#文件及目录" class="headerlink" title="文件及目录"></a>文件及目录</h1><blockquote>
@@ -2238,6 +2187,57 @@
 </li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux 命令行解析</title>
+    <url>/2021/01/01/0016.%20Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Linux-命令行解析"><a href="#Linux-命令行解析" class="headerlink" title="Linux 命令行解析"></a>Linux 命令行解析</h1><h2 id="getopt函数"><a href="#getopt函数" class="headerlink" title="getopt函数"></a>getopt函数</h2><h4 id="getopt-函数-：命令行解析函数"><a href="#getopt-函数-：命令行解析函数" class="headerlink" title="getopt 函数 ：命令行解析函数"></a>getopt 函数 ：命令行解析函数</h4><ul>
+<li>头文件 ： &lt;unistd.h&gt;</li>
+<li>原型 ： <code>int</code> getopt(int argc, char * const argv[], const char *optstring);</li>
+</ul>
+<blockquote>
+<p>看到<code>int</code>很自然就可以想到是返回 成功 0，失败 -1， 或者返回个数</p>
+</blockquote>
+<ul>
+<li>argc argv：由 <code>main 函数</code>的参数<code>直接传递</code>而来</li>
+<li>optstring：一个包含准确选项字符的字符串</li>
+<li>返回值：返回下一个选项</li>
+</ul>
+<blockquote>
+<p>用 man 手册查询认识相关命令时，注重你要找的参数，不要过多的关注其变种。</p>
+</blockquote>
+<h4 id="getopt设置的一些全局变量"><a href="#getopt设置的一些全局变量" class="headerlink" title="getopt设置的一些全局变量"></a>getopt设置的一些全局变量</h4><ul>
+<li>char *optarg ：指向当前选项参数（如果有）的指针</li>
+<li>int optind  ：再次调用getopt()时的下一个argv 指针索引</li>
+<li>int optopt() ： 最有一个已知选项</li>
+<li>int opterr()  ：这个变量非零时，向stderr打印错误。默认为1。 </li>
+</ul>
+<h4 id="参数-optstring-详解"><a href="#参数-optstring-详解" class="headerlink" title="参数 optstring 详解"></a>参数 optstring 详解</h4><h5 id="getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。"><a href="#getopt-函数的第三个参数optstring-是一个有所有合法的“可选字体”所组成的字符串。" class="headerlink" title="getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。"></a>getopt() 函数的第三个参数optstring 是一个有所有合法的“可选字体”所组成的字符串。</h5><ol>
+<li><code>单个</code>字符，表示<code>选项</code></li>
+<li>单个字符后加<code>一个冒号</code>“：”，表示该选项后<code>必须跟一个参数值</code>。参数<code>紧跟</code>在选项后或者<code>以空格</code>隔开。该参数的指针<code>赋给 optarg</code>。</li>
+<li>单个字符后跟<code>两个冒号</code>“：：”，表示该选项后<code>可以带</code>参数<code>也可以不带</code>参数。但参数<code>必须紧跟</code>在选项后不能以空格隔开。该参数的指针赋给optarg。</li>
+</ol>
+<p>例子： “<code>xy:z::</code>”表示 <code>x</code> 选项没有选项参数，<code>y</code> 选项必须有参数，中间可有空格可没，<code>z</code> 参数可有参数选项。也可没有参数选项，但是如果有选项参数的话必须紧跟在选项之后不能有空格。 </p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210101223051229.png" alt="image-20210101223051229"></p>
+<ol>
+<li><code>getopt</code> 内部有一个 <code>opt index</code> 指针（索引）的位置，指针会从 <code>0</code> 开始往后面扫描，<code>getopt</code> 每次会返回一个，直到找到最后一个的时候。会返回一个 <code>-1.</code></li>
+<li>当 <code>!= -1</code>的时候，返回的是一个<code>int</code> 型的选项字符，通过选项字符判断</li>
+</ol>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
         <category>系统编程与网络编程</category>
@@ -3163,6 +3163,147 @@
       </tags>
   </entry>
   <entry>
+    <title>运输层协议</title>
+    <url>/2021/01/11/0026.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议（重要）"><a href="#运输层协议（重要）" class="headerlink" title="运输层协议（重要）"></a>运输层协议（重要）</h1><blockquote>
+<p>应用层协议大部分只是用，不会做太多的深入，但是运输层协议是计算机网络中最核心的部分，也是跟程序员最息息相关的部分。</p>
+</blockquote>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084428.png" alt="image-20210214150950405" style="zoom:50%;">
+
+<p>图中展示的是，左边的主机想跟右边的主机进行通讯，在<code>应用层</code>看来就是两个应用在通讯；而在<code>运输层</code>呢？</p>
+<blockquote>
+<p>网络层：一个<code>IP</code>到另一个<code>IP</code>，即主机到主机之间的逻辑通信；</p>
+<p>应用层：工作在主机之上的进程之间的逻辑通信，<code>套接字</code>（四元组）跟<code>套接字</code>之间的通信；</p>
+<p>运输层：<code>端口</code>到<code>端口</code>之间的通信。</p>
+</blockquote>
+<h3 id="运输层的协议概述"><a href="#运输层的协议概述" class="headerlink" title="运输层的协议概述"></a>运输层的协议概述</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084437.png" alt="image-20210214152000511" style="zoom:50%;">
+
+<ul>
+<li><p>被<code>IP</code>地址到<code>IP</code>地址之间的沟通方式扩展到运输层中。</p>
+</li>
+<li><p>不管是<code>TCP</code>还是<code>UDP</code>，他们的最低限度的<code>运输层服务</code>则是<code>交付</code>与<code>差错检验</code>。</p>
+<blockquote>
+<p>不是说<code>UDP</code>不可靠就没有<code>差错检验</code>。可不可靠的评判标准是有没有丢包，没有丢包则说明可靠；但是无论有没有丢包，接收到的数据包，必须是准确的。</p>
+<p><code>差错检验</code>与<code>纠错</code>：如果数据包存在错误，则可能可以通过算法或者现有的数据实现<code>纠错</code>。</p>
+</blockquote>
+<blockquote>
+<p>使用<code>UDP</code>的时候，往往需要在<code>UDP</code>上面再封装一层，即对应用层进行封装，否则，如果对方不在线，那数据不止到不了对方，还会给网络造成压力。</p>
+<p><code>UDP</code>对整个网络来说并不友好，因为另一端如果下线不收取数据了，这一端还能继续发送数据。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="多路复用与多路分解"><a href="#多路复用与多路分解" class="headerlink" title="多路复用与多路分解"></a>多路复用与多路分解</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084451.png" alt="image-20210214154536090" style="zoom: 50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084456.png" alt="image-20210214154604591" style="zoom:50%;">
+
+<ul>
+<li>运输层：只关注<code>目的端口</code>与<code>源端口</code></li>
+<li>网络层：只关注<code>目的地</code>与<code>来源地</code></li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084503.png" alt="image-20210214154912818" style="zoom:50%;">
+
+<h3 id="为什么会选择无连接运输：UDP"><a href="#为什么会选择无连接运输：UDP" class="headerlink" title="为什么会选择无连接运输：UDP"></a>为什么会选择无连接运输：UDP</h3><ul>
+<li>关于何时、发送什么数据的应用层控制更为精细</li>
+<li>无需建立连接</li>
+<li>无状态连接</li>
+<li>分组开销小</li>
+</ul>
+<blockquote>
+<p><code>SNMP</code>：简单网络管理协议。</p>
+<p>网络风暴：数据中心有大量的数据在转圈出不去。</p>
+</blockquote>
+<h3 id="UDP报文段"><a href="#UDP报文段" class="headerlink" title="UDP报文段"></a>UDP报文段</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084512.png" alt="image-20210214160154511" style="zoom:50%;">
+
+<h3 id="怎么构建一个可靠的传输协议？"><a href="#怎么构建一个可靠的传输协议？" class="headerlink" title="怎么构建一个可靠的传输协议？"></a>怎么构建一个可靠的传输协议？</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084517.png" alt="image-20210214163516288" style="zoom:50%;">
+
+<ul>
+<li>信道：底层传输的逻辑或者链路</li>
+</ul>
+<ol>
+<li>如果是基于<code>可靠信道（tcp）</code>建立的传输，则无需在上层考虑<code>丢包以及乱序</code>的问题。</li>
+<li>如果是基于<code>不可靠信道</code>建立的传输，则需要在这个基础上，考虑在上层应该做什么事情才能使得传输变得可靠，即基于<code>不可靠信道</code>建立的<code>可靠发送与接收</code>的封装（图中绿色部分）。</li>
+</ol>
+<h4 id="第一版：基于完全可靠信道（tcp）"><a href="#第一版：基于完全可靠信道（tcp）" class="headerlink" title="第一版：基于完全可靠信道（tcp）"></a>第一版：基于完全可靠信道（tcp）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084525.png" alt="image-20210214164246923" style="zoom:50%;">
+
+<ul>
+<li>虚线：默认位置；</li>
+<li>实线：状态转换</li>
+<li>实线旁边：真实做的事，蓝线上方是封装的功能，下方是封装的具体细节。</li>
+<li>流程：创建一个数据包并发送给对方，对方接收到数据包，解析数据包并提交给上层。</li>
+</ul>
+<h4 id="第二版：基于不可靠信道"><a href="#第二版：基于不可靠信道" class="headerlink" title="第二版：基于不可靠信道"></a>第二版：基于不可靠信道</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084533.png" alt="image-20210214164906937" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084539.png" alt="image-20210214165550506" style="zoom:50%;">
+
+<ul>
+<li>能够感知到<code>比特级</code>的错误信息，具有一定差错控制的信道</li>
+<li>刚开始协议处于<code>阻塞</code>状态，等着上层的调用，上层通过<code>rdt_send</code>来调用协议，给协议传了一个<code>data</code>，协议会把<code>data</code>跟<code>校验和checksum</code>一起打包封装成一个数据包发给对方（可能会创建很多包，发送很多包，这里以单次为例）。</li>
+<li>对方收到之后，发送方就会处于<code>等待状态</code>，等待来自下层的调用，当下层数据来临时，会通知让其对数据进行解析并提交给上层。</li>
+<li>对方一开始处于<code>等待状态</code>，当对方收到数据时，会对数据的校验和进行检验，如果不对，会返回一个<code>NAK（错误回馈）</code>；如果检验无误，则会将数据包拆开，舍弃校验和，读取数据，将数据提交给上层，并给发送方返回一个<code>ACK（成功）</code>。</li>
+<li>此时发送方处于<code>等待状态</code>，收到对方的反馈后，如果是<code>NAK</code>，则会重新发送数据包；如果是<code>ACK</code>，则什么都不做，继续处于<code>等待状态</code>。</li>
+</ul>
+<blockquote>
+<p>这样虽然确保了数据的可靠传输，但是效率较慢，因为需要等待对方反馈。</p>
+</blockquote>
+<h4 id="第三版：基于不可靠信道（RDT2-1）"><a href="#第三版：基于不可靠信道（RDT2-1）" class="headerlink" title="第三版：基于不可靠信道（RDT2.1）"></a>第三版：基于不可靠信道（RDT2.1）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084548.png" alt="image-20210214170640861" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084556.png" alt="image-20210214174626714" style="zoom:50%;">
+
+<ul>
+<li><p>与上一版的差别在于多了编号，可以<code>0 1</code>这样的发，这样话，可以明确对方的每次反馈是给谁的，同时也能发送更多的信息。</p>
+</li>
+<li><p>好处：保证可靠的两点要素，一点是能够到达目的地，另一点是接收的顺序是准确的，即将<code>所有的数据</code>都要<code>按顺序</code>到达。而这一版，可以保证数据的<code>到达顺序</code>。</p>
+<blockquote>
+<p>单单01是不够的，后续的实现过程中，像<code>TCP</code>这种，它的序号是连续的，每个字节都有一个序号，这个序号就单次连接的字节流，即字节的位置。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="第四版：基于不可靠信道（RDT2-2）"><a href="#第四版：基于不可靠信道（RDT2-2）" class="headerlink" title="第四版：基于不可靠信道（RDT2.2）"></a>第四版：基于不可靠信道（RDT2.2）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084603.png" alt="image-20210214175242593" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084609.png" alt="image-20210214175531244" style="zoom:50%;">
+
+<ul>
+<li>少了<code>NAK</code>，只保留<code>ACK</code>，只确认收到的东西，不确认错误的数据。</li>
+<li>如果<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则说明数据不对，<code>ACK0</code>会重新发送一份数据，直到<code>等待ACK0</code>收到回复。</li>
+<li>接收方如果收到的数据没错，编号对应，则回一个<code>ACK</code>；而如果，比如接收方的<code>1</code>收到<code>0</code>包，则会再发送一个<code>ACK1</code>，此时发送方的<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则会触发机制，使得<code>ACK0</code>重发一份数据。（冗余<code>ACK</code>）</li>
+<li>缺陷：等待时间可能过长</li>
+</ul>
+<h4 id="第五版：基于不可靠信道（RDT3-0）"><a href="#第五版：基于不可靠信道（RDT3-0）" class="headerlink" title="第五版：基于不可靠信道（RDT3.0）"></a>第五版：基于不可靠信道（RDT3.0）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084618.png" alt="image-20210214180309300" style="zoom:50%;">
+
+<ul>
+<li><p>加上定时器，避免等待时间过长</p>
+</li>
+<li><p>此时基本已经是一个可靠的传输协议，只不过效率依然较低。</p>
+</li>
+<li><p>每次发送数据包，则会启动计时器，如果超时没收到回应，立马重发数据包，一直循环，直到收到确认信息，才会停止计时器，并发送下一个包。</p>
+</li>
+<li><p>问题：</p>
+<ul>
+<li><p>如果传输时间较长，以至于超时一直重新发送，而对方都会收到并返回<code>ACK</code>，这样的话，就会使得<code>等待ACK</code>收到很多回复，需要在收到第一个回复之后，丢弃后续的回复</p>
+</li>
+<li><p>可能存在，当前的<code>等待ACK1</code>收到的是上一个循环的<code>ACK1</code>回复。这是序号太少的缘故，只有<code>0 1</code>两个序号，无法分辨，可以对序号进行一个扩展，使其变成跟<code>TCP</code>一样。</p>
+<blockquote>
+<p><code>TCP</code>刚开始的序号（即三次握手后的序号）是随机生成的，然后每发一个字节，序号增一，则序号从一开始就不是从零开始，而且每次序号都会往上加，这样发送冲突的可能性就大大降低。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="其余方法："><a href="#其余方法：" class="headerlink" title="其余方法："></a>其余方法：</h4><ul>
+<li>回退N路法（<code>TCP</code>正常协议）</li>
+<li>选择重传法（<code>TCP</code>正常协议）：效率较高</li>
+<li>流量控制</li>
+</ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>运输层协议——TCP协议</title>
     <url>/2021/01/12/0027.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94TCP%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议——TCP协议"><a href="#运输层协议——TCP协议" class="headerlink" title="运输层协议——TCP协议"></a>运输层协议——TCP协议</h1><h3 id="TCP发送缓存和接收缓存"><a href="#TCP发送缓存和接收缓存" class="headerlink" title="TCP发送缓存和接收缓存"></a>TCP发送缓存和接收缓存</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084629.png" alt="image-20210214194742308" style="zoom:50%;">
@@ -3376,147 +3517,6 @@
 <p>用远程终端，输入一个字符时，会发生什么事情？</p>
 <p>SYN攻击：<br>        在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了，使用如下命令可以让之现行：#netstat -nap | grep SYN_RECV</p>
 <p>四次挥手：不管时服务端还是客户端，都可以发起挥手</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>运输层协议</title>
-    <url>/2021/01/11/0026.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议（重要）"><a href="#运输层协议（重要）" class="headerlink" title="运输层协议（重要）"></a>运输层协议（重要）</h1><blockquote>
-<p>应用层协议大部分只是用，不会做太多的深入，但是运输层协议是计算机网络中最核心的部分，也是跟程序员最息息相关的部分。</p>
-</blockquote>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084428.png" alt="image-20210214150950405" style="zoom:50%;">
-
-<p>图中展示的是，左边的主机想跟右边的主机进行通讯，在<code>应用层</code>看来就是两个应用在通讯；而在<code>运输层</code>呢？</p>
-<blockquote>
-<p>网络层：一个<code>IP</code>到另一个<code>IP</code>，即主机到主机之间的逻辑通信；</p>
-<p>应用层：工作在主机之上的进程之间的逻辑通信，<code>套接字</code>（四元组）跟<code>套接字</code>之间的通信；</p>
-<p>运输层：<code>端口</code>到<code>端口</code>之间的通信。</p>
-</blockquote>
-<h3 id="运输层的协议概述"><a href="#运输层的协议概述" class="headerlink" title="运输层的协议概述"></a>运输层的协议概述</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084437.png" alt="image-20210214152000511" style="zoom:50%;">
-
-<ul>
-<li><p>被<code>IP</code>地址到<code>IP</code>地址之间的沟通方式扩展到运输层中。</p>
-</li>
-<li><p>不管是<code>TCP</code>还是<code>UDP</code>，他们的最低限度的<code>运输层服务</code>则是<code>交付</code>与<code>差错检验</code>。</p>
-<blockquote>
-<p>不是说<code>UDP</code>不可靠就没有<code>差错检验</code>。可不可靠的评判标准是有没有丢包，没有丢包则说明可靠；但是无论有没有丢包，接收到的数据包，必须是准确的。</p>
-<p><code>差错检验</code>与<code>纠错</code>：如果数据包存在错误，则可能可以通过算法或者现有的数据实现<code>纠错</code>。</p>
-</blockquote>
-<blockquote>
-<p>使用<code>UDP</code>的时候，往往需要在<code>UDP</code>上面再封装一层，即对应用层进行封装，否则，如果对方不在线，那数据不止到不了对方，还会给网络造成压力。</p>
-<p><code>UDP</code>对整个网络来说并不友好，因为另一端如果下线不收取数据了，这一端还能继续发送数据。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="多路复用与多路分解"><a href="#多路复用与多路分解" class="headerlink" title="多路复用与多路分解"></a>多路复用与多路分解</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084451.png" alt="image-20210214154536090" style="zoom: 50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084456.png" alt="image-20210214154604591" style="zoom:50%;">
-
-<ul>
-<li>运输层：只关注<code>目的端口</code>与<code>源端口</code></li>
-<li>网络层：只关注<code>目的地</code>与<code>来源地</code></li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084503.png" alt="image-20210214154912818" style="zoom:50%;">
-
-<h3 id="为什么会选择无连接运输：UDP"><a href="#为什么会选择无连接运输：UDP" class="headerlink" title="为什么会选择无连接运输：UDP"></a>为什么会选择无连接运输：UDP</h3><ul>
-<li>关于何时、发送什么数据的应用层控制更为精细</li>
-<li>无需建立连接</li>
-<li>无状态连接</li>
-<li>分组开销小</li>
-</ul>
-<blockquote>
-<p><code>SNMP</code>：简单网络管理协议。</p>
-<p>网络风暴：数据中心有大量的数据在转圈出不去。</p>
-</blockquote>
-<h3 id="UDP报文段"><a href="#UDP报文段" class="headerlink" title="UDP报文段"></a>UDP报文段</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084512.png" alt="image-20210214160154511" style="zoom:50%;">
-
-<h3 id="怎么构建一个可靠的传输协议？"><a href="#怎么构建一个可靠的传输协议？" class="headerlink" title="怎么构建一个可靠的传输协议？"></a>怎么构建一个可靠的传输协议？</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084517.png" alt="image-20210214163516288" style="zoom:50%;">
-
-<ul>
-<li>信道：底层传输的逻辑或者链路</li>
-</ul>
-<ol>
-<li>如果是基于<code>可靠信道（tcp）</code>建立的传输，则无需在上层考虑<code>丢包以及乱序</code>的问题。</li>
-<li>如果是基于<code>不可靠信道</code>建立的传输，则需要在这个基础上，考虑在上层应该做什么事情才能使得传输变得可靠，即基于<code>不可靠信道</code>建立的<code>可靠发送与接收</code>的封装（图中绿色部分）。</li>
-</ol>
-<h4 id="第一版：基于完全可靠信道（tcp）"><a href="#第一版：基于完全可靠信道（tcp）" class="headerlink" title="第一版：基于完全可靠信道（tcp）"></a>第一版：基于完全可靠信道（tcp）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084525.png" alt="image-20210214164246923" style="zoom:50%;">
-
-<ul>
-<li>虚线：默认位置；</li>
-<li>实线：状态转换</li>
-<li>实线旁边：真实做的事，蓝线上方是封装的功能，下方是封装的具体细节。</li>
-<li>流程：创建一个数据包并发送给对方，对方接收到数据包，解析数据包并提交给上层。</li>
-</ul>
-<h4 id="第二版：基于不可靠信道"><a href="#第二版：基于不可靠信道" class="headerlink" title="第二版：基于不可靠信道"></a>第二版：基于不可靠信道</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084533.png" alt="image-20210214164906937" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084539.png" alt="image-20210214165550506" style="zoom:50%;">
-
-<ul>
-<li>能够感知到<code>比特级</code>的错误信息，具有一定差错控制的信道</li>
-<li>刚开始协议处于<code>阻塞</code>状态，等着上层的调用，上层通过<code>rdt_send</code>来调用协议，给协议传了一个<code>data</code>，协议会把<code>data</code>跟<code>校验和checksum</code>一起打包封装成一个数据包发给对方（可能会创建很多包，发送很多包，这里以单次为例）。</li>
-<li>对方收到之后，发送方就会处于<code>等待状态</code>，等待来自下层的调用，当下层数据来临时，会通知让其对数据进行解析并提交给上层。</li>
-<li>对方一开始处于<code>等待状态</code>，当对方收到数据时，会对数据的校验和进行检验，如果不对，会返回一个<code>NAK（错误回馈）</code>；如果检验无误，则会将数据包拆开，舍弃校验和，读取数据，将数据提交给上层，并给发送方返回一个<code>ACK（成功）</code>。</li>
-<li>此时发送方处于<code>等待状态</code>，收到对方的反馈后，如果是<code>NAK</code>，则会重新发送数据包；如果是<code>ACK</code>，则什么都不做，继续处于<code>等待状态</code>。</li>
-</ul>
-<blockquote>
-<p>这样虽然确保了数据的可靠传输，但是效率较慢，因为需要等待对方反馈。</p>
-</blockquote>
-<h4 id="第三版：基于不可靠信道（RDT2-1）"><a href="#第三版：基于不可靠信道（RDT2-1）" class="headerlink" title="第三版：基于不可靠信道（RDT2.1）"></a>第三版：基于不可靠信道（RDT2.1）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084548.png" alt="image-20210214170640861" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084556.png" alt="image-20210214174626714" style="zoom:50%;">
-
-<ul>
-<li><p>与上一版的差别在于多了编号，可以<code>0 1</code>这样的发，这样话，可以明确对方的每次反馈是给谁的，同时也能发送更多的信息。</p>
-</li>
-<li><p>好处：保证可靠的两点要素，一点是能够到达目的地，另一点是接收的顺序是准确的，即将<code>所有的数据</code>都要<code>按顺序</code>到达。而这一版，可以保证数据的<code>到达顺序</code>。</p>
-<blockquote>
-<p>单单01是不够的，后续的实现过程中，像<code>TCP</code>这种，它的序号是连续的，每个字节都有一个序号，这个序号就单次连接的字节流，即字节的位置。</p>
-</blockquote>
-</li>
-</ul>
-<h4 id="第四版：基于不可靠信道（RDT2-2）"><a href="#第四版：基于不可靠信道（RDT2-2）" class="headerlink" title="第四版：基于不可靠信道（RDT2.2）"></a>第四版：基于不可靠信道（RDT2.2）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084603.png" alt="image-20210214175242593" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084609.png" alt="image-20210214175531244" style="zoom:50%;">
-
-<ul>
-<li>少了<code>NAK</code>，只保留<code>ACK</code>，只确认收到的东西，不确认错误的数据。</li>
-<li>如果<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则说明数据不对，<code>ACK0</code>会重新发送一份数据，直到<code>等待ACK0</code>收到回复。</li>
-<li>接收方如果收到的数据没错，编号对应，则回一个<code>ACK</code>；而如果，比如接收方的<code>1</code>收到<code>0</code>包，则会再发送一个<code>ACK1</code>，此时发送方的<code>等待ACK0</code>没有收到回复，而<code>等待ACK1</code>收到了回复，则会触发机制，使得<code>ACK0</code>重发一份数据。（冗余<code>ACK</code>）</li>
-<li>缺陷：等待时间可能过长</li>
-</ul>
-<h4 id="第五版：基于不可靠信道（RDT3-0）"><a href="#第五版：基于不可靠信道（RDT3-0）" class="headerlink" title="第五版：基于不可靠信道（RDT3.0）"></a>第五版：基于不可靠信道（RDT3.0）</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084618.png" alt="image-20210214180309300" style="zoom:50%;">
-
-<ul>
-<li><p>加上定时器，避免等待时间过长</p>
-</li>
-<li><p>此时基本已经是一个可靠的传输协议，只不过效率依然较低。</p>
-</li>
-<li><p>每次发送数据包，则会启动计时器，如果超时没收到回应，立马重发数据包，一直循环，直到收到确认信息，才会停止计时器，并发送下一个包。</p>
-</li>
-<li><p>问题：</p>
-<ul>
-<li><p>如果传输时间较长，以至于超时一直重新发送，而对方都会收到并返回<code>ACK</code>，这样的话，就会使得<code>等待ACK</code>收到很多回复，需要在收到第一个回复之后，丢弃后续的回复</p>
-</li>
-<li><p>可能存在，当前的<code>等待ACK1</code>收到的是上一个循环的<code>ACK1</code>回复。这是序号太少的缘故，只有<code>0 1</code>两个序号，无法分辨，可以对序号进行一个扩展，使其变成跟<code>TCP</code>一样。</p>
-<blockquote>
-<p><code>TCP</code>刚开始的序号（即三次握手后的序号）是随机生成的，然后每发一个字节，序号增一，则序号从一开始就不是从零开始，而且每次序号都会往上加，这样发送冲突的可能性就大大降低。</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="其余方法："><a href="#其余方法：" class="headerlink" title="其余方法："></a>其余方法：</h4><ul>
-<li>回退N路法（<code>TCP</code>正常协议）</li>
-<li>选择重传法（<code>TCP</code>正常协议）：效率较高</li>
-<li>流量控制</li>
-</ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -4237,6 +4237,54 @@
       </tags>
   </entry>
   <entry>
+    <title>浏览器输入URL后发生了什么</title>
+    <url>/2021/01/22/0037.%20%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%93%E5%85%A5%E7%BD%91%E5%9D%80/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="浏览器输入URL后发生了什么"><a href="#浏览器输入URL后发生了什么" class="headerlink" title="浏览器输入URL后发生了什么"></a>浏览器输入URL后发生了什么</h1><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235911.png" alt="图片描述"></p>
+<p>当我们在浏览器输入网址并回车后，一切从这里开始。</p>
+<h2 id="一、DNS域名解析"><a href="#一、DNS域名解析" class="headerlink" title="一、DNS域名解析"></a>一、DNS域名解析</h2><p>我们在浏览器输入网址，其实就是要向服务器请求我们想要的页面内容，所有浏览器首先要确认的是域名所对应的服务器在哪里。将域名解析成对应的服务器IP地址这项工作，是由DNS服务器来完成的。</p>
+<p>客户端收到你输入的域名地址后，它首先去找本地的hosts文件，检查在该文件中是否有相应的域名、IP对应关系，如果有，则向其IP地址发送请求，如果没有，再去找DNS服务器。一般用户很少去编辑修改hosts文件。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235914.png" alt="图片描述"><br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235926.png" alt="图片描述"></p>
+<p>浏览器客户端向本地DNS服务器发送一个含有域名<a href="http://www.cnblogs.com的dns查询报文.本地dns服务器把查询报文转发到根dns服务器,根dns服务器注意到其com后缀,于是向本地dns服务器返回comdns服务器的ip地址.本地dns服务器再次向comdns服务器发送查询请求,comdns服务器注意到其www.cnblogs.com后缀并用负责该域名的权威dns服务器的ip地址作为回应.最后,本地dns服务器将含有www.cnblogs.com的ip地址的响应报文发送给客户端./">www.cnblogs.com的DNS查询报文。本地DNS服务器把查询报文转发到根DNS服务器，根DNS服务器注意到其com后缀，于是向本地DNS服务器返回comDNS服务器的IP地址。本地DNS服务器再次向comDNS服务器发送查询请求，comDNS服务器注意到其www.cnblogs.com后缀并用负责该域名的权威DNS服务器的IP地址作为回应。最后，本地DNS服务器将含有www.cnblogs.com的IP地址的响应报文发送给客户端。</a></p>
+<p>从客户端到本地服务器属于递归查询，而DNS服务器之间的交互属于迭代查询。</p>
+<p>正常情况下，本地DNS服务器的缓存中已有comDNS服务器的地址，因此请求根域名服务器这一步不是必需的。</p>
+<h2 id="二、建立TCP链接"><a href="#二、建立TCP链接" class="headerlink" title="二、建立TCP链接"></a>二、建立TCP链接</h2><p>费了一顿周折终于拿到服务器IP了，下一步自然就是链接到该服务器。对于客户端与服务器的TCP链接，必然要说的就是『三次握手』。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235936.png" alt="图片描述"></p>
+<p>三次握手</p>
+<p>客户端发送一个带有SYN标志的数据包给服务端，服务端收到后，回传一个带有SYN/ACK标志的数据包以示传达确认信息，最后客户端再回传一个带ACK标志的数据包，代表握手结束，连接成功。</p>
+<p>上图也可以这么理解：</p>
+<p>客户端：“你好，在家不，有你快递。”</p>
+<p>服务端：“在的，送来就行。”</p>
+<p>客户端：“好嘞。”</p>
+<h2 id="三、发送HTTP请求"><a href="#三、发送HTTP请求" class="headerlink" title="三、发送HTTP请求"></a>三、发送HTTP请求</h2><p>与服务器建立了连接后，就可以向服务器发起请求了。这里我们先看下请求报文的结构（如下图）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235942.png" alt="图片描述"></p>
+<p>在浏览器中查看报文首部（以google浏览器为例）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235947.png" alt="图片描述"></p>
+<p>请求行包括请求方法、URI、HTTP版本。首部字段传递重要信息，包括请求首部字段、通用首部字段和实体首部字段。我们可以从报文中看到发出的请求的具体信息。具体每个首部字段的作用，这里不做过多阐述。</p>
+<h2 id="四、服务器处理请求"><a href="#四、服务器处理请求" class="headerlink" title="四、服务器处理请求"></a>四、服务器处理请求</h2><p>服务器端收到请求后的由web服务器（准确说应该是http服务器）处理请求，诸如Apache、Ngnix、IIS等。web服务器解析用户请求，知道了需要调度哪些资源文件，再通过相应的这些资源文件处理用户请求和参数，并调用数据库信息，最后将结果通过web服务器返回给浏览器客户端。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000017.png" alt="图片描述"></p>
+<p>服务器处理请求</p>
+<h2 id="五、返回响应结果"><a href="#五、返回响应结果" class="headerlink" title="五、返回响应结果"></a>五、返回响应结果</h2><p>在HTTP里，有请求就会有响应，哪怕是错误信息。这里我们同样看下响应报文的组成结构：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000142.png" alt="图片描述"></p>
+<p>在响应结果中都会有个一个HTTP状态码，比如我们熟知的200、301、404、500等。通过这个状态码我们可以知道服务器端的处理是否正常，并能了解具体的错误。</p>
+<p>状态码由3位数字和原因短语组成。根据首位数字，状态码可以分为五类：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000102.png" alt="图片描述"></p>
+<h2 id="六、关闭TCP连接"><a href="#六、关闭TCP连接" class="headerlink" title="六、关闭TCP连接"></a>六、关闭TCP连接</h2><p>为了避免服务器与客户端双方的资源占用和损耗，当双方没有请求或响应传递时，任意一方都可以发起关闭请求。与创建TCP连接的3次握手类似，关闭TCP连接，需要4次握手。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000116.png" alt="图片描述"><br>上图可以这么理解：</p>
+<p>客户端：“兄弟，我这边没数据要传了，咱关闭连接吧。”</p>
+<p>服务端：“收到，我看看我这边有木有数据了。”</p>
+<p>服务端：“兄弟，我这边也没数据要传你了，咱可以关闭连接了。”</p>
+<p>客户端：“好嘞。”</p>
+<h2 id="七、浏览器解析HTML"><a href="#七、浏览器解析HTML" class="headerlink" title="七、浏览器解析HTML"></a>七、浏览器解析HTML</h2><p>准确地说，浏览器需要加载解析的不仅仅是HTML，还包括CSS、JS。以及还要加载图片、视频等其他媒体资源。</p>
+<p>浏览器通过解析HTML，生成DOM树，解析CSS，生成CSS规则树，然后通过DOM树和CSS规则树生成渲染树。渲染树与DOM树不同，渲染树中并没有head、display为none等不必显示的节点。</p>
+<p>要注意的是，浏览器的解析过程并非是串连进行的，比如在解析CSS的同时，可以继续加载解析HTML，但在解析执行JS脚本时，会停止解析后续HTML，这就会出现阻塞问题，关于JS阻塞相关问题，这里不过多阐述,后面会单独开篇讲解。</p>
+<h2 id="八、浏览器布局渲染"><a href="#八、浏览器布局渲染" class="headerlink" title="八、浏览器布局渲染"></a>八、浏览器布局渲染</h2><p>根据渲染树布局，计算CSS样式，即每个节点在页面中的大小和位置等几何信息。HTML默认是流式布局的，CSS和js会打破这种布局，改变DOM的外观样式以及大小和位置。这时就要提到两个重要概念：replaint和reflow。</p>
+<p>replaint：屏幕的一部分重画，不影响整体布局，比如某个CSS的背景色变了，但元素的几何尺寸和位置不变。</p>
+<p>reflow： 意味着元件的几何尺寸变了，我们需要重新验证并计算渲染树。是渲染树的一部分或全部发生了变化。这就是Reflow，或是Layout。<br>所以我们应该尽量减少reflow和replaint，我想这也是为什么现在很少有用table布局的原因之一。</p>
+<p>最后浏览器绘制各个节点，将页面展示给用户。</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>http与https</title>
     <url>/2021/01/21/0036.%20http%E4%B8%8Ehttps/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="http-与-https"><a href="#http-与-https" class="headerlink" title="http 与 https"></a>http 与 https</h1><p>超文本传输协议HTTP协议被用于在Web浏览器和网站服务器之间传递信息，HTTP协议以明文方式发送内容，不提供任何方式的数据加密，如果攻击者截取了Web浏览器和网站服务器之间的传输报文，就可以直接读懂其中的信息，因此，HTTP协议不适合传输一些敏感信息，比如：信用卡号、密码等支付信息。</p>
@@ -4289,54 +4337,6 @@
 <p>（3）、HTTPS连接缓存不如HTTP高效，大流量网站如非必要也不会采用，流量成本太高。</p>
 <p>（4）、HTTPS连接服务器端资源占用高很多，支持访客稍多的网站需要投入更大的成本，如果全部采用HTTPS，基于大部分计算资源闲置的假设的VPS的平均成本会上去。</p>
 <p>（5）、HTTPS协议握手阶段比较费时，对网站的相应速度有负面影响，如非必要，没有理由牺牲用户体验。</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>浏览器输入URL后发生了什么</title>
-    <url>/2021/01/22/0037.%20%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%93%E5%85%A5%E7%BD%91%E5%9D%80/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="浏览器输入URL后发生了什么"><a href="#浏览器输入URL后发生了什么" class="headerlink" title="浏览器输入URL后发生了什么"></a>浏览器输入URL后发生了什么</h1><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235911.png" alt="图片描述"></p>
-<p>当我们在浏览器输入网址并回车后，一切从这里开始。</p>
-<h2 id="一、DNS域名解析"><a href="#一、DNS域名解析" class="headerlink" title="一、DNS域名解析"></a>一、DNS域名解析</h2><p>我们在浏览器输入网址，其实就是要向服务器请求我们想要的页面内容，所有浏览器首先要确认的是域名所对应的服务器在哪里。将域名解析成对应的服务器IP地址这项工作，是由DNS服务器来完成的。</p>
-<p>客户端收到你输入的域名地址后，它首先去找本地的hosts文件，检查在该文件中是否有相应的域名、IP对应关系，如果有，则向其IP地址发送请求，如果没有，再去找DNS服务器。一般用户很少去编辑修改hosts文件。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235914.png" alt="图片描述"><br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235926.png" alt="图片描述"></p>
-<p>浏览器客户端向本地DNS服务器发送一个含有域名<a href="http://www.cnblogs.com的dns查询报文.本地dns服务器把查询报文转发到根dns服务器,根dns服务器注意到其com后缀,于是向本地dns服务器返回comdns服务器的ip地址.本地dns服务器再次向comdns服务器发送查询请求,comdns服务器注意到其www.cnblogs.com后缀并用负责该域名的权威dns服务器的ip地址作为回应.最后,本地dns服务器将含有www.cnblogs.com的ip地址的响应报文发送给客户端./">www.cnblogs.com的DNS查询报文。本地DNS服务器把查询报文转发到根DNS服务器，根DNS服务器注意到其com后缀，于是向本地DNS服务器返回comDNS服务器的IP地址。本地DNS服务器再次向comDNS服务器发送查询请求，comDNS服务器注意到其www.cnblogs.com后缀并用负责该域名的权威DNS服务器的IP地址作为回应。最后，本地DNS服务器将含有www.cnblogs.com的IP地址的响应报文发送给客户端。</a></p>
-<p>从客户端到本地服务器属于递归查询，而DNS服务器之间的交互属于迭代查询。</p>
-<p>正常情况下，本地DNS服务器的缓存中已有comDNS服务器的地址，因此请求根域名服务器这一步不是必需的。</p>
-<h2 id="二、建立TCP链接"><a href="#二、建立TCP链接" class="headerlink" title="二、建立TCP链接"></a>二、建立TCP链接</h2><p>费了一顿周折终于拿到服务器IP了，下一步自然就是链接到该服务器。对于客户端与服务器的TCP链接，必然要说的就是『三次握手』。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235936.png" alt="图片描述"></p>
-<p>三次握手</p>
-<p>客户端发送一个带有SYN标志的数据包给服务端，服务端收到后，回传一个带有SYN/ACK标志的数据包以示传达确认信息，最后客户端再回传一个带ACK标志的数据包，代表握手结束，连接成功。</p>
-<p>上图也可以这么理解：</p>
-<p>客户端：“你好，在家不，有你快递。”</p>
-<p>服务端：“在的，送来就行。”</p>
-<p>客户端：“好嘞。”</p>
-<h2 id="三、发送HTTP请求"><a href="#三、发送HTTP请求" class="headerlink" title="三、发送HTTP请求"></a>三、发送HTTP请求</h2><p>与服务器建立了连接后，就可以向服务器发起请求了。这里我们先看下请求报文的结构（如下图）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235942.png" alt="图片描述"></p>
-<p>在浏览器中查看报文首部（以google浏览器为例）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235947.png" alt="图片描述"></p>
-<p>请求行包括请求方法、URI、HTTP版本。首部字段传递重要信息，包括请求首部字段、通用首部字段和实体首部字段。我们可以从报文中看到发出的请求的具体信息。具体每个首部字段的作用，这里不做过多阐述。</p>
-<h2 id="四、服务器处理请求"><a href="#四、服务器处理请求" class="headerlink" title="四、服务器处理请求"></a>四、服务器处理请求</h2><p>服务器端收到请求后的由web服务器（准确说应该是http服务器）处理请求，诸如Apache、Ngnix、IIS等。web服务器解析用户请求，知道了需要调度哪些资源文件，再通过相应的这些资源文件处理用户请求和参数，并调用数据库信息，最后将结果通过web服务器返回给浏览器客户端。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000017.png" alt="图片描述"></p>
-<p>服务器处理请求</p>
-<h2 id="五、返回响应结果"><a href="#五、返回响应结果" class="headerlink" title="五、返回响应结果"></a>五、返回响应结果</h2><p>在HTTP里，有请求就会有响应，哪怕是错误信息。这里我们同样看下响应报文的组成结构：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000142.png" alt="图片描述"></p>
-<p>在响应结果中都会有个一个HTTP状态码，比如我们熟知的200、301、404、500等。通过这个状态码我们可以知道服务器端的处理是否正常，并能了解具体的错误。</p>
-<p>状态码由3位数字和原因短语组成。根据首位数字，状态码可以分为五类：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000102.png" alt="图片描述"></p>
-<h2 id="六、关闭TCP连接"><a href="#六、关闭TCP连接" class="headerlink" title="六、关闭TCP连接"></a>六、关闭TCP连接</h2><p>为了避免服务器与客户端双方的资源占用和损耗，当双方没有请求或响应传递时，任意一方都可以发起关闭请求。与创建TCP连接的3次握手类似，关闭TCP连接，需要4次握手。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000116.png" alt="图片描述"><br>上图可以这么理解：</p>
-<p>客户端：“兄弟，我这边没数据要传了，咱关闭连接吧。”</p>
-<p>服务端：“收到，我看看我这边有木有数据了。”</p>
-<p>服务端：“兄弟，我这边也没数据要传你了，咱可以关闭连接了。”</p>
-<p>客户端：“好嘞。”</p>
-<h2 id="七、浏览器解析HTML"><a href="#七、浏览器解析HTML" class="headerlink" title="七、浏览器解析HTML"></a>七、浏览器解析HTML</h2><p>准确地说，浏览器需要加载解析的不仅仅是HTML，还包括CSS、JS。以及还要加载图片、视频等其他媒体资源。</p>
-<p>浏览器通过解析HTML，生成DOM树，解析CSS，生成CSS规则树，然后通过DOM树和CSS规则树生成渲染树。渲染树与DOM树不同，渲染树中并没有head、display为none等不必显示的节点。</p>
-<p>要注意的是，浏览器的解析过程并非是串连进行的，比如在解析CSS的同时，可以继续加载解析HTML，但在解析执行JS脚本时，会停止解析后续HTML，这就会出现阻塞问题，关于JS阻塞相关问题，这里不过多阐述,后面会单独开篇讲解。</p>
-<h2 id="八、浏览器布局渲染"><a href="#八、浏览器布局渲染" class="headerlink" title="八、浏览器布局渲染"></a>八、浏览器布局渲染</h2><p>根据渲染树布局，计算CSS样式，即每个节点在页面中的大小和位置等几何信息。HTML默认是流式布局的，CSS和js会打破这种布局，改变DOM的外观样式以及大小和位置。这时就要提到两个重要概念：replaint和reflow。</p>
-<p>replaint：屏幕的一部分重画，不影响整体布局，比如某个CSS的背景色变了，但元素的几何尺寸和位置不变。</p>
-<p>reflow： 意味着元件的几何尺寸变了，我们需要重新验证并计算渲染树。是渲染树的一部分或全部发生了变化。这就是Reflow，或是Layout。<br>所以我们应该尽量减少reflow和replaint，我想这也是为什么现在很少有用table布局的原因之一。</p>
-<p>最后浏览器绘制各个节点，将页面展示给用户。</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -6739,7 +6739,7 @@
 <p><strong>举个例子说明调度原理的实现：</strong></p>
 <p>假设系统中只有3个进程ProcessA(NI=+10)，ProcessB(NI=0)，ProcessC(NI=-10)，NI表示进程的nice值，时间片=10ms：</p>
 <ul>
-<li><p>调度前，把进程优先级按一定的权重映射成时间片(这里假设优先级高一级相当于多5msCPU时间)。假设ProcessA分配了一个时间片10ms，那么ProcessB的优先级比ProcessA高10(nice值越小优先级越高)，ProcessB应该分配105+10=60ms，以此类推，ProcessC分配205+10=110ms。</p>
+<li><p>调度前，把进程优先级按一定的权重映射成时间片(这里假设优先级高一级相当于多5msCPU时间)。假设ProcessA分配了一个时间片10ms，那么ProcessB的优先级比ProcessA高10(nice值越小优先级越高)，ProcessB应该分配10×5+10=60ms，以此类推，ProcessC分配20×5+10=110ms。</p>
 </li>
 <li><p>开始调度时，优先调度分配CPU时间多的进程。由于ProcessA(10ms),ProcessB(60ms),ProcessC(110ms)。显然先调度ProcessC。</p>
 </li>
