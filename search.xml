@@ -1,234 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>顺序表与链表</title>
-    <url>/2021/01/01/0002.%20%E9%A1%BA%E5%BA%8F%E8%A1%A8%E4%B8%8E%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="顺序表与链表"><a href="#顺序表与链表" class="headerlink" title="顺序表与链表"></a>顺序表与链表</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ul>
-<li>【基础数据结构】课程综述<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306091824.png" alt="图片"></li>
-<li>重点掌握红色！</li>
-</ul>
-</li>
-<li>三个等式<ul>
-<li>程序 = 算法 + 数据结构</li>
-<li>程序设计 = 算法 + 数据结构 + 编程范式</li>
-<li><strong>数据结构 = 结构定义 + 结构操作</strong></li>
-</ul>
-</li>
-<li>通过算法与数据结构，使计算机合理利用资源，让计算资源更有价值</li>
-</ul>
-<h2 id="顺序表"><a href="#顺序表" class="headerlink" title="顺序表"></a>顺序表</h2><p>【功能更高级的数组】</p>
-<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a><strong>结构定义</strong></h3><ul>
-<li><p>空间连续，可以存储任意类型的</p>
-<p>相同</p>
-<p>元素</p>
-<ul>
-<li>顺序表里也可以存顺序表</li>
-</ul>
-</li>
-<li><p>size：顺序表的空间大小</p>
-</li>
-<li><p>length：已存储的元素个数</p>
-</li>
-<li><p>data_type：存储的元素类型</p>
-</li>
-</ul>
-<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a><strong>结构操作</strong></h3><ul>
-<li><p>插入</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092124.png" alt="图片"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092128.png" alt="图片"></li>
-<li>不能空着插，必须连续</li>
-<li>插入位置后的所有元素向后移动一位<ul>
-<li><strong>从后开始</strong>移动，每个元素向后移动一位</li>
-</ul>
-</li>
-<li>必须要改变的属性：length + 1<ul>
-<li>size有可能需要改变，扩容请看下面</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>删除</p>
-<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092134.png" alt="图片"></li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092144.png" alt="图片"></li>
-<li>不是真的删除，而是告诉系统这个地址的存储区可以被占用、被覆盖</li>
-<li>将后面所有的元素整体向前移动一位<ul>
-<li>相当于要删除的位置的值被覆写</li>
-<li>最后一个值怎么覆写？<ul>
-<li>直接将length - 1</li>
-<li>其实都可以自定义设计</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>必须要改变的属性：length - 1</li>
-</ul>
-</li>
-<li><p>添加扩容操作</p>
-<ul>
-<li>动态内存分配函数</li>
-<li>malloc：只是开辟空间，值不确定。举例：开房没有保洁阿姨<ul>
-<li>calloc：开辟空间，并且初始化。举例：开房后有保洁阿姨打扫清理</li>
-<li>realloc：重新开辟空间。举例：升级房型</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p> void* realloc (void* ptr, size_t size); // 返回新开辟空间的首地址</p>
-</blockquote>
-<p><strong>3种情况【realloc】</strong></p>
-<ol>
-<li>先试探能不能在原地址后面直接加空间，空间首地址不变；如果不行，</li>
-<li>换个地址找找，申请空间，然后把原空间数据拷贝到新空间，并free掉原空间；如果不行，（自己可以设计减少扩容）</li>
-<li>就返回空地址，不清空当前地址</li>
-</ol>
-<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
-<li>初始化、销毁<ul>
-<li>使用malloc开辟空间初始化该结构</li>
-<li>从结构里到外free，再将指针置空</li>
-</ul>
-</li>
-<li>扩容操作<ul>
-<li>realloc返回地址先赋给中间变量，避免返回NULL的情况，导致原数据迷失</li>
-<li>realloc成功后原地址空间自动被free</li>
-<li>可设计折半减小的扩容空间，直到确实一点空间都不剩返回失败标志0</li>
-</ul>
-</li>
-<li>插入、删除<ul>
-<li>注意不能操作的情况</li>
-<li>插入满员时，进行扩容操作</li>
-</ul>
-</li>
-<li>打印输出</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR(a, b) <span class="meta-string">&quot;\033[&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义结构体类型，并命名为 Vec</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Vector</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;         <span class="comment">// 数据首地址，存放 int 型顺序表</span></span><br><span class="line">    <span class="keyword">int</span> size, length;  <span class="comment">// size:容量  length:元素个数</span></span><br><span class="line">&#125; Vec;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="function">Vec *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">    Vec *v = (Vec *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Vec));        <span class="comment">// 给顺序表结构开辟一个空间 </span></span><br><span class="line">    v-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);   <span class="comment">// 开辟一个容量为 n 的空间</span></span><br><span class="line">    v-&gt;size = n;</span><br><span class="line">    v-&gt;length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩容</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">expand</span><span class="params">(Vec *v)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 不能直接返回 realloc 的结果，因为 realloc 可能会失败，一旦失败就会把丢失原本的所有数据</span></span><br><span class="line">    <span class="keyword">int</span> extr_size = v-&gt;size;</span><br><span class="line">    <span class="keyword">int</span> *p;</span><br><span class="line">    <span class="comment">// 尝试开辟，失败则 p = NULL，则减小扩容大小再重新尝试开辟</span></span><br><span class="line">    <span class="keyword">while</span>(extr_size) &#123;</span><br><span class="line">        p = (<span class="keyword">int</span> *)<span class="built_in">realloc</span>(v-&gt;data, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (v-&gt;size + extr_size));</span><br><span class="line">        <span class="keyword">if</span> (p) <span class="keyword">break</span>; </span><br><span class="line">        extr_size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(extr_size == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 开辟成功，转移空间地址后，realloc 会自动释放空间</span></span><br><span class="line">    v-&gt;data = p;</span><br><span class="line">    v-&gt;size += extr_size;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(Vec *v, <span class="keyword">int</span> val, <span class="keyword">int</span> ind)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt; v-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 空间满时，扩容</span></span><br><span class="line">    <span class="keyword">if</span>(v-&gt;length == v-&gt;size) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!expand(v)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(GREEN(<span class="string">&quot;success to expand ! the Vector size is %d\n&quot;</span>), v-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = v-&gt;length; i &gt; ind; i--) &#123;</span><br><span class="line">        v-&gt;data[i] = v-&gt;data[i - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    v-&gt;data[ind] = val;</span><br><span class="line">    v-&gt;length += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">erase</span><span class="params">(Vec *v, <span class="keyword">int</span> ind)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt;= v-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = ind + <span class="number">1</span>; i &lt; v-&gt;length; i++) &#123;</span><br><span class="line">        v-&gt;data[i - <span class="number">1</span>] = v-&gt;data[i];</span><br><span class="line">    &#125;</span><br><span class="line">    v-&gt;length--;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清除</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Vec *v)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(v-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(v);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Vec *v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Vector : [&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; v-&gt;length; i++)&#123;</span><br><span class="line">        <span class="function">i &amp;&amp; <span class="title">printf</span><span class="params">(<span class="string">&quot;, &quot;</span>)</span></span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, v-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    Vec *v = init(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> ind = rand() % (v-&gt;length + <span class="number">3</span>) - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span>(op)&#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %d at %d to Vector = %d\n&quot;</span>, val, ind,insert(v, val, ind));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;erase a iterm at %d frim Vector = %d\n&quot;</span>, ind, erase(v, ind));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        output(v);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    clear(v);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><h3 id="结构定义-1"><a href="#结构定义-1" class="headerlink" title="结构定义"></a><strong>结构定义</strong></h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092208.png" alt="图片"></p>
-<ul>
-<li>程序内部 + 内存内部<ul>
-<li>【程序内部】只暴露头指针<ul>
-<li>头指针：记录第一个结点的地址</li>
-</ul>
-</li>
-<li>【内存内部】是连接的结点<ul>
-<li>结点：数据域 + 指针域</li>
-<li>指针域<ul>
-<li>最后一个结点的指针域为NULL</li>
-<li>单向链表的指针域又名“后继”；双向链表有“前驱”和“后继”</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>与顺序表都属于<code>顺序存储结构</code><ul>
-<li>链表思维<code>逻辑上连续</code>，但物理上不一定连续</li>
-</ul>
-</li>
-</ul>
-<h3 id="结构操作-1"><a href="#结构操作-1" class="headerlink" title="结构操作"></a><strong>结构操作</strong></h3><ul>
-<li>插入<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092211.png" alt="图片"></li>
-<li>①走到待插入位置的<strong>前一个</strong>位置的结点p</li>
-<li>②先将新的结点x的指针域指向待插入位置的结点p.next</li>
-<li>③将p的指针域指向新的结点x</li>
-<li>顺序不能变！否则可能引发内存泄漏（你想用已经用不了，但系统却以为你在用）</li>
-</ul>
-</li>
-<li>删除<ul>
-<li>走到待删除结点位置的<strong>前一个</strong>位置</li>
-</ul>
-</li>
-<li>翻转<ul>
-<li>方法一<ul>
-<li>用一个新链表存，使用头插法</li>
-<li>不断在index = 0 的位置插入结点</li>
-<li>不足：浪费空间，麻烦</li>
-</ul>
-</li>
-<li>方法二<ul>
-<li>原地翻转，用两个变量倒，也是头插法</li>
-<li>前提：每次操作不要造成内存泄漏</li>
-<li>NULL地址还是在最后面，不会翻转</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>代码演示见后</li>
-</ul>
-<h3 id="单向循环链表"><a href="#单向循环链表" class="headerlink" title="单向循环链表"></a>单向循环链表</h3><ul>
-<li>head永远记录的是<strong>尾结点</strong>的地址~</li>
-</ul>
-<ol>
-<li>对于需在index = 0插入结点的情况<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092219.png" alt="图片"></li>
-<li>当head记录的是尾结点时，<strong>直接</strong>在head指向的尾结点后插入即可</li>
-<li>如果head记录的还是首结点的地址，不好使，因为<ul>
-<li>要找index = 0的结点的前一个结点，可能需要遍历完整个链表找到尾结点</li>
-<li>而不像单向链表那样，可以直接在head后、index = 0结点前插入</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>对于在尾部插入结点的情况<ul>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092224.png" alt="图片"></li>
-<li>需要修改head指向新的尾结点【8】！</li>
-</ul>
-</li>
-</ol>
-<h1 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h1><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR(a, b) <span class="meta-string">&quot;\033[&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; ListNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">List</span> &#123;</span></span><br><span class="line">    ListNode head; <span class="comment">// 虚拟头节点，第一个节点的前一个结点</span></span><br><span class="line">    <span class="keyword">int</span> length;</span><br><span class="line">&#125; List;</span><br><span class="line"></span><br><span class="line"><span class="function">ListNode *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function">List *<span class="title">getLinkList</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(ListNode *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(List *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(List *, <span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">erase</span><span class="params">(List *, <span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(List *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(List *)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    List *l = getLinkList();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> ind = rand() % (l-&gt;length + <span class="number">3</span>) - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>: &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %d at %d to List = %d\n&quot;</span>, val, ind, insert(l, ind, val));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;earse a iterm at %d from List = %d\n&quot;</span>, ind, erase(l, ind));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(GREEN(<span class="string">&quot;reverse the list!\n&quot;</span>));</span><br><span class="line">                reverse(l);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        output(l), <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(l);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ListNode *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    ListNode *p = (ListNode *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ListNode));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List *<span class="title">getLinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List *l = (List *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(List));</span><br><span class="line">    l-&gt;head.next = <span class="literal">NULL</span>;</span><br><span class="line">    l-&gt;length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(List *l, <span class="keyword">int</span> ind, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt; l-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    ListNode *p = &amp;(l-&gt;head), *node = getNewNode(val);</span><br><span class="line">    <span class="keyword">while</span>(ind--) p = p-&gt;next;</span><br><span class="line">    node-&gt;next = p-&gt;next;</span><br><span class="line">    p-&gt;next = node;</span><br><span class="line">    l-&gt;length += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">erase</span><span class="params">(List *l, <span class="keyword">int</span> ind)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt;= l-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    ListNode *p = &amp;(l-&gt;head), *q;</span><br><span class="line">    <span class="keyword">while</span>(ind--) p = p-&gt;next;</span><br><span class="line">    q = p-&gt;next;</span><br><span class="line">    p-&gt;next = q-&gt;next;</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    l-&gt;length -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择链表</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(List *l)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span>;             </span><br><span class="line">    ListNode *p = l-&gt;head.next, *q; <span class="comment">// q 记录 q-&gt;next</span></span><br><span class="line">    l-&gt;head.next = <span class="literal">NULL</span>;            <span class="comment">// 先将虚拟头节点指向 null</span></span><br><span class="line">    <span class="keyword">while</span>(p) &#123;                      </span><br><span class="line">        q = p-&gt;next;                <span class="comment">// 保存p-&gt;next的地址</span></span><br><span class="line">        p-&gt;next = l-&gt;head.next;     <span class="comment">// 修改顺序</span></span><br><span class="line">        l-&gt;head.next = p;</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(List *l)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;List(%d) = [&quot;</span>, l-&gt;length);</span><br><span class="line">    <span class="keyword">for</span>(ListNode *p = l-&gt;head.next; p; p = p-&gt;next) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d-&gt;&quot;</span>, p-&gt;data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;NULL]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(ListNode *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(List *l)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    ListNode *p = l-&gt;head.next, *q;</span><br><span class="line">    <span class="keyword">while</span>(p) &#123;</span><br><span class="line">        q = p-&gt;next;</span><br><span class="line">        clear_node(p);</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(l);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>虚拟头结点，方便插入和删除第一个结点<ul>
-<li>使用普通变量定义head，❓考虑的是<ul>
-<li>虚拟头结点比较固定，不需要随时free</li>
-<li>普通变量比指针变量更稳定，没必要malloc</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
-<li>初始化数据结构[比如链表、链表结点]时，动态开辟内存[用malloc等]：<ul>
-<li>关键：【malloc申请的内存在堆空间，普通变量定义在栈空间(在函数里面定义的)】</li>
-<li>栈空间：大小只有8MB；出了函数[作用域]变量就被自动释放了</li>
-<li>堆空间：可分配<strong>大内存</strong>；变量<strong>生命周期长</strong>，一般需手动释放</li>
-</ul>
-</li>
-<li>虚拟头结点定义为普通变量和指针变量的区别<ul>
-<li>虚拟头节点在之后单向链表的时候，比较方便，而如果用普通变量，则比较麻烦</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://gitee.com/doubleL3/blog-imgs/raw/master/img/WE8asP6.png" alt="图片"></p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>基础数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>树与二叉树</title>
     <url>/2021/01/03/0004.%20%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="树与二叉树"><a href="#树与二叉树" class="headerlink" title="树与二叉树"></a>树与二叉树</h1><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><ul>
@@ -542,6 +314,234 @@
 <h1 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h1><ul>
 <li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306093445.png" alt="图片" style="zoom:50%;"></li>
 </ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>基础数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>顺序表与链表</title>
+    <url>/2021/01/01/0002.%20%E9%A1%BA%E5%BA%8F%E8%A1%A8%E4%B8%8E%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="顺序表与链表"><a href="#顺序表与链表" class="headerlink" title="顺序表与链表"></a>顺序表与链表</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ul>
+<li>【基础数据结构】课程综述<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306091824.png" alt="图片"></li>
+<li>重点掌握红色！</li>
+</ul>
+</li>
+<li>三个等式<ul>
+<li>程序 = 算法 + 数据结构</li>
+<li>程序设计 = 算法 + 数据结构 + 编程范式</li>
+<li><strong>数据结构 = 结构定义 + 结构操作</strong></li>
+</ul>
+</li>
+<li>通过算法与数据结构，使计算机合理利用资源，让计算资源更有价值</li>
+</ul>
+<h2 id="顺序表"><a href="#顺序表" class="headerlink" title="顺序表"></a>顺序表</h2><p>【功能更高级的数组】</p>
+<h3 id="结构定义"><a href="#结构定义" class="headerlink" title="结构定义"></a><strong>结构定义</strong></h3><ul>
+<li><p>空间连续，可以存储任意类型的</p>
+<p>相同</p>
+<p>元素</p>
+<ul>
+<li>顺序表里也可以存顺序表</li>
+</ul>
+</li>
+<li><p>size：顺序表的空间大小</p>
+</li>
+<li><p>length：已存储的元素个数</p>
+</li>
+<li><p>data_type：存储的元素类型</p>
+</li>
+</ul>
+<h3 id="结构操作"><a href="#结构操作" class="headerlink" title="结构操作"></a><strong>结构操作</strong></h3><ul>
+<li><p>插入</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092124.png" alt="图片"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092128.png" alt="图片"></li>
+<li>不能空着插，必须连续</li>
+<li>插入位置后的所有元素向后移动一位<ul>
+<li><strong>从后开始</strong>移动，每个元素向后移动一位</li>
+</ul>
+</li>
+<li>必须要改变的属性：length + 1<ul>
+<li>size有可能需要改变，扩容请看下面</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>删除</p>
+<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092134.png" alt="图片"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092144.png" alt="图片"></li>
+<li>不是真的删除，而是告诉系统这个地址的存储区可以被占用、被覆盖</li>
+<li>将后面所有的元素整体向前移动一位<ul>
+<li>相当于要删除的位置的值被覆写</li>
+<li>最后一个值怎么覆写？<ul>
+<li>直接将length - 1</li>
+<li>其实都可以自定义设计</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>必须要改变的属性：length - 1</li>
+</ul>
+</li>
+<li><p>添加扩容操作</p>
+<ul>
+<li>动态内存分配函数</li>
+<li>malloc：只是开辟空间，值不确定。举例：开房没有保洁阿姨<ul>
+<li>calloc：开辟空间，并且初始化。举例：开房后有保洁阿姨打扫清理</li>
+<li>realloc：重新开辟空间。举例：升级房型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p> void* realloc (void* ptr, size_t size); // 返回新开辟空间的首地址</p>
+</blockquote>
+<p><strong>3种情况【realloc】</strong></p>
+<ol>
+<li>先试探能不能在原地址后面直接加空间，空间首地址不变；如果不行，</li>
+<li>换个地址找找，申请空间，然后把原空间数据拷贝到新空间，并free掉原空间；如果不行，（自己可以设计减少扩容）</li>
+<li>就返回空地址，不清空当前地址</li>
+</ol>
+<h3 id="代码演示："><a href="#代码演示：" class="headerlink" title="代码演示："></a>代码演示：</h3><ul>
+<li>初始化、销毁<ul>
+<li>使用malloc开辟空间初始化该结构</li>
+<li>从结构里到外free，再将指针置空</li>
+</ul>
+</li>
+<li>扩容操作<ul>
+<li>realloc返回地址先赋给中间变量，避免返回NULL的情况，导致原数据迷失</li>
+<li>realloc成功后原地址空间自动被free</li>
+<li>可设计折半减小的扩容空间，直到确实一点空间都不剩返回失败标志0</li>
+</ul>
+</li>
+<li>插入、删除<ul>
+<li>注意不能操作的情况</li>
+<li>插入满员时，进行扩容操作</li>
+</ul>
+</li>
+<li>打印输出</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR(a, b) <span class="meta-string">&quot;\033[&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义结构体类型，并命名为 Vec</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Vector</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> *data;         <span class="comment">// 数据首地址，存放 int 型顺序表</span></span><br><span class="line">    <span class="keyword">int</span> size, length;  <span class="comment">// size:容量  length:元素个数</span></span><br><span class="line">&#125; Vec;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="function">Vec *<span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">    Vec *v = (Vec *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Vec));        <span class="comment">// 给顺序表结构开辟一个空间 </span></span><br><span class="line">    v-&gt;data = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * n);   <span class="comment">// 开辟一个容量为 n 的空间</span></span><br><span class="line">    v-&gt;size = n;</span><br><span class="line">    v-&gt;length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩容</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">expand</span><span class="params">(Vec *v)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 不能直接返回 realloc 的结果，因为 realloc 可能会失败，一旦失败就会把丢失原本的所有数据</span></span><br><span class="line">    <span class="keyword">int</span> extr_size = v-&gt;size;</span><br><span class="line">    <span class="keyword">int</span> *p;</span><br><span class="line">    <span class="comment">// 尝试开辟，失败则 p = NULL，则减小扩容大小再重新尝试开辟</span></span><br><span class="line">    <span class="keyword">while</span>(extr_size) &#123;</span><br><span class="line">        p = (<span class="keyword">int</span> *)<span class="built_in">realloc</span>(v-&gt;data, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * (v-&gt;size + extr_size));</span><br><span class="line">        <span class="keyword">if</span> (p) <span class="keyword">break</span>; </span><br><span class="line">        extr_size &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(extr_size == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 开辟成功，转移空间地址后，realloc 会自动释放空间</span></span><br><span class="line">    v-&gt;data = p;</span><br><span class="line">    v-&gt;size += extr_size;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(Vec *v, <span class="keyword">int</span> val, <span class="keyword">int</span> ind)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt; v-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 空间满时，扩容</span></span><br><span class="line">    <span class="keyword">if</span>(v-&gt;length == v-&gt;size) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!expand(v)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(GREEN(<span class="string">&quot;success to expand ! the Vector size is %d\n&quot;</span>), v-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = v-&gt;length; i &gt; ind; i--) &#123;</span><br><span class="line">        v-&gt;data[i] = v-&gt;data[i - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    v-&gt;data[ind] = val;</span><br><span class="line">    v-&gt;length += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">erase</span><span class="params">(Vec *v, <span class="keyword">int</span> ind)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt;= v-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = ind + <span class="number">1</span>; i &lt; v-&gt;length; i++) &#123;</span><br><span class="line">        v-&gt;data[i - <span class="number">1</span>] = v-&gt;data[i];</span><br><span class="line">    &#125;</span><br><span class="line">    v-&gt;length--;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清除</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Vec *v)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(v-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(v);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Vec *v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(v == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Vector : [&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; v-&gt;length; i++)&#123;</span><br><span class="line">        <span class="function">i &amp;&amp; <span class="title">printf</span><span class="params">(<span class="string">&quot;, &quot;</span>)</span></span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, v-&gt;data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    Vec *v = init(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> ind = rand() % (v-&gt;length + <span class="number">3</span>) - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span>(op)&#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span> :</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %d at %d to Vector = %d\n&quot;</span>, val, ind,insert(v, val, ind));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;erase a iterm at %d frim Vector = %d\n&quot;</span>, ind, erase(v, ind));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        output(v);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    clear(v);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><h3 id="结构定义-1"><a href="#结构定义-1" class="headerlink" title="结构定义"></a><strong>结构定义</strong></h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092208.png" alt="图片"></p>
+<ul>
+<li>程序内部 + 内存内部<ul>
+<li>【程序内部】只暴露头指针<ul>
+<li>头指针：记录第一个结点的地址</li>
+</ul>
+</li>
+<li>【内存内部】是连接的结点<ul>
+<li>结点：数据域 + 指针域</li>
+<li>指针域<ul>
+<li>最后一个结点的指针域为NULL</li>
+<li>单向链表的指针域又名“后继”；双向链表有“前驱”和“后继”</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>与顺序表都属于<code>顺序存储结构</code><ul>
+<li>链表思维<code>逻辑上连续</code>，但物理上不一定连续</li>
+</ul>
+</li>
+</ul>
+<h3 id="结构操作-1"><a href="#结构操作-1" class="headerlink" title="结构操作"></a><strong>结构操作</strong></h3><ul>
+<li>插入<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092211.png" alt="图片"></li>
+<li>①走到待插入位置的<strong>前一个</strong>位置的结点p</li>
+<li>②先将新的结点x的指针域指向待插入位置的结点p.next</li>
+<li>③将p的指针域指向新的结点x</li>
+<li>顺序不能变！否则可能引发内存泄漏（你想用已经用不了，但系统却以为你在用）</li>
+</ul>
+</li>
+<li>删除<ul>
+<li>走到待删除结点位置的<strong>前一个</strong>位置</li>
+</ul>
+</li>
+<li>翻转<ul>
+<li>方法一<ul>
+<li>用一个新链表存，使用头插法</li>
+<li>不断在index = 0 的位置插入结点</li>
+<li>不足：浪费空间，麻烦</li>
+</ul>
+</li>
+<li>方法二<ul>
+<li>原地翻转，用两个变量倒，也是头插法</li>
+<li>前提：每次操作不要造成内存泄漏</li>
+<li>NULL地址还是在最后面，不会翻转</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>代码演示见后</li>
+</ul>
+<h3 id="单向循环链表"><a href="#单向循环链表" class="headerlink" title="单向循环链表"></a>单向循环链表</h3><ul>
+<li>head永远记录的是<strong>尾结点</strong>的地址~</li>
+</ul>
+<ol>
+<li>对于需在index = 0插入结点的情况<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092219.png" alt="图片"></li>
+<li>当head记录的是尾结点时，<strong>直接</strong>在head指向的尾结点后插入即可</li>
+<li>如果head记录的还是首结点的地址，不好使，因为<ul>
+<li>要找index = 0的结点的前一个结点，可能需要遍历完整个链表找到尾结点</li>
+<li>而不像单向链表那样，可以直接在head后、index = 0结点前插入</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对于在尾部插入结点的情况<ul>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306092224.png" alt="图片"></li>
+<li>需要修改head指向新的尾结点【8】！</li>
+</ul>
+</li>
+</ol>
+<h1 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h1><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR(a, b) <span class="meta-string">&quot;\033[&quot;</span> #b <span class="meta-string">&quot;m&quot;</span> a <span class="meta-string">&quot;\033[0m&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GREEN(a) COLOR(a, 32)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; ListNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">List</span> &#123;</span></span><br><span class="line">    ListNode head; <span class="comment">// 虚拟头节点，第一个节点的前一个结点</span></span><br><span class="line">    <span class="keyword">int</span> length;</span><br><span class="line">&#125; List;</span><br><span class="line"></span><br><span class="line"><span class="function">ListNode *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function">List *<span class="title">getLinkList</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(ListNode *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(List *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(List *, <span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">erase</span><span class="params">(List *, <span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(List *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(List *)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    srand(time(<span class="number">0</span>));</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> max_op 20</span></span><br><span class="line">    List *l = getLinkList();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; max_op; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> val = rand() % <span class="number">100</span>;</span><br><span class="line">        <span class="keyword">int</span> ind = rand() % (l-&gt;length + <span class="number">3</span>) - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> op = rand() % <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">switch</span> (op) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>: &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;insert %d at %d to List = %d\n&quot;</span>, val, ind, insert(l, ind, val));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;earse a iterm at %d from List = %d\n&quot;</span>, ind, erase(l, ind));</span><br><span class="line">            &#125; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span> : &#123;</span><br><span class="line">                <span class="built_in">printf</span>(GREEN(<span class="string">&quot;reverse the list!\n&quot;</span>));</span><br><span class="line">                reverse(l);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        output(l), <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">undef</span> max_op</span></span><br><span class="line">    clear(l);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ListNode *<span class="title">getNewNode</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    ListNode *p = (ListNode *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ListNode));</span><br><span class="line">    p-&gt;data = val;</span><br><span class="line">    p-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">List *<span class="title">getLinkList</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List *l = (List *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(List));</span><br><span class="line">    l-&gt;head.next = <span class="literal">NULL</span>;</span><br><span class="line">    l-&gt;length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(List *l, <span class="keyword">int</span> ind, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt; l-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    ListNode *p = &amp;(l-&gt;head), *node = getNewNode(val);</span><br><span class="line">    <span class="keyword">while</span>(ind--) p = p-&gt;next;</span><br><span class="line">    node-&gt;next = p-&gt;next;</span><br><span class="line">    p-&gt;next = node;</span><br><span class="line">    l-&gt;length += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">erase</span><span class="params">(List *l, <span class="keyword">int</span> ind)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(ind &lt; <span class="number">0</span> || ind &gt;= l-&gt;length) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    ListNode *p = &amp;(l-&gt;head), *q;</span><br><span class="line">    <span class="keyword">while</span>(ind--) p = p-&gt;next;</span><br><span class="line">    q = p-&gt;next;</span><br><span class="line">    p-&gt;next = q-&gt;next;</span><br><span class="line">    <span class="built_in">free</span>(q);</span><br><span class="line">    l-&gt;length -= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选择链表</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse</span><span class="params">(List *l)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span>;             </span><br><span class="line">    ListNode *p = l-&gt;head.next, *q; <span class="comment">// q 记录 q-&gt;next</span></span><br><span class="line">    l-&gt;head.next = <span class="literal">NULL</span>;            <span class="comment">// 先将虚拟头节点指向 null</span></span><br><span class="line">    <span class="keyword">while</span>(p) &#123;                      </span><br><span class="line">        q = p-&gt;next;                <span class="comment">// 保存p-&gt;next的地址</span></span><br><span class="line">        p-&gt;next = l-&gt;head.next;     <span class="comment">// 修改顺序</span></span><br><span class="line">        l-&gt;head.next = p;</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(List *l)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;List(%d) = [&quot;</span>, l-&gt;length);</span><br><span class="line">    <span class="keyword">for</span>(ListNode *p = l-&gt;head.next; p; p = p-&gt;next) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d-&gt;&quot;</span>, p-&gt;data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;NULL]\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear_node</span><span class="params">(ListNode *node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">free</span>(node);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(List *l)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    ListNode *p = l-&gt;head.next, *q;</span><br><span class="line">    <span class="keyword">while</span>(p) &#123;</span><br><span class="line">        q = p-&gt;next;</span><br><span class="line">        clear_node(p);</span><br><span class="line">        p = q;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(l);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>虚拟头结点，方便插入和删除第一个结点<ul>
+<li>使用普通变量定义head，❓考虑的是<ul>
+<li>虚拟头结点比较固定，不需要随时free</li>
+<li>普通变量比指针变量更稳定，没必要malloc</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="思考点"><a href="#思考点" class="headerlink" title="思考点"></a>思考点</h1><ul>
+<li>初始化数据结构[比如链表、链表结点]时，动态开辟内存[用malloc等]：<ul>
+<li>关键：【malloc申请的内存在堆空间，普通变量定义在栈空间(在函数里面定义的)】</li>
+<li>栈空间：大小只有8MB；出了函数[作用域]变量就被自动释放了</li>
+<li>堆空间：可分配<strong>大内存</strong>；变量<strong>生命周期长</strong>，一般需手动释放</li>
+</ul>
+</li>
+<li>虚拟头结点定义为普通变量和指针变量的区别<ul>
+<li>虚拟头节点在之后单向链表的时候，比较方便，而如果用普通变量，则比较麻烦</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/doubleL3/blog-imgs/raw/master/img/WE8asP6.png" alt="图片"></p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>数据结构</category>
@@ -1352,6 +1352,114 @@
       </tags>
   </entry>
   <entry>
+    <title>哈夫曼编码</title>
+    <url>/2021/01/10/0011.%20%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="哈夫曼树与哈夫曼编码"><a href="#哈夫曼树与哈夫曼编码" class="headerlink" title="哈夫曼树与哈夫曼编码"></a>哈夫曼树与哈夫曼编码</h2><h2 id="一、内容"><a href="#一、内容" class="headerlink" title="一、内容"></a>一、内容</h2><ol>
+<li>直观的了解哈弗曼树与哈弗曼编码</li>
+<li>证明：哈弗曼编码是最优的变长编码</li>
+</ol>
+<h2 id="二、前置知识"><a href="#二、前置知识" class="headerlink" title="二、前置知识"></a>二、前置知识</h2><h3 id="什么是编码"><a href="#什么是编码" class="headerlink" title="什么是编码"></a>什么是编码</h3><p>‘a’ = 97 = $(0110\ 0001)_2$</p>
+<p>‘0’ = 48 = $(0011\ 0000)_2$</p>
+<p>注意：任何信息，在计算机中，都是二进制存储的</p>
+<p>编码作用 ： 把一段二进制映射为人类看得懂的字符！</p>
+<p>信息：”aa00” = $01100001、01100001、00110000、00110000$</p>
+<p>一台计算机<code>传输到</code>另外一台计算机，传输 32 个比特位</p>
+<p>假设：计算机的网络是 32bit/s。所以用时：1 s</p>
+<p>特定场景：只有 a,b,0,1 四种字符需要传输</p>
+<p>海贼班编码（自创）：a:00, b: 01, 0: 10, 1: 11</p>
+<p>“aa00” = 00001010</p>
+<p>在带宽不变的情况下，当前只需要传输 0.25s</p>
+<h3 id="定长与变长编码"><a href="#定长与变长编码" class="headerlink" title="定长与变长编码"></a>定长与变长编码</h3><ol>
+<li><code>Ascii 编码</code> 和 <code>特定场景下的海贼班编码</code>，都属于<code>定长编码</code>（长度一定）</li>
+<li>对于每一个字符，编码<code>长度相同</code>，这就是<code>定长编码</code></li>
+<li>【大家自行补充】UTF-8编码，是变长编码，UTF-16，是定长编码</li>
+<li>对于每一个字符，编码<code>长度不相同</code>，这就是<code>变长编码</code></li>
+<li>将<code>定长编码</code>，看成是<code>变长编码</code>的<code>特例</code></li>
+<li>变长编码，一定<code>不差于</code>定长编码</li>
+</ol>
+<h3 id="变长编码应用场景"><a href="#变长编码应用场景" class="headerlink" title="变长编码应用场景"></a>变长编码应用场景</h3><p>特定场景：</p>
+<ol>
+<li>只有四种字符 : ab01</li>
+<li>a: 0.8, b: 0.05, 0: 0.1, 1: 0.05</li>
+</ol>
+<p>平均编码长度：</p>
+<p>$l_i$：第 i 种字符，编码长度</p>
+<p>$p_i$：第 i 种字符，出现概率</p>
+<p>平均编码长度（期望值）：$avg(l) = \sum{l_i}\times{p_i}$</p>
+<blockquote>
+<p>意义 ： 用于评估传输特定信息量所需要的比特位数量，数量越小越好。</p>
+</blockquote>
+<p>假设，平均编码长度：1.16，估算传输100个字符，需要传输116个比特位</p>
+<p>海贼班编码的平均编码长度：$avg(l) = 2\times\sum{p_i}=2$</p>
+<blockquote>
+<p>定长编码的<code>平均编码</code>长度 = 定长编码的长度（定长）</p>
+</blockquote>
+<p>新·海贼班编码：</p>
+<p>a: 1</p>
+<p>b: 01</p>
+<p>0: 000</p>
+<p>1: 001</p>
+<blockquote>
+<p>设计<code>变长编码</code>的时候，前缀切记<code>不能重叠</code>！！！如： a : 1， b : 110，这个是不行的，因为b中读到第一个 1 的时候已经跟a 的编码符合，直接编码成 a 了读不到 b！！！</p>
+</blockquote>
+<p>平均编码长度：$1<em>0.8+2</em>0.05+3<em>0.1+3</em>0.05=1.35$</p>
+<p>100个字符，传输135个比特位</p>
+<h2 id="三、哈弗曼编码"><a href="#三、哈弗曼编码" class="headerlink" title="三、哈弗曼编码"></a>三、哈弗曼编码</h2><ol>
+<li>首先，<code>统计</code>得到<code>每一种</code>字符的<code>概率</code></li>
+<li>将 <code>n 个</code>字符，建立成一棵<code>哈弗曼树</code></li>
+<li>每一个字符，都落在<code>叶子结点</code>上</li>
+<li>按照<code>左0，右1</code>的形式，将编码读取出来</li>
+</ol>
+<blockquote>
+<p>因为所有字符都落在<code>叶子节点</code>上，所以<code>没有</code>一个字符是另一个字符的<code>前缀</code>！</p>
+</blockquote>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309113003.png" alt="image-20201227090511381" style="zoom:50%;">
+
+<p>得到新编码：</p>
+<p>a: 0 | b: 110 | 0: 10 | 1: 111</p>
+<p>平均编码长度：$1<em>0.8+3</em>0.05+2<em>0.1+3</em>0.05=1.3$</p>
+<p>结论：哈弗曼编码，是<code>最优的变长编码</code></p>
+<blockquote>
+<p>如果提到<code>变长编码</code>，就必须想到<code>哈夫曼编码</code></p>
+</blockquote>
+<h2 id="四、公式证明（证明-avg-l-sum-l-i-times-p-i-的值最小）"><a href="#四、公式证明（证明-avg-l-sum-l-i-times-p-i-的值最小）" class="headerlink" title="四、公式证明（证明 $avg(l) = \sum{l_i}\times{p_i}$ 的值最小）"></a>四、公式证明（证明 $avg(l) = \sum{l_i}\times{p_i}$ 的值最小）</h2><blockquote>
+<p>哈夫曼编码什么时候会<code>退化</code>成定长编码呢？</p>
+<p>当所有字符的概率都一样的时候的就会退化成定长编码！所以定长编码能做的事情，哈夫曼编码一定能做到！</p>
+</blockquote>
+<blockquote>
+<p>哈夫曼编码最优，优在平均编码长度</p>
+</blockquote>
+<ol>
+<li>首先表示平均编码长度，求解公式最优解</li>
+<li>最终，和熵与交叉熵之间的关系</li>
+</ol>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309144840.png" alt="image-20201227102527197" style="zoom: 33%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145042.png" alt="image-20210309145036420" style="zoom: 67%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145111.png" alt="image-20201227102725731" style="zoom: 33%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145227.png" alt="image-20210309145221608" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145334.png" alt="image-20210309145326272" style="zoom:50%;">
+
+<h3 id="代码展示："><a href="#代码展示：" class="headerlink" title="代码展示："></a>代码展示：</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123; \</span></span><br><span class="line">    __typeof(a) __c = a; \</span><br><span class="line">    a = b, b = __c; \</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    <span class="keyword">double</span> p;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">char</span> ch, <span class="keyword">double</span> per)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;ch = ch;</span><br><span class="line">    p-&gt;p = per;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">CombinNode</span><span class="params">(Node *a, Node *b)</span> </span>&#123;</span><br><span class="line">    Node *p = getNewNode(<span class="number">0</span>, a-&gt;p + b-&gt;p);</span><br><span class="line">    p-&gt;lchild = a;</span><br><span class="line">    p-&gt;rchild = b;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pick_min</span><span class="params">(Node **arr, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = n - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[n]-&gt;p &gt; arr[j]-&gt;p) &#123;</span><br><span class="line">            swap(arr[n], arr[j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getHaffmanTree</span><span class="params">(Node **arr, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        pick_min(arr, n - i);</span><br><span class="line">        pick_min(arr, n - i - <span class="number">1</span>);</span><br><span class="line">        arr[n - i - <span class="number">1</span>] = CombinNode(arr[n - i], arr[n - i - <span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> __output_encode(Node *root, <span class="keyword">char</span> *str, <span class="keyword">int</span> k) &#123;</span><br><span class="line">    str[k] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;lchild == <span class="literal">NULL</span> &amp;&amp; root-&gt;rchild == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%c %s\n&quot;</span>, root-&gt;ch, str);</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    str[k] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">    __output_encode(root-&gt;lchild, str, k + <span class="number">1</span>);</span><br><span class="line">    str[k] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    __output_encode(root-&gt;rchild, str, k + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output_encode</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line">    __output_encode(root, str, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) <span class="keyword">return</span> ;</span><br><span class="line">    clear(root-&gt;lchild);</span><br><span class="line">    clear(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(root);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    Node **arr;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    arr = (Node **)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node *) * n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> ch[<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">double</span> p;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s%lf&quot;</span>, ch, &amp;p);</span><br><span class="line">        arr[i] = getNewNode(ch[<span class="number">0</span>], p);</span><br><span class="line">    &#125;</span><br><span class="line">    Node *root = getHaffmanTree(arr, n);</span><br><span class="line">    output_encode(root);</span><br><span class="line">    clear(root);</span><br><span class="line">    <span class="built_in">free</span>(arr);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>数据结构</category>
+        <category>高级数据结构</category>
+      </categories>
+      <tags>
+        <tag>手撕数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>字符串匹配算法（多种、单模）</title>
     <url>/2021/01/11/0012.%20%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="字符串的匹配算法"><a href="#字符串的匹配算法" class="headerlink" title="字符串的匹配算法"></a>字符串的匹配算法</h1><h2 id="一、暴力匹配算法（单模匹配）"><a href="#一、暴力匹配算法（单模匹配）" class="headerlink" title="一、暴力匹配算法（单模匹配）"></a>一、暴力匹配算法（单模匹配）</h2><ol>
@@ -1542,114 +1650,6 @@
 <p>这个正则表达式，其实就是一个模式串。比如 adef，就可以匹配上面的正则表达式。</p>
 </blockquote>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>数据结构</category>
-        <category>高级数据结构</category>
-      </categories>
-      <tags>
-        <tag>手撕数据结构</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>哈夫曼编码</title>
-    <url>/2021/01/10/0011.%20%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91%E4%B8%8E%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="哈夫曼树与哈夫曼编码"><a href="#哈夫曼树与哈夫曼编码" class="headerlink" title="哈夫曼树与哈夫曼编码"></a>哈夫曼树与哈夫曼编码</h2><h2 id="一、内容"><a href="#一、内容" class="headerlink" title="一、内容"></a>一、内容</h2><ol>
-<li>直观的了解哈弗曼树与哈弗曼编码</li>
-<li>证明：哈弗曼编码是最优的变长编码</li>
-</ol>
-<h2 id="二、前置知识"><a href="#二、前置知识" class="headerlink" title="二、前置知识"></a>二、前置知识</h2><h3 id="什么是编码"><a href="#什么是编码" class="headerlink" title="什么是编码"></a>什么是编码</h3><p>‘a’ = 97 = $(0110\ 0001)_2$</p>
-<p>‘0’ = 48 = $(0011\ 0000)_2$</p>
-<p>注意：任何信息，在计算机中，都是二进制存储的</p>
-<p>编码作用 ： 把一段二进制映射为人类看得懂的字符！</p>
-<p>信息：”aa00” = $01100001、01100001、00110000、00110000$</p>
-<p>一台计算机<code>传输到</code>另外一台计算机，传输 32 个比特位</p>
-<p>假设：计算机的网络是 32bit/s。所以用时：1 s</p>
-<p>特定场景：只有 a,b,0,1 四种字符需要传输</p>
-<p>海贼班编码（自创）：a:00, b: 01, 0: 10, 1: 11</p>
-<p>“aa00” = 00001010</p>
-<p>在带宽不变的情况下，当前只需要传输 0.25s</p>
-<h3 id="定长与变长编码"><a href="#定长与变长编码" class="headerlink" title="定长与变长编码"></a>定长与变长编码</h3><ol>
-<li><code>Ascii 编码</code> 和 <code>特定场景下的海贼班编码</code>，都属于<code>定长编码</code>（长度一定）</li>
-<li>对于每一个字符，编码<code>长度相同</code>，这就是<code>定长编码</code></li>
-<li>【大家自行补充】UTF-8编码，是变长编码，UTF-16，是定长编码</li>
-<li>对于每一个字符，编码<code>长度不相同</code>，这就是<code>变长编码</code></li>
-<li>将<code>定长编码</code>，看成是<code>变长编码</code>的<code>特例</code></li>
-<li>变长编码，一定<code>不差于</code>定长编码</li>
-</ol>
-<h3 id="变长编码应用场景"><a href="#变长编码应用场景" class="headerlink" title="变长编码应用场景"></a>变长编码应用场景</h3><p>特定场景：</p>
-<ol>
-<li>只有四种字符 : ab01</li>
-<li>a: 0.8, b: 0.05, 0: 0.1, 1: 0.05</li>
-</ol>
-<p>平均编码长度：</p>
-<p>$l_i$：第 i 种字符，编码长度</p>
-<p>$p_i$：第 i 种字符，出现概率</p>
-<p>平均编码长度（期望值）：$avg(l) = \sum{l_i}\times{p_i}$</p>
-<blockquote>
-<p>意义 ： 用于评估传输特定信息量所需要的比特位数量，数量越小越好。</p>
-</blockquote>
-<p>假设，平均编码长度：1.16，估算传输100个字符，需要传输116个比特位</p>
-<p>海贼班编码的平均编码长度：$avg(l) = 2\times\sum{p_i}=2$</p>
-<blockquote>
-<p>定长编码的<code>平均编码</code>长度 = 定长编码的长度（定长）</p>
-</blockquote>
-<p>新·海贼班编码：</p>
-<p>a: 1</p>
-<p>b: 01</p>
-<p>0: 000</p>
-<p>1: 001</p>
-<blockquote>
-<p>设计<code>变长编码</code>的时候，前缀切记<code>不能重叠</code>！！！如： a : 1， b : 110，这个是不行的，因为b中读到第一个 1 的时候已经跟a 的编码符合，直接编码成 a 了读不到 b！！！</p>
-</blockquote>
-<p>平均编码长度：$1<em>0.8+2</em>0.05+3<em>0.1+3</em>0.05=1.35$</p>
-<p>100个字符，传输135个比特位</p>
-<h2 id="三、哈弗曼编码"><a href="#三、哈弗曼编码" class="headerlink" title="三、哈弗曼编码"></a>三、哈弗曼编码</h2><ol>
-<li>首先，<code>统计</code>得到<code>每一种</code>字符的<code>概率</code></li>
-<li>将 <code>n 个</code>字符，建立成一棵<code>哈弗曼树</code></li>
-<li>每一个字符，都落在<code>叶子结点</code>上</li>
-<li>按照<code>左0，右1</code>的形式，将编码读取出来</li>
-</ol>
-<blockquote>
-<p>因为所有字符都落在<code>叶子节点</code>上，所以<code>没有</code>一个字符是另一个字符的<code>前缀</code>！</p>
-</blockquote>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309113003.png" alt="image-20201227090511381" style="zoom:50%;">
-
-<p>得到新编码：</p>
-<p>a: 0 | b: 110 | 0: 10 | 1: 111</p>
-<p>平均编码长度：$1<em>0.8+3</em>0.05+2<em>0.1+3</em>0.05=1.3$</p>
-<p>结论：哈弗曼编码，是<code>最优的变长编码</code></p>
-<blockquote>
-<p>如果提到<code>变长编码</code>，就必须想到<code>哈夫曼编码</code></p>
-</blockquote>
-<h2 id="四、公式证明（证明-avg-l-sum-l-i-times-p-i-的值最小）"><a href="#四、公式证明（证明-avg-l-sum-l-i-times-p-i-的值最小）" class="headerlink" title="四、公式证明（证明 $avg(l) = \sum{l_i}\times{p_i}$ 的值最小）"></a>四、公式证明（证明 $avg(l) = \sum{l_i}\times{p_i}$ 的值最小）</h2><blockquote>
-<p>哈夫曼编码什么时候会<code>退化</code>成定长编码呢？</p>
-<p>当所有字符的概率都一样的时候的就会退化成定长编码！所以定长编码能做的事情，哈夫曼编码一定能做到！</p>
-</blockquote>
-<blockquote>
-<p>哈夫曼编码最优，优在平均编码长度</p>
-</blockquote>
-<ol>
-<li>首先表示平均编码长度，求解公式最优解</li>
-<li>最终，和熵与交叉熵之间的关系</li>
-</ol>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309144840.png" alt="image-20201227102527197" style="zoom: 33%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145042.png" alt="image-20210309145036420" style="zoom: 67%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145111.png" alt="image-20201227102725731" style="zoom: 33%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145227.png" alt="image-20210309145221608" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210309145334.png" alt="image-20210309145326272" style="zoom:50%;">
-
-<h3 id="代码展示："><a href="#代码展示：" class="headerlink" title="代码展示："></a>代码展示：</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> swap(a, b) &#123; \</span></span><br><span class="line">    __typeof(a) __c = a; \</span><br><span class="line">    a = b, b = __c; \</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    <span class="keyword">double</span> p;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">lchild</span>, *<span class="title">rchild</span>;</span></span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getNewNode</span><span class="params">(<span class="keyword">char</span> ch, <span class="keyword">double</span> per)</span> </span>&#123;</span><br><span class="line">    Node *p = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">    p-&gt;ch = ch;</span><br><span class="line">    p-&gt;p = per;</span><br><span class="line">    p-&gt;lchild = p-&gt;rchild = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">CombinNode</span><span class="params">(Node *a, Node *b)</span> </span>&#123;</span><br><span class="line">    Node *p = getNewNode(<span class="number">0</span>, a-&gt;p + b-&gt;p);</span><br><span class="line">    p-&gt;lchild = a;</span><br><span class="line">    p-&gt;rchild = b;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pick_min</span><span class="params">(Node **arr, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = n - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[n]-&gt;p &gt; arr[j]-&gt;p) &#123;</span><br><span class="line">            swap(arr[n], arr[j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node *<span class="title">getHaffmanTree</span><span class="params">(Node **arr, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        pick_min(arr, n - i);</span><br><span class="line">        pick_min(arr, n - i - <span class="number">1</span>);</span><br><span class="line">        arr[n - i - <span class="number">1</span>] = CombinNode(arr[n - i], arr[n - i - <span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> __output_encode(Node *root, <span class="keyword">char</span> *str, <span class="keyword">int</span> k) &#123;</span><br><span class="line">    str[k] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;lchild == <span class="literal">NULL</span> &amp;&amp; root-&gt;rchild == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%c %s\n&quot;</span>, root-&gt;ch, str);</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    str[k] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">    __output_encode(root-&gt;lchild, str, k + <span class="number">1</span>);</span><br><span class="line">    str[k] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    __output_encode(root-&gt;rchild, str, k + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output_encode</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">100</span>];</span><br><span class="line">    __output_encode(root, str, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) <span class="keyword">return</span> ;</span><br><span class="line">    clear(root-&gt;lchild);</span><br><span class="line">    clear(root-&gt;rchild);</span><br><span class="line">    <span class="built_in">free</span>(root);</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    Node **arr;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    arr = (Node **)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node *) * n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> ch[<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">double</span> p;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s%lf&quot;</span>, ch, &amp;p);</span><br><span class="line">        arr[i] = getNewNode(ch[<span class="number">0</span>], p);</span><br><span class="line">    &#125;</span><br><span class="line">    Node *root = getHaffmanTree(arr, n);</span><br><span class="line">    output_encode(root);</span><br><span class="line">    clear(root);</span><br><span class="line">    <span class="built_in">free</span>(arr);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>数据结构</category>
         <category>高级数据结构</category>
@@ -1923,149 +1923,6 @@
         <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> a_flag = <span class="number">0</span>, l_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((opt = getopt(argc, argv, <span class="string">&quot;alm:o::&quot;</span>)) != <span class="number">-1</span> ) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span> :</span><br><span class="line">                a_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;l&#x27;</span> :</span><br><span class="line">                l_flag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;msg = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span> :</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;opt = %s\n&quot;</span>, optarg);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Usage : %s -al\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//printf(&quot;optind = %d\noptopt = %d\n&quot;, optind, optopt);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 </div><link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>阻塞与非阻塞IO</title>
-    <url>/2021/01/03/0018.%20%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9EIO/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="阻塞与非阻塞IO"><a href="#阻塞与非阻塞IO" class="headerlink" title="阻塞与非阻塞IO"></a>阻塞与非阻塞IO</h1><blockquote>
-<p>多思考，诸如用阻塞IO的话，那能不能用非阻塞，哪个更优。</p>
-</blockquote>
-<h3 id="什么是阻塞"><a href="#什么是阻塞" class="headerlink" title="什么是阻塞"></a>什么是阻塞</h3><p>在运行过程中，有前提条件没完成，只能停止干等着不懂。</p>
-<h3 id="什么是非阻塞"><a href="#什么是非阻塞" class="headerlink" title="什么是非阻塞"></a>什么是非阻塞</h3><p>在运行过程中，哪怕有前提条件没完成，也不会干等着，可以干其他事。</p>
-<h3 id="读写文件时，阻塞与非阻塞的区别？"><a href="#读写文件时，阻塞与非阻塞的区别？" class="headerlink" title="读写文件时，阻塞与非阻塞的区别？"></a>读写文件时，阻塞与非阻塞的区别？</h3><ol>
-<li>打开文件</li>
-<li>把buf当作参数，用write系统调用，把数据传递给内核（用户态下沉到内核态），内核拿到数据，内核再把buf写到磁盘中（内核是快缓冲，这里主要以机械硬盘讨论），内核调动底层的IO设备管理，根据Inode与block放到磁盘的某一个位置。</li>
-<li>阻塞：没写进去就等着，啥也不干</li>
-<li>非阻塞：只通知，不管有没有写进去，继续做其他事</li>
-</ol>
-<h3 id="fcbtl：可以把一个文件变成非阻塞或者阻塞"><a href="#fcbtl：可以把一个文件变成非阻塞或者阻塞" class="headerlink" title="fcbtl：可以把一个文件变成非阻塞或者阻塞"></a>fcbtl：可以把一个文件变成非阻塞或者阻塞</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ... <span class="comment">/* arg */</span> )</span></span>;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<p>操作文件描述符，</p>
-<ul>
-<li><code>fd</code> ：文件描述符</li>
-<li><code>cmd</code> ：操作命令</li>
-<li><code>arg</code> ：变参列表，<code>cmd</code> 的参数，存在的情况下，大多数是<code>int</code></li>
-</ul>
-<p>操作（cmd）：</p>
-<ul>
-<li>复制一个文件描述符</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106190405728.png" alt="image-20210106190405728"></li>
-<li>文件描述符标志</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213937.png" alt="image-20210106190534232"></li>
-<li>文件状态标志</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213928.png" alt="image-20210106190511674"></li>
-</ul>
-<blockquote>
-<p>把文件变成阻塞或者非阻塞，用到的<code>cmd</code>就是<code>F_SETFL</code>以及里面的<code>O_NONBLOCK</code></p>
-</blockquote>
-<p>返回值 ：</p>
-<ul>
-<li>成功返回</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213945.png" alt="image-20210106190804916"></li>
-</ul>
-<blockquote>
-<p>头文件的引入顺序有关联！！！尽量把自己写的头文件放在最后！！！</p>
-</blockquote>
-<h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li> <code>O_NONBLOCK </code>是位掩码，它的每个比特都有含义，如果用<code>F_SETFL</code>设置一个确定的值，如果这样做，会破坏之前的<code>flag</code>，比如一个文件的权限是 <code>110</code>唯独没有<code>O_NONBLOCK </code>的权限，那这样操作（相当于赋值等于操作），就会直接<code>抹除</code>前面的权限，只留下<code>O_NONBLOCK </code>的权限，即<code>001</code>！！修改如下：</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="comment">//考虑是否会出错</span></span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag |= O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_block</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag &amp;= ~O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li>先用<code>F_GETFL</code>获得文件当前的状态（同时判断是否会出错），然后用<code>或操作</code>加上<code>O_NONBLOCK</code>，再把这个<code>flag</code>当成<code>F_SETFL</code>的参数。</li>
-<li>如果变成<code>阻塞IO</code>的话，就先对<code>O_NONBLOCK</code>取反，再跟<code>flag</code>与操作。</li>
-</ul>
-<div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试程序，用 0， 1， 2来测试</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> age;</span><br><span class="line">    make_nonblock(<span class="number">0</span>);</span><br><span class="line">    sleep(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;age);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Alin is %d years old! &lt;%d&gt;\n&quot;</span>, age, ret);</span><br><span class="line">    perror(<span class="string">&quot;scanf&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<ul>
-<li><code>0</code>号文件是<code>标准输入文件</code>，正常的话会等待用户输入，才不会阻塞，而改成了<code>非阻塞</code>之后，<code>scanf</code>看一眼<code>0</code>文件没有东西，就直接走人，瞬间结束，而输出的内容则是一个<code>未定义的变量</code></li>
-<li><code>scanf </code>与 <code>标准输入流有没有打开</code>没有多大的联系。</li>
-<li>用<code>sleep</code>让当前的程序睡眠（阻塞），什么都不做，这个时候<code>输入内容</code>，数据就可以到达<code>scanf</code>家门口，静静等待<code>scanf</code>读取。</li>
-</ul>
-<blockquote>
-<p>每次打开程序，系统都会自动打开0，1，2文件，这三个文件不是凭空产生的，而是从其父亲<code>继承</code>过来的！！</p>
-<p>C语言中所有大写的单词都是宏定义！</p>
-<p><code>sleep</code>操作，类似于等数据来了，主动通知<code>scanf</code>多久之后开门迎接它！！（也可以不睡觉，去干其他事！而这，就是后面的<code>select</code>操作）。</p>
-</blockquote>
-<h3 id="select-：-IO多路复用，就是“影分身”同时干多件事"><a href="#select-：-IO多路复用，就是“影分身”同时干多件事" class="headerlink" title="select ： IO多路复用，就是“影分身”同时干多件事"></a>select ： IO多路复用，就是“影分身”同时干多件事</h3><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int select(int nfds, fd_set *readfds, fd_set *writefds,</span><br><span class="line">                  fd_set *exceptfds, struct timeval *timeout);</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<p><code>监控多个文件</code>（数量必须小于系统一开始设定的数量，正常的话应该是1024），直到文件准备就绪，可执行相对应的IO操作。</p>
-<ul>
-<li><code>nfds</code> ：文件描述符数量，等于数字最大的文件描述符 + 1；</li>
-<li><code>fd_set</code>：自定义类型，文件描述符集合，这个函数包括，<code>可读文件集合，可写文件结合，异常文件集合</code></li>
-</ul>
-<blockquote>
-<p>集合操作 ：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set *<span class="built_in">set</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<ul>
-<li><code>struct timeval *timeout</code>时间结构体，超时。代表多久后算超时，超时就直接返回。</li>
-<li>返回值 ：</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106201938667.png" alt="image-20210106201938667"></li>
-</ul>
-<h4 id="例子：-1"><a href="#例子：-1" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
-    <div class="spoiler-title">
-        打不开请刷新一下页面
-    </div>
-    <div class="spoiler-content">
-        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    fd_set rfds;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">    <span class="keyword">int</span> retval;</span><br><span class="line">    <span class="comment">/* Watch stdin (fd 0) to see when it has input. */</span></span><br><span class="line">	<span class="comment">//清空</span></span><br><span class="line">    FD_ZERO(&amp;rfds);</span><br><span class="line">    <span class="comment">//把监控文件加入</span></span><br><span class="line">    FD_SET(<span class="number">0</span>, &amp;rfds);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait up to five seconds. */</span></span><br><span class="line">	<span class="comment">//睡眠时间</span></span><br><span class="line">    tv.tv_sec = <span class="number">5</span>;</span><br><span class="line">    tv.tv_usec = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//监控一次</span></span><br><span class="line">    retval = select(<span class="number">1</span>, &amp;rfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv);</span><br><span class="line">    <span class="comment">/* Don&#x27;t rely on the value of tv now! */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (retval == <span class="number">-1</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;select()&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (retval) &#123;</span><br><span class="line">        <span class="keyword">char</span> buff[<span class="number">512</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Data is available now.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//scanf(&quot;%s&quot;, buff);</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;No data within five seconds.\n&quot;</span>);  <span class="comment">/* FD_ISSET(0, &amp;rfds) will be true. 超时的时候执行的程序*/</span></span><br><span class="line">    <span class="built_in">exit</span>(EXIT_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-</div>
-
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202346199.png" alt="image-20210106202346199"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202605831.png" alt="image-20210106202605831"></p>
-<ul>
-<li>对 <code>0</code>文件进行监控，当有输入的时候，<code>./a.out</code>感知到了输入（<code>IO感知，最开始想实现的目标</code>），直接运行输入的命令，如果命令存在，则运行该命令，如果命令不存在，会被父进程<code>zsh</code>收走</li>
-</ul>
-<blockquote>
-<p>如果最后加上<code>scanf(&quot;%s&quot;, buff);</code>则<code>./a.out</code>感知到的命令如果运行不成功，会被程序自己收走，而不是被系统<code>zsh</code>收走。</p>
-<p>超时操作，相当于设置了一个定时任务，超过了，就直接结束返回。</p>
-</blockquote>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
         <category>系统编程与网络编程</category>
@@ -2380,6 +2237,149 @@
 </ul>
 </li>
 </ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>阻塞与非阻塞IO</title>
+    <url>/2021/01/03/0018.%20%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9EIO/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="阻塞与非阻塞IO"><a href="#阻塞与非阻塞IO" class="headerlink" title="阻塞与非阻塞IO"></a>阻塞与非阻塞IO</h1><blockquote>
+<p>多思考，诸如用阻塞IO的话，那能不能用非阻塞，哪个更优。</p>
+</blockquote>
+<h3 id="什么是阻塞"><a href="#什么是阻塞" class="headerlink" title="什么是阻塞"></a>什么是阻塞</h3><p>在运行过程中，有前提条件没完成，只能停止干等着不懂。</p>
+<h3 id="什么是非阻塞"><a href="#什么是非阻塞" class="headerlink" title="什么是非阻塞"></a>什么是非阻塞</h3><p>在运行过程中，哪怕有前提条件没完成，也不会干等着，可以干其他事。</p>
+<h3 id="读写文件时，阻塞与非阻塞的区别？"><a href="#读写文件时，阻塞与非阻塞的区别？" class="headerlink" title="读写文件时，阻塞与非阻塞的区别？"></a>读写文件时，阻塞与非阻塞的区别？</h3><ol>
+<li>打开文件</li>
+<li>把buf当作参数，用write系统调用，把数据传递给内核（用户态下沉到内核态），内核拿到数据，内核再把buf写到磁盘中（内核是快缓冲，这里主要以机械硬盘讨论），内核调动底层的IO设备管理，根据Inode与block放到磁盘的某一个位置。</li>
+<li>阻塞：没写进去就等着，啥也不干</li>
+<li>非阻塞：只通知，不管有没有写进去，继续做其他事</li>
+</ol>
+<h3 id="fcbtl：可以把一个文件变成非阻塞或者阻塞"><a href="#fcbtl：可以把一个文件变成非阻塞或者阻塞" class="headerlink" title="fcbtl：可以把一个文件变成非阻塞或者阻塞"></a>fcbtl：可以把一个文件变成非阻塞或者阻塞</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ... <span class="comment">/* arg */</span> )</span></span>;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<p>操作文件描述符，</p>
+<ul>
+<li><code>fd</code> ：文件描述符</li>
+<li><code>cmd</code> ：操作命令</li>
+<li><code>arg</code> ：变参列表，<code>cmd</code> 的参数，存在的情况下，大多数是<code>int</code></li>
+</ul>
+<p>操作（cmd）：</p>
+<ul>
+<li>复制一个文件描述符</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106190405728.png" alt="image-20210106190405728"></li>
+<li>文件描述符标志</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213937.png" alt="image-20210106190534232"></li>
+<li>文件状态标志</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213928.png" alt="image-20210106190511674"></li>
+</ul>
+<blockquote>
+<p>把文件变成阻塞或者非阻塞，用到的<code>cmd</code>就是<code>F_SETFL</code>以及里面的<code>O_NONBLOCK</code></p>
+</blockquote>
+<p>返回值 ：</p>
+<ul>
+<li>成功返回</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210108213945.png" alt="image-20210106190804916"></li>
+</ul>
+<blockquote>
+<p>头文件的引入顺序有关联！！！尽量把自己写的头文件放在最后！！！</p>
+</blockquote>
+<h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li> <code>O_NONBLOCK </code>是位掩码，它的每个比特都有含义，如果用<code>F_SETFL</code>设置一个确定的值，如果这样做，会破坏之前的<code>flag</code>，比如一个文件的权限是 <code>110</code>唯独没有<code>O_NONBLOCK </code>的权限，那这样操作（相当于赋值等于操作），就会直接<code>抹除</code>前面的权限，只留下<code>O_NONBLOCK </code>的权限，即<code>001</code>！！修改如下：</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_nonblock</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="comment">//考虑是否会出错</span></span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag |= O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">make_block</span><span class="params">(<span class="keyword">int</span> fd)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> flag;</span><br><span class="line">    <span class="keyword">if</span> ((flag = fcntl(fd, F_GETFL)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    flag &amp;= ~O_NONBLOCK;</span><br><span class="line">    <span class="keyword">return</span> fcntl(fd, F_SETFL, flag);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li>先用<code>F_GETFL</code>获得文件当前的状态（同时判断是否会出错），然后用<code>或操作</code>加上<code>O_NONBLOCK</code>，再把这个<code>flag</code>当成<code>F_SETFL</code>的参数。</li>
+<li>如果变成<code>阻塞IO</code>的话，就先对<code>O_NONBLOCK</code>取反，再跟<code>flag</code>与操作。</li>
+</ul>
+<div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试程序，用 0， 1， 2来测试</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;head.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> age;</span><br><span class="line">    make_nonblock(<span class="number">0</span>);</span><br><span class="line">    sleep(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;age);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Alin is %d years old! &lt;%d&gt;\n&quot;</span>, age, ret);</span><br><span class="line">    perror(<span class="string">&quot;scanf&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<ul>
+<li><code>0</code>号文件是<code>标准输入文件</code>，正常的话会等待用户输入，才不会阻塞，而改成了<code>非阻塞</code>之后，<code>scanf</code>看一眼<code>0</code>文件没有东西，就直接走人，瞬间结束，而输出的内容则是一个<code>未定义的变量</code></li>
+<li><code>scanf </code>与 <code>标准输入流有没有打开</code>没有多大的联系。</li>
+<li>用<code>sleep</code>让当前的程序睡眠（阻塞），什么都不做，这个时候<code>输入内容</code>，数据就可以到达<code>scanf</code>家门口，静静等待<code>scanf</code>读取。</li>
+</ul>
+<blockquote>
+<p>每次打开程序，系统都会自动打开0，1，2文件，这三个文件不是凭空产生的，而是从其父亲<code>继承</code>过来的！！</p>
+<p>C语言中所有大写的单词都是宏定义！</p>
+<p><code>sleep</code>操作，类似于等数据来了，主动通知<code>scanf</code>多久之后开门迎接它！！（也可以不睡觉，去干其他事！而这，就是后面的<code>select</code>操作）。</p>
+</blockquote>
+<h3 id="select-：-IO多路复用，就是“影分身”同时干多件事"><a href="#select-：-IO多路复用，就是“影分身”同时干多件事" class="headerlink" title="select ： IO多路复用，就是“影分身”同时干多件事"></a>select ： IO多路复用，就是“影分身”同时干多件事</h3><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int select(int nfds, fd_set *readfds, fd_set *writefds,</span><br><span class="line">                  fd_set *exceptfds, struct timeval *timeout);</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<p><code>监控多个文件</code>（数量必须小于系统一开始设定的数量，正常的话应该是1024），直到文件准备就绪，可执行相对应的IO操作。</p>
+<ul>
+<li><code>nfds</code> ：文件描述符数量，等于数字最大的文件描述符 + 1；</li>
+<li><code>fd_set</code>：自定义类型，文件描述符集合，这个函数包括，<code>可读文件集合，可写文件结合，异常文件集合</code></li>
+</ul>
+<blockquote>
+<p>集合操作 ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set *<span class="built_in">set</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ul>
+<li><code>struct timeval *timeout</code>时间结构体，超时。代表多久后算超时，超时就直接返回。</li>
+<li>返回值 ：</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106201938667.png" alt="image-20210106201938667"></li>
+</ul>
+<h4 id="例子：-1"><a href="#例子：-1" class="headerlink" title="例子："></a>例子：</h4><div class="spoiler collapsed">
+    <div class="spoiler-title">
+        打不开请刷新一下页面
+    </div>
+    <div class="spoiler-content">
+        <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    fd_set rfds;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">    <span class="keyword">int</span> retval;</span><br><span class="line">    <span class="comment">/* Watch stdin (fd 0) to see when it has input. */</span></span><br><span class="line">	<span class="comment">//清空</span></span><br><span class="line">    FD_ZERO(&amp;rfds);</span><br><span class="line">    <span class="comment">//把监控文件加入</span></span><br><span class="line">    FD_SET(<span class="number">0</span>, &amp;rfds);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait up to five seconds. */</span></span><br><span class="line">	<span class="comment">//睡眠时间</span></span><br><span class="line">    tv.tv_sec = <span class="number">5</span>;</span><br><span class="line">    tv.tv_usec = <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//监控一次</span></span><br><span class="line">    retval = select(<span class="number">1</span>, &amp;rfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv);</span><br><span class="line">    <span class="comment">/* Don&#x27;t rely on the value of tv now! */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (retval == <span class="number">-1</span>) &#123;</span><br><span class="line">        perror(<span class="string">&quot;select()&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (retval) &#123;</span><br><span class="line">        <span class="keyword">char</span> buff[<span class="number">512</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Data is available now.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//scanf(&quot;%s&quot;, buff);</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;No data within five seconds.\n&quot;</span>);  <span class="comment">/* FD_ISSET(0, &amp;rfds) will be true. 超时的时候执行的程序*/</span></span><br><span class="line">    <span class="built_in">exit</span>(EXIT_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+</div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202346199.png" alt="image-20210106202346199"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/image-20210106202605831.png" alt="image-20210106202605831"></p>
+<ul>
+<li>对 <code>0</code>文件进行监控，当有输入的时候，<code>./a.out</code>感知到了输入（<code>IO感知，最开始想实现的目标</code>），直接运行输入的命令，如果命令存在，则运行该命令，如果命令不存在，会被父进程<code>zsh</code>收走</li>
+</ul>
+<blockquote>
+<p>如果最后加上<code>scanf(&quot;%s&quot;, buff);</code>则<code>./a.out</code>感知到的命令如果运行不成功，会被程序自己收走，而不是被系统<code>zsh</code>收走。</p>
+<p>超时操作，相当于设置了一个定时任务，超过了，就直接结束返回。</p>
+</blockquote>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -3304,229 +3304,6 @@
       </tags>
   </entry>
   <entry>
-    <title>运输层协议——TCP协议</title>
-    <url>/2021/01/12/0027.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94TCP%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议——TCP协议"><a href="#运输层协议——TCP协议" class="headerlink" title="运输层协议——TCP协议"></a>运输层协议——TCP协议</h1><h3 id="TCP发送缓存和接收缓存"><a href="#TCP发送缓存和接收缓存" class="headerlink" title="TCP发送缓存和接收缓存"></a>TCP发送缓存和接收缓存</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084629.png" alt="image-20210214194742308" style="zoom:50%;">
-
-<ul>
-<li>应用层与运输层直接间隔着<code>套接字</code></li>
-</ul>
-<h3 id="TCP报文"><a href="#TCP报文" class="headerlink" title="TCP报文"></a>TCP报文</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084634.png" alt="image-20210214194902383" style="zoom:50%;">
-
-<ul>
-<li>序号（32位）：当前发的字节流序号，比方当前的序号是1000，需要发1000个字节，则下次发送时，下一次的序号则从2000开始，这个序号是字节流的号。对方可以通过序号知道发送方发送的是哪个包。</li>
-<li><code>URG</code>：紧急数据</li>
-<li><code>PSH</code>：立即上交</li>
-<li><code>ACK</code>：确认</li>
-<li><code>RST</code>：这个端口不存在，选择其他端口连接</li>
-<li><code>SYN</code>：三次握手，建立连接</li>
-<li><code>FIN</code>：四次挥手，断开连接</li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084642.png" alt="image-20210214195915981" style="zoom:50%;">
-
-<ul>
-<li>在终端上打开远程云主机，然后输入一个字符（”X”），从确认输入到终端显示这个字符的这段时间，发生了什么？（基础面试题目）</li>
-<li>从本地按了<code>X</code>之后，键盘感知到电流波动之后，键盘驱动程序（内核）感知到，然后在内核里面查询这个程序（标准输入）被谁打开了，知道了是被<code>itemto</code>发起了请求，则把<code>X</code>交给<code>itemto</code>，然后由<code>itemto</code>发送给远程云主机，远程云主机收到之后，回一个<code>ACK</code>，附带着把<code>X</code>给传输回来，本地收到<code>X</code>之后，就知道远程云主机已经收到了<code>X</code>， 就会在终端显示出<code>X</code>。</li>
-</ul>
-<h3 id="TCP往返时间估算"><a href="#TCP往返时间估算" class="headerlink" title="TCP往返时间估算"></a>TCP往返时间估算</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084649.png" alt="image-20210214201020087" style="zoom:50%;">
-
-<ul>
-<li><code>SampleRTT</code>：样本时间，单个包的往返时间；样本时间在整个交互过程中一直可以拿到。</li>
-<li><code>EstimatedRTT</code>：估算时间</li>
-<li><code>DevRTT</code>：真实时间与预估时间的差值，即容差</li>
-<li><code>TimeoutInterval</code>：超时时间</li>
-</ul>
-<p>如果只有一次样本时间比较长，并不会对超时时间有多大影响；如果由持续的样本超时，才会对超时时间造成影响。</p>
-<h3 id="流量控制：针对发送方来抑制发送速度"><a href="#流量控制：针对发送方来抑制发送速度" class="headerlink" title="流量控制：针对发送方来抑制发送速度"></a>流量控制：针对发送方来抑制发送速度</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084653.png" alt="image-20210214202148472" style="zoom:50%;">
-
-<ul>
-<li><p>两个缓冲区：发送缓冲区、接收缓冲区</p>
-</li>
-<li><p><code>rwnd</code>：接收缓冲区</p>
-</li>
-</ul>
-<h3 id="三次握手（面试常考）"><a href="#三次握手（面试常考）" class="headerlink" title="三次握手（面试常考）"></a>三次握手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084659.png" alt="image-20210214202647656" style="zoom:50%;">
-
-<ul>
-<li><p>客户端发起，发送<code>SYN</code>包</p>
-</li>
-<li><p>服务端原本阻塞在<code>accept</code>，感知到数据来临时，查看数据，发现是<code>SYN</code>包，即对方要跟自己<code>握手</code>，则服务端发送回一个<code>SYN+ACK</code>报文</p>
-</li>
-<li><p>客户端收到<code>SYN+ACK</code>报文，表明服务端已经是确认该客户端可以对服务端进行连接，此时连接就基本确定，则客户端给服务端回发一个<code>ACK</code>。</p>
-<blockquote>
-<p>记住发送的每个包的名字</p>
-<p>回答为什么是三次握手，不是两次握手，四次握手？</p>
-<ul>
-<li><p>从发起方的角度，三次握手中，客户端可以确认发送的信息能被服务端收到，服务端发送的信息，客户端能收到；</p>
-</li>
-<li><p>从接收方的角度，三次握手中，服务端可以确认发送的信息能被客户端收到，客户端发送的信息，服务端能收到；</p>
-<p>两端发送的信息，都能确认被收到，就成功了。</p>
-<p>假设最后一次握手取消，则服务端并不能确认自己发的数据，客户端有没有接收到，充满不确定性。</p>
-<p>至于超过三次的握手，其实是可以的，但是三次握手已经足够证明双方确认收到信息了，也就没什么必要握手超过三次了，不然就是没用的冗余操作了。</p>
-</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-<h3 id="四次挥手（面试常考）"><a href="#四次挥手（面试常考）" class="headerlink" title="四次挥手（面试常考）"></a>四次挥手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084706.png" alt="image-20210214204239720" style="zoom:50%;">
-
-<ul>
-<li><p>发起方（客户端）发送<code>FIN</code>给接收方（服务端）。</p>
-</li>
-<li><p>接收方收到<code>FIN</code>，确认了对方的<code>分手信息</code>后，会根据自己的情况，确定是否<code>分手</code>，如果确定则会回发一个<code>ACK</code>同意对方的操作；如果选择<code>不分手</code>，会出现异常，即客户端断开连接，但服务端没断开连接，这种叫<code>半关闭连接（半连接）</code>，会生成一种<code>有害的特殊状态的套接字</code>。</p>
-<blockquote>
-<p>假如一开始有100个连接断并形成这种半连接状态，而服务器只能维护1024个连接，则如果半连接的数目一直增多，最终服务器只能维护这些半连接，而无法建立新连接，从而无法与新连接进行交互。</p>
-<p>所以，<code>切记不能写出半连接联系方式！！！！</code></p>
-</blockquote>
-</li>
-<li><p>同时，接收方也会发送<code>FIN</code>给发起方，表明自己也会<code>断开连接</code></p>
-</li>
-<li><p>发起方收到<code>FIN</code>后，也会回发一个<code>ACK</code>同意对方的操作，同时等待<code>两个最大生存周期（30s到120s不等）</code>时间</p>
-<blockquote>
-<p>为什么要四次挥手呢？</p>
-<p>为什么最后发起方要等待<code>两个最大生存周期（30s到120s不等）</code>？</p>
-<ul>
-<li>因为最后的<code>ACK</code>可能会丢包，如果丢包失效，服务器会重新发送一个<code>FIN</code>信号给客户端确认，没有确认就一直发，所以需要等待，以防最后的<code>ACK</code>丢包失效，避免损耗服务器资源。同时，假如断开连接后，客户端的另一个进程恰巧重新打开这个端口，同时上次连接服务器发送的包延迟了，导致当前客户端收到了上一个客户端应该收到的包。</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-<h3 id="TCP-状态转换序列"><a href="#TCP-状态转换序列" class="headerlink" title="TCP 状态转换序列"></a>TCP 状态转换序列</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084715.png" alt="image-20210214210354730" style="zoom:50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084728.png" alt="image-20210214210442417" style="zoom:50%;">
-
-<ul>
-<li>写程序很有用</li>
-<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>connect</code>函数，发送<code>SYN</code></li>
-<li>切换成为<code>SYN_SENT</code>状态，表明已发送<code>SYN</code>，然后接收<code>SYNACK</code>，并发送<code>ACK</code></li>
-<li>切换成<code>ESTABLISHED</code>，此时三次握手已经完成，直到这里，都是<code>connect</code>函数在操作；</li>
-<li>连接之后就是关闭（四次挥手），发送<code>FIN</code>（第一次挥手），切换成<code>FIN_WAIT_1</code>，；</li>
-<li>接收<code>ACK</code>，切换成<code>FIN_WAIT_2</code>，然后等着对方继续发送（第二次挥手）；</li>
-<li>接收<code>FIN</code>并发送<code>ACK</code>，切换成<code>FIN_WAIT</code>，然后等待两个最大生存周期（第三、四次挥手）；</li>
-<li>恢复成默认状态（初始状态）<code>closed</code></li>
-</ul>
-<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084734.png" alt="image-20210214211805183" style="zoom:50%;">
-
-<ul>
-<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>bind与listen</code>函数</li>
-<li>切换成为<code>LISTEN</code>状态，此时就是<code>accept</code>函数阻塞中，然后接收<code>SYN</code>，并发送<code>SYNACK</code></li>
-<li>切换成<code>SYN_RCVD</code>，接收<code>ACK</code>（带着数据<code>data</code>），此时三次握手已经完成，切换成<code>ESTABLISHED</code>连接状态</li>
-<li>连接之后就是关闭（四次挥手），接收<code>FIN</code>，发送<code>ACK</code>（第一、二次挥手），切换成<code>CLOSE_WAIT</code>（等待时间极短，等待调用<code>close</code>函数）</li>
-<li>发送<code>FIN</code>，切换成<code>LAST_ACK</code>状态，然后等着对方继续发送（第三次挥手）</li>
-<li>接收<code>ACK</code>，切换成默认状态（初始状态）<code>closed</code>状态（第四次挥手）</li>
-</ul>
-<blockquote>
-<p><code>CLOSE_WAIT</code>、<code>TIME_WAIT</code>比较重要，用得比较多，并且两者均有实际意义。</p>
-</blockquote>
-<h3 id="拥塞控制方法："><a href="#拥塞控制方法：" class="headerlink" title="拥塞控制方法："></a>拥塞控制方法：</h3><p>在网络中，如果通过协议的方式，尽量减少当网络延迟、波动、网络断开之后，数据暴增或减少而引起的网络更加影响网络的情况。</p>
-<ul>
-<li>端到端拥塞控制：<code>TCP</code><ul>
-<li>超时：增加时延</li>
-<li>冗余ACK</li>
-<li>减小发送窗口来让数据变小</li>
-<li>流量控制，使得发送窗口减小</li>
-</ul>
-</li>
-<li>网络辅助的拥塞控制</li>
-</ul>
-<blockquote>
-<p>在底层<code>网络层</code>也支持这样的控制。</p>
-</blockquote>
-<h4 id="ATM、ABR拥塞控制"><a href="#ATM、ABR拥塞控制" class="headerlink" title="ATM、ABR拥塞控制"></a>ATM、ABR拥塞控制</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084742.png" alt="image-20210214221637878" style="zoom: 50%;">
-
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084747.png" alt="image-20210214221616763" style="zoom:50%;">
-
-<ul>
-<li>ATM是不同于分组网络之外的另一种网络。</li>
-<li>把数据包分成<code>数据信元</code>和<code>资源管理信元RM</code>，比例是32 ：1，即32个数据信元后就有一个管理信元</li>
-<li><code>资源管理信元RM</code>：夹杂在<code>数据信元</code>中，一起从客户端移动到服务器端，并记录下这一段路程哪里阻塞了，哪里不会，然后再原封不动的从服务器端返回客户端，通知客户端这段路是否阻塞。同时，没经过一个路由器的时候，都会被路由器感知到，并查看接下来的路是否发送阻塞，如果阻塞，则路由器会调整自己线路。<ul>
-<li>显示转发拥塞指示：<code>EFCI(1bit)</code>，只要这条链路中其中有一个点拥塞了，则会被置为1，让发送方、接收方跟路由器都知道这条链路已经存在问题。</li>
-<li>当目标主机收到大多数为<code>EFCI</code>，则会将其收到的<code>RM信元</code>的<code>CI（拥塞指示比特）</code>设置为<code>1</code></li>
-<li>显示速率<code>ER</code>（两字节）：指示整个链路的速度，经过每个交换机，都会被更新，目的是为了找到网络的吞吐量。</li>
-</ul>
-</li>
-</ul>
-<h3 id="TCP拥塞窗口"><a href="#TCP拥塞窗口" class="headerlink" title="TCP拥塞窗口"></a>TCP拥塞窗口</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084753.png" alt="image-20210214223217108" style="zoom:50%;">
-
-<h3 id="TCP拥塞控制的指导思想"><a href="#TCP拥塞控制的指导思想" class="headerlink" title="TCP拥塞控制的指导思想"></a>TCP拥塞控制的指导思想</h3><ul>
-<li><p>一个丢失的报文段意味着拥塞，丢包就应该减小发送端的发送速率</p>
-</li>
-<li><p>一个确认的报文段表示网络正在向接收方交付报文段，因此，当收到对之前的报文段的<code>ACK</code>后，应该增加发送方速率</p>
-</li>
-<li><p>带宽探测（动态调整）：每次都应该尽可能的加大带宽，直到出现丢包现象才抑制。</p>
-<blockquote>
-<p>几个实验方式如下。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="实验方式一：拥塞控制之慢启动"><a href="#实验方式一：拥塞控制之慢启动" class="headerlink" title="实验方式一：拥塞控制之慢启动"></a>实验方式一：拥塞控制之慢启动</h3><ul>
-<li><p><code>TCP</code>连接建立之初，<code>cwnd</code>被设置为<code>1MSS</code>（一个最大报文段长度），每收到一个确认，将<code>cwnd</code>增加一个<code>MSS</code>。</p>
-</li>
-<li><p>在慢启动过程中，刚开始速度慢，但是会以指数级增长（1、2、4、8）</p>
-</li>
-<li><p>结束慢启动：</p>
-<ul>
-<li><p><code>timeout</code>：重新开始慢启动，慢启动阈值被设置为<code>cwnd/2</code></p>
-<blockquote>
-<p>就比如现在发送了16个MSS，其中一个超时（带宽探测），说明发送量太大，重新设置为8</p>
-</blockquote>
-</li>
-<li><p><code>cwnd &gt;= ssthresh</code>：进入拥塞避免模式</p>
-<blockquote>
-<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><ul>
-<li>在拥塞避免状态下，<code>cwnd</code>每一个<code>RTT</code>增加一个<code>MSS</code>，线性增加（<code>指数增变成线性增</code>）</li>
-<li>结束：<ul>
-<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
-<li>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-</li>
-<li><p>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式（网络没问题，数据包可能出现异常）</p>
-<blockquote>
-<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><ul>
-<li>对收到的每一个<code>冗余ACK</code>，<code>cwnd</code>增加一个<code>MSS</code>（类似指数）</li>
-<li>结束：<ul>
-<li>收到<code>new ACK, cwnd = ssthresh</code>，并进入拥塞避免</li>
-<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
-</ul>
-</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084800.png" alt="image-20210214225741896" style="zoom:50%;">
-
-<h2 id="面试考点"><a href="#面试考点" class="headerlink" title="面试考点"></a>面试考点</h2><p>运输层核心重点：TCP、 UDP</p>
-<p>面试喜欢问的问题：</p>
-<ul>
-<li>TCP为主</li>
-<li>UDP：TCP与UDP有哪些区别，为什么有时选TCP，有时选UDP；<ul>
-<li>时间敏感</li>
-<li>丢包影响不大</li>
-<li>成本低</li>
-<li>对何时发数据，发什么数据，有更加精细的控制（想发就发，无须受到协议的限制）</li>
-<li>如果产生了网络风暴，想要发信息给局域网内的其他机器，让其停止转发一切消息，好停止网络风暴，这个时候，就需要用到UDP，否则用TCP的效率太低</li>
-<li>从整个网络来说，UDP对整个网络是不友好的，因为UDP从不考虑网络处于什么状态，自顾自的发送信息。</li>
-</ul>
-</li>
-</ul>
-<p>用远程终端，输入一个字符时，会发生什么事情？</p>
-<p>SYN攻击：<br>        在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了，使用如下命令可以让之现行：#netstat -nap | grep SYN_RECV</p>
-<p>四次挥手：不管时服务端还是客户端，都可以发起挥手</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>网络层</title>
     <url>/2021/01/13/0028.%20%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h1><h2 id="01-IP地址"><a href="#01-IP地址" class="headerlink" title="01 IP地址"></a>01 IP地址</h2><h3 id="IP地址的基本结构"><a href="#IP地址的基本结构" class="headerlink" title="IP地址的基本结构"></a>IP地址的基本结构</h3><ul>
@@ -3741,6 +3518,229 @@
 <li>路由器结构</li>
 <li>转发表</li>
 </ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>运输层协议——TCP协议</title>
+    <url>/2021/01/12/0027.%20%E8%BF%90%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE%E2%80%94%E2%80%94TCP%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="运输层协议——TCP协议"><a href="#运输层协议——TCP协议" class="headerlink" title="运输层协议——TCP协议"></a>运输层协议——TCP协议</h1><h3 id="TCP发送缓存和接收缓存"><a href="#TCP发送缓存和接收缓存" class="headerlink" title="TCP发送缓存和接收缓存"></a>TCP发送缓存和接收缓存</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084629.png" alt="image-20210214194742308" style="zoom:50%;">
+
+<ul>
+<li>应用层与运输层直接间隔着<code>套接字</code></li>
+</ul>
+<h3 id="TCP报文"><a href="#TCP报文" class="headerlink" title="TCP报文"></a>TCP报文</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084634.png" alt="image-20210214194902383" style="zoom:50%;">
+
+<ul>
+<li>序号（32位）：当前发的字节流序号，比方当前的序号是1000，需要发1000个字节，则下次发送时，下一次的序号则从2000开始，这个序号是字节流的号。对方可以通过序号知道发送方发送的是哪个包。</li>
+<li><code>URG</code>：紧急数据</li>
+<li><code>PSH</code>：立即上交</li>
+<li><code>ACK</code>：确认</li>
+<li><code>RST</code>：这个端口不存在，选择其他端口连接</li>
+<li><code>SYN</code>：三次握手，建立连接</li>
+<li><code>FIN</code>：四次挥手，断开连接</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084642.png" alt="image-20210214195915981" style="zoom:50%;">
+
+<ul>
+<li>在终端上打开远程云主机，然后输入一个字符（”X”），从确认输入到终端显示这个字符的这段时间，发生了什么？（基础面试题目）</li>
+<li>从本地按了<code>X</code>之后，键盘感知到电流波动之后，键盘驱动程序（内核）感知到，然后在内核里面查询这个程序（标准输入）被谁打开了，知道了是被<code>itemto</code>发起了请求，则把<code>X</code>交给<code>itemto</code>，然后由<code>itemto</code>发送给远程云主机，远程云主机收到之后，回一个<code>ACK</code>，附带着把<code>X</code>给传输回来，本地收到<code>X</code>之后，就知道远程云主机已经收到了<code>X</code>， 就会在终端显示出<code>X</code>。</li>
+</ul>
+<h3 id="TCP往返时间估算"><a href="#TCP往返时间估算" class="headerlink" title="TCP往返时间估算"></a>TCP往返时间估算</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084649.png" alt="image-20210214201020087" style="zoom:50%;">
+
+<ul>
+<li><code>SampleRTT</code>：样本时间，单个包的往返时间；样本时间在整个交互过程中一直可以拿到。</li>
+<li><code>EstimatedRTT</code>：估算时间</li>
+<li><code>DevRTT</code>：真实时间与预估时间的差值，即容差</li>
+<li><code>TimeoutInterval</code>：超时时间</li>
+</ul>
+<p>如果只有一次样本时间比较长，并不会对超时时间有多大影响；如果由持续的样本超时，才会对超时时间造成影响。</p>
+<h3 id="流量控制：针对发送方来抑制发送速度"><a href="#流量控制：针对发送方来抑制发送速度" class="headerlink" title="流量控制：针对发送方来抑制发送速度"></a>流量控制：针对发送方来抑制发送速度</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084653.png" alt="image-20210214202148472" style="zoom:50%;">
+
+<ul>
+<li><p>两个缓冲区：发送缓冲区、接收缓冲区</p>
+</li>
+<li><p><code>rwnd</code>：接收缓冲区</p>
+</li>
+</ul>
+<h3 id="三次握手（面试常考）"><a href="#三次握手（面试常考）" class="headerlink" title="三次握手（面试常考）"></a>三次握手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084659.png" alt="image-20210214202647656" style="zoom:50%;">
+
+<ul>
+<li><p>客户端发起，发送<code>SYN</code>包</p>
+</li>
+<li><p>服务端原本阻塞在<code>accept</code>，感知到数据来临时，查看数据，发现是<code>SYN</code>包，即对方要跟自己<code>握手</code>，则服务端发送回一个<code>SYN+ACK</code>报文</p>
+</li>
+<li><p>客户端收到<code>SYN+ACK</code>报文，表明服务端已经是确认该客户端可以对服务端进行连接，此时连接就基本确定，则客户端给服务端回发一个<code>ACK</code>。</p>
+<blockquote>
+<p>记住发送的每个包的名字</p>
+<p>回答为什么是三次握手，不是两次握手，四次握手？</p>
+<ul>
+<li><p>从发起方的角度，三次握手中，客户端可以确认发送的信息能被服务端收到，服务端发送的信息，客户端能收到；</p>
+</li>
+<li><p>从接收方的角度，三次握手中，服务端可以确认发送的信息能被客户端收到，客户端发送的信息，服务端能收到；</p>
+<p>两端发送的信息，都能确认被收到，就成功了。</p>
+<p>假设最后一次握手取消，则服务端并不能确认自己发的数据，客户端有没有接收到，充满不确定性。</p>
+<p>至于超过三次的握手，其实是可以的，但是三次握手已经足够证明双方确认收到信息了，也就没什么必要握手超过三次了，不然就是没用的冗余操作了。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="四次挥手（面试常考）"><a href="#四次挥手（面试常考）" class="headerlink" title="四次挥手（面试常考）"></a>四次挥手（面试常考）</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084706.png" alt="image-20210214204239720" style="zoom:50%;">
+
+<ul>
+<li><p>发起方（客户端）发送<code>FIN</code>给接收方（服务端）。</p>
+</li>
+<li><p>接收方收到<code>FIN</code>，确认了对方的<code>分手信息</code>后，会根据自己的情况，确定是否<code>分手</code>，如果确定则会回发一个<code>ACK</code>同意对方的操作；如果选择<code>不分手</code>，会出现异常，即客户端断开连接，但服务端没断开连接，这种叫<code>半关闭连接（半连接）</code>，会生成一种<code>有害的特殊状态的套接字</code>。</p>
+<blockquote>
+<p>假如一开始有100个连接断并形成这种半连接状态，而服务器只能维护1024个连接，则如果半连接的数目一直增多，最终服务器只能维护这些半连接，而无法建立新连接，从而无法与新连接进行交互。</p>
+<p>所以，<code>切记不能写出半连接联系方式！！！！</code></p>
+</blockquote>
+</li>
+<li><p>同时，接收方也会发送<code>FIN</code>给发起方，表明自己也会<code>断开连接</code></p>
+</li>
+<li><p>发起方收到<code>FIN</code>后，也会回发一个<code>ACK</code>同意对方的操作，同时等待<code>两个最大生存周期（30s到120s不等）</code>时间</p>
+<blockquote>
+<p>为什么要四次挥手呢？</p>
+<p>为什么最后发起方要等待<code>两个最大生存周期（30s到120s不等）</code>？</p>
+<ul>
+<li>因为最后的<code>ACK</code>可能会丢包，如果丢包失效，服务器会重新发送一个<code>FIN</code>信号给客户端确认，没有确认就一直发，所以需要等待，以防最后的<code>ACK</code>丢包失效，避免损耗服务器资源。同时，假如断开连接后，客户端的另一个进程恰巧重新打开这个端口，同时上次连接服务器发送的包延迟了，导致当前客户端收到了上一个客户端应该收到的包。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="TCP-状态转换序列"><a href="#TCP-状态转换序列" class="headerlink" title="TCP 状态转换序列"></a>TCP 状态转换序列</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084715.png" alt="image-20210214210354730" style="zoom:50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084728.png" alt="image-20210214210442417" style="zoom:50%;">
+
+<ul>
+<li>写程序很有用</li>
+<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>connect</code>函数，发送<code>SYN</code></li>
+<li>切换成为<code>SYN_SENT</code>状态，表明已发送<code>SYN</code>，然后接收<code>SYNACK</code>，并发送<code>ACK</code></li>
+<li>切换成<code>ESTABLISHED</code>，此时三次握手已经完成，直到这里，都是<code>connect</code>函数在操作；</li>
+<li>连接之后就是关闭（四次挥手），发送<code>FIN</code>（第一次挥手），切换成<code>FIN_WAIT_1</code>，；</li>
+<li>接收<code>ACK</code>，切换成<code>FIN_WAIT_2</code>，然后等着对方继续发送（第二次挥手）；</li>
+<li>接收<code>FIN</code>并发送<code>ACK</code>，切换成<code>FIN_WAIT</code>，然后等待两个最大生存周期（第三、四次挥手）；</li>
+<li>恢复成默认状态（初始状态）<code>closed</code></li>
+</ul>
+<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084734.png" alt="image-20210214211805183" style="zoom:50%;">
+
+<ul>
+<li>默认状态（初始状态）为：<code>closed</code>，然后调用<code>bind与listen</code>函数</li>
+<li>切换成为<code>LISTEN</code>状态，此时就是<code>accept</code>函数阻塞中，然后接收<code>SYN</code>，并发送<code>SYNACK</code></li>
+<li>切换成<code>SYN_RCVD</code>，接收<code>ACK</code>（带着数据<code>data</code>），此时三次握手已经完成，切换成<code>ESTABLISHED</code>连接状态</li>
+<li>连接之后就是关闭（四次挥手），接收<code>FIN</code>，发送<code>ACK</code>（第一、二次挥手），切换成<code>CLOSE_WAIT</code>（等待时间极短，等待调用<code>close</code>函数）</li>
+<li>发送<code>FIN</code>，切换成<code>LAST_ACK</code>状态，然后等着对方继续发送（第三次挥手）</li>
+<li>接收<code>ACK</code>，切换成默认状态（初始状态）<code>closed</code>状态（第四次挥手）</li>
+</ul>
+<blockquote>
+<p><code>CLOSE_WAIT</code>、<code>TIME_WAIT</code>比较重要，用得比较多，并且两者均有实际意义。</p>
+</blockquote>
+<h3 id="拥塞控制方法："><a href="#拥塞控制方法：" class="headerlink" title="拥塞控制方法："></a>拥塞控制方法：</h3><p>在网络中，如果通过协议的方式，尽量减少当网络延迟、波动、网络断开之后，数据暴增或减少而引起的网络更加影响网络的情况。</p>
+<ul>
+<li>端到端拥塞控制：<code>TCP</code><ul>
+<li>超时：增加时延</li>
+<li>冗余ACK</li>
+<li>减小发送窗口来让数据变小</li>
+<li>流量控制，使得发送窗口减小</li>
+</ul>
+</li>
+<li>网络辅助的拥塞控制</li>
+</ul>
+<blockquote>
+<p>在底层<code>网络层</code>也支持这样的控制。</p>
+</blockquote>
+<h4 id="ATM、ABR拥塞控制"><a href="#ATM、ABR拥塞控制" class="headerlink" title="ATM、ABR拥塞控制"></a>ATM、ABR拥塞控制</h4><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084742.png" alt="image-20210214221637878" style="zoom: 50%;">
+
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084747.png" alt="image-20210214221616763" style="zoom:50%;">
+
+<ul>
+<li>ATM是不同于分组网络之外的另一种网络。</li>
+<li>把数据包分成<code>数据信元</code>和<code>资源管理信元RM</code>，比例是32 ：1，即32个数据信元后就有一个管理信元</li>
+<li><code>资源管理信元RM</code>：夹杂在<code>数据信元</code>中，一起从客户端移动到服务器端，并记录下这一段路程哪里阻塞了，哪里不会，然后再原封不动的从服务器端返回客户端，通知客户端这段路是否阻塞。同时，没经过一个路由器的时候，都会被路由器感知到，并查看接下来的路是否发送阻塞，如果阻塞，则路由器会调整自己线路。<ul>
+<li>显示转发拥塞指示：<code>EFCI(1bit)</code>，只要这条链路中其中有一个点拥塞了，则会被置为1，让发送方、接收方跟路由器都知道这条链路已经存在问题。</li>
+<li>当目标主机收到大多数为<code>EFCI</code>，则会将其收到的<code>RM信元</code>的<code>CI（拥塞指示比特）</code>设置为<code>1</code></li>
+<li>显示速率<code>ER</code>（两字节）：指示整个链路的速度，经过每个交换机，都会被更新，目的是为了找到网络的吞吐量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="TCP拥塞窗口"><a href="#TCP拥塞窗口" class="headerlink" title="TCP拥塞窗口"></a>TCP拥塞窗口</h3><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084753.png" alt="image-20210214223217108" style="zoom:50%;">
+
+<h3 id="TCP拥塞控制的指导思想"><a href="#TCP拥塞控制的指导思想" class="headerlink" title="TCP拥塞控制的指导思想"></a>TCP拥塞控制的指导思想</h3><ul>
+<li><p>一个丢失的报文段意味着拥塞，丢包就应该减小发送端的发送速率</p>
+</li>
+<li><p>一个确认的报文段表示网络正在向接收方交付报文段，因此，当收到对之前的报文段的<code>ACK</code>后，应该增加发送方速率</p>
+</li>
+<li><p>带宽探测（动态调整）：每次都应该尽可能的加大带宽，直到出现丢包现象才抑制。</p>
+<blockquote>
+<p>几个实验方式如下。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="实验方式一：拥塞控制之慢启动"><a href="#实验方式一：拥塞控制之慢启动" class="headerlink" title="实验方式一：拥塞控制之慢启动"></a>实验方式一：拥塞控制之慢启动</h3><ul>
+<li><p><code>TCP</code>连接建立之初，<code>cwnd</code>被设置为<code>1MSS</code>（一个最大报文段长度），每收到一个确认，将<code>cwnd</code>增加一个<code>MSS</code>。</p>
+</li>
+<li><p>在慢启动过程中，刚开始速度慢，但是会以指数级增长（1、2、4、8）</p>
+</li>
+<li><p>结束慢启动：</p>
+<ul>
+<li><p><code>timeout</code>：重新开始慢启动，慢启动阈值被设置为<code>cwnd/2</code></p>
+<blockquote>
+<p>就比如现在发送了16个MSS，其中一个超时（带宽探测），说明发送量太大，重新设置为8</p>
+</blockquote>
+</li>
+<li><p><code>cwnd &gt;= ssthresh</code>：进入拥塞避免模式</p>
+<blockquote>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><ul>
+<li>在拥塞避免状态下，<code>cwnd</code>每一个<code>RTT</code>增加一个<code>MSS</code>，线性增加（<code>指数增变成线性增</code>）</li>
+<li>结束：<ul>
+<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
+<li>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>3个冗余<code>ACK</code>：快速重传，进入快速恢复模式（网络没问题，数据包可能出现异常）</p>
+<blockquote>
+<h4 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h4><ul>
+<li>对收到的每一个<code>冗余ACK</code>，<code>cwnd</code>增加一个<code>MSS</code>（类似指数）</li>
+<li>结束：<ul>
+<li>收到<code>new ACK, cwnd = ssthresh</code>，并进入拥塞避免</li>
+<li><code>timeout</code>：重新开始慢启动，慢启阈值被设置为<code>cwnd/2</code></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306084800.png" alt="image-20210214225741896" style="zoom:50%;">
+
+<h2 id="面试考点"><a href="#面试考点" class="headerlink" title="面试考点"></a>面试考点</h2><p>运输层核心重点：TCP、 UDP</p>
+<p>面试喜欢问的问题：</p>
+<ul>
+<li>TCP为主</li>
+<li>UDP：TCP与UDP有哪些区别，为什么有时选TCP，有时选UDP；<ul>
+<li>时间敏感</li>
+<li>丢包影响不大</li>
+<li>成本低</li>
+<li>对何时发数据，发什么数据，有更加精细的控制（想发就发，无须受到协议的限制）</li>
+<li>如果产生了网络风暴，想要发信息给局域网内的其他机器，让其停止转发一切消息，好停止网络风暴，这个时候，就需要用到UDP，否则用TCP的效率太低</li>
+<li>从整个网络来说，UDP对整个网络是不友好的，因为UDP从不考虑网络处于什么状态，自顾自的发送信息。</li>
+</ul>
+</li>
+</ul>
+<p>用远程终端，输入一个字符时，会发生什么事情？</p>
+<p>SYN攻击：<br>        在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了，使用如下命令可以让之现行：#netstat -nap | grep SYN_RECV</p>
+<p>四次挥手：不管时服务端还是客户端，都可以发起挥手</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -4132,31 +4132,6 @@
       </tags>
   </entry>
   <entry>
-    <title>死锁</title>
-    <url>/2021/01/20/0035.%20%E6%AD%BB%E9%94%81/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h2 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h2><ul>
-<li>当两个线程相互等待对方释放资源时，就会发生死锁。</li>
-<li>一旦出现死锁，整个程序既不会发生任何异常，也不会给出任何提示，只是所有线程都处于阻塞状态，无法继续。</li>
-<li>死锁是很容易发生的，尤其是在系统中出现多个同步监视器的情况下，</li>
-<li>比如：主线程保持着 A 对象的锁，等待对 B 对象加锁，而副线程保持着 B对象的锁，等待对 A 对象加锁，两个线程互相等待对方先释放锁，所以就出现了死锁。</li>
-</ul>
-<h2 id="怎么避免死锁？"><a href="#怎么避免死锁？" class="headerlink" title="怎么避免死锁？"></a>怎么避免死锁？</h2><p>死锁是不应该在程序中出现的，在编写程序时应该尽量避免出现死锁。下面有几种常见的方式用来解决死锁问题：</p>
-<ol>
-<li>避免多次锁定。尽量避免同一个线程对多个 Lock 进行锁定。例如上面的死锁程序，主线程要对 A、B 两个对象的 Lock 进行锁定，副线程也要对 A、B 两个对象的 Lock 进行锁定，这就埋下了导致死锁的隐患。</li>
-<li>具有相同的加锁顺序。如果多个线程需要对多个 Lock 进行锁定，则应该保证它们以相同的顺序请求加锁。比如上面的死锁程序，主线程先对 A 对象的 Lock 加锁，再对 B 对象的 Lock 加锁；而副线程则先对 B 对象的 Lock 加锁，再对 A 对象的 Lock 加锁。这种加锁顺序很容易形成嵌套锁定，进而导致死锁。如果让主线程、副线程按照相同的顺序加锁，就可以避免这个问题。</li>
-<li>使用定时锁。程序在调用 acquire() 方法加锁时可指定 timeout 参数，该参数指定超过 timeout 秒后会自动释放对 Lock 的锁定，这样就可以解开死锁了。</li>
-<li>死锁检测。死锁检测是一种依靠算法机制来实现的死锁预防机制，它主要是针对那些不可能实现按序加锁，也不能使用定时锁的场景的。</li>
-</ol>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TCP/IP协议栈</title>
     <url>/2021/01/19/0034.TCP%E3%80%81IP%E5%8D%8F%E8%AE%AE%E6%A0%88/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="深入浅出-TCP-IP-协议栈"><a href="#深入浅出-TCP-IP-协议栈" class="headerlink" title="深入浅出 TCP/IP 协议栈"></a>深入浅出 TCP/IP 协议栈</h1><p>TCP/IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP/IP 协议采用4层结构，分别是<strong>应用层、传输层、网络层和链路层</strong>，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复杂庞大，入门门槛高，因此很难搞清楚TCP/IP的工作原理，通俗一点讲就是，<strong>一个主机的数据要经过哪些过程才能发送到对方的主机上</strong>。 接下来，我们就来探索一下这个过程。</p>
@@ -4237,6 +4212,31 @@
       </tags>
   </entry>
   <entry>
+    <title>死锁</title>
+    <url>/2021/01/20/0035.%20%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><h2 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h2><ul>
+<li>当两个线程相互等待对方释放资源时，就会发生死锁。</li>
+<li>一旦出现死锁，整个程序既不会发生任何异常，也不会给出任何提示，只是所有线程都处于阻塞状态，无法继续。</li>
+<li>死锁是很容易发生的，尤其是在系统中出现多个同步监视器的情况下，</li>
+<li>比如：主线程保持着 A 对象的锁，等待对 B 对象加锁，而副线程保持着 B对象的锁，等待对 A 对象加锁，两个线程互相等待对方先释放锁，所以就出现了死锁。</li>
+</ul>
+<h2 id="怎么避免死锁？"><a href="#怎么避免死锁？" class="headerlink" title="怎么避免死锁？"></a>怎么避免死锁？</h2><p>死锁是不应该在程序中出现的，在编写程序时应该尽量避免出现死锁。下面有几种常见的方式用来解决死锁问题：</p>
+<ol>
+<li>避免多次锁定。尽量避免同一个线程对多个 Lock 进行锁定。例如上面的死锁程序，主线程要对 A、B 两个对象的 Lock 进行锁定，副线程也要对 A、B 两个对象的 Lock 进行锁定，这就埋下了导致死锁的隐患。</li>
+<li>具有相同的加锁顺序。如果多个线程需要对多个 Lock 进行锁定，则应该保证它们以相同的顺序请求加锁。比如上面的死锁程序，主线程先对 A 对象的 Lock 加锁，再对 B 对象的 Lock 加锁；而副线程则先对 B 对象的 Lock 加锁，再对 A 对象的 Lock 加锁。这种加锁顺序很容易形成嵌套锁定，进而导致死锁。如果让主线程、副线程按照相同的顺序加锁，就可以避免这个问题。</li>
+<li>使用定时锁。程序在调用 acquire() 方法加锁时可指定 timeout 参数，该参数指定超过 timeout 秒后会自动释放对 Lock 的锁定，这样就可以解开死锁了。</li>
+<li>死锁检测。死锁检测是一种依靠算法机制来实现的死锁预防机制，它主要是针对那些不可能实现按序加锁，也不能使用定时锁的场景的。</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>http与https</title>
     <url>/2021/01/21/0036.%20http%E4%B8%8Ehttps/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="http-与-https"><a href="#http-与-https" class="headerlink" title="http 与 https"></a>http 与 https</h1><p>超文本传输协议HTTP协议被用于在Web浏览器和网站服务器之间传递信息，HTTP协议以明文方式发送内容，不提供任何方式的数据加密，如果攻击者截取了Web浏览器和网站服务器之间的传输报文，就可以直接读懂其中的信息，因此，HTTP协议不适合传输一些敏感信息，比如：信用卡号、密码等支付信息。</p>
@@ -4289,6 +4289,54 @@
 <p>（3）、HTTPS连接缓存不如HTTP高效，大流量网站如非必要也不会采用，流量成本太高。</p>
 <p>（4）、HTTPS连接服务器端资源占用高很多，支持访客稍多的网站需要投入更大的成本，如果全部采用HTTPS，基于大部分计算资源闲置的假设的VPS的平均成本会上去。</p>
 <p>（5）、HTTPS协议握手阶段比较费时，对网站的相应速度有负面影响，如非必要，没有理由牺牲用户体验。</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>浏览器输入URL后发生了什么</title>
+    <url>/2021/01/22/0037.%20%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%93%E5%85%A5%E7%BD%91%E5%9D%80/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="浏览器输入URL后发生了什么"><a href="#浏览器输入URL后发生了什么" class="headerlink" title="浏览器输入URL后发生了什么"></a>浏览器输入URL后发生了什么</h1><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235911.png" alt="图片描述"></p>
+<p>当我们在浏览器输入网址并回车后，一切从这里开始。</p>
+<h2 id="一、DNS域名解析"><a href="#一、DNS域名解析" class="headerlink" title="一、DNS域名解析"></a>一、DNS域名解析</h2><p>我们在浏览器输入网址，其实就是要向服务器请求我们想要的页面内容，所有浏览器首先要确认的是域名所对应的服务器在哪里。将域名解析成对应的服务器IP地址这项工作，是由DNS服务器来完成的。</p>
+<p>客户端收到你输入的域名地址后，它首先去找本地的hosts文件，检查在该文件中是否有相应的域名、IP对应关系，如果有，则向其IP地址发送请求，如果没有，再去找DNS服务器。一般用户很少去编辑修改hosts文件。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235914.png" alt="图片描述"><br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235926.png" alt="图片描述"></p>
+<p>浏览器客户端向本地DNS服务器发送一个含有域名<a href="http://www.cnblogs.com的dns查询报文.本地dns服务器把查询报文转发到根dns服务器,根dns服务器注意到其com后缀,于是向本地dns服务器返回comdns服务器的ip地址.本地dns服务器再次向comdns服务器发送查询请求,comdns服务器注意到其www.cnblogs.com后缀并用负责该域名的权威dns服务器的ip地址作为回应.最后,本地dns服务器将含有www.cnblogs.com的ip地址的响应报文发送给客户端./">www.cnblogs.com的DNS查询报文。本地DNS服务器把查询报文转发到根DNS服务器，根DNS服务器注意到其com后缀，于是向本地DNS服务器返回comDNS服务器的IP地址。本地DNS服务器再次向comDNS服务器发送查询请求，comDNS服务器注意到其www.cnblogs.com后缀并用负责该域名的权威DNS服务器的IP地址作为回应。最后，本地DNS服务器将含有www.cnblogs.com的IP地址的响应报文发送给客户端。</a></p>
+<p>从客户端到本地服务器属于递归查询，而DNS服务器之间的交互属于迭代查询。</p>
+<p>正常情况下，本地DNS服务器的缓存中已有comDNS服务器的地址，因此请求根域名服务器这一步不是必需的。</p>
+<h2 id="二、建立TCP链接"><a href="#二、建立TCP链接" class="headerlink" title="二、建立TCP链接"></a>二、建立TCP链接</h2><p>费了一顿周折终于拿到服务器IP了，下一步自然就是链接到该服务器。对于客户端与服务器的TCP链接，必然要说的就是『三次握手』。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235936.png" alt="图片描述"></p>
+<p>三次握手</p>
+<p>客户端发送一个带有SYN标志的数据包给服务端，服务端收到后，回传一个带有SYN/ACK标志的数据包以示传达确认信息，最后客户端再回传一个带ACK标志的数据包，代表握手结束，连接成功。</p>
+<p>上图也可以这么理解：</p>
+<p>客户端：“你好，在家不，有你快递。”</p>
+<p>服务端：“在的，送来就行。”</p>
+<p>客户端：“好嘞。”</p>
+<h2 id="三、发送HTTP请求"><a href="#三、发送HTTP请求" class="headerlink" title="三、发送HTTP请求"></a>三、发送HTTP请求</h2><p>与服务器建立了连接后，就可以向服务器发起请求了。这里我们先看下请求报文的结构（如下图）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235942.png" alt="图片描述"></p>
+<p>在浏览器中查看报文首部（以google浏览器为例）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235947.png" alt="图片描述"></p>
+<p>请求行包括请求方法、URI、HTTP版本。首部字段传递重要信息，包括请求首部字段、通用首部字段和实体首部字段。我们可以从报文中看到发出的请求的具体信息。具体每个首部字段的作用，这里不做过多阐述。</p>
+<h2 id="四、服务器处理请求"><a href="#四、服务器处理请求" class="headerlink" title="四、服务器处理请求"></a>四、服务器处理请求</h2><p>服务器端收到请求后的由web服务器（准确说应该是http服务器）处理请求，诸如Apache、Ngnix、IIS等。web服务器解析用户请求，知道了需要调度哪些资源文件，再通过相应的这些资源文件处理用户请求和参数，并调用数据库信息，最后将结果通过web服务器返回给浏览器客户端。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000017.png" alt="图片描述"></p>
+<p>服务器处理请求</p>
+<h2 id="五、返回响应结果"><a href="#五、返回响应结果" class="headerlink" title="五、返回响应结果"></a>五、返回响应结果</h2><p>在HTTP里，有请求就会有响应，哪怕是错误信息。这里我们同样看下响应报文的组成结构：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000142.png" alt="图片描述"></p>
+<p>在响应结果中都会有个一个HTTP状态码，比如我们熟知的200、301、404、500等。通过这个状态码我们可以知道服务器端的处理是否正常，并能了解具体的错误。</p>
+<p>状态码由3位数字和原因短语组成。根据首位数字，状态码可以分为五类：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000102.png" alt="图片描述"></p>
+<h2 id="六、关闭TCP连接"><a href="#六、关闭TCP连接" class="headerlink" title="六、关闭TCP连接"></a>六、关闭TCP连接</h2><p>为了避免服务器与客户端双方的资源占用和损耗，当双方没有请求或响应传递时，任意一方都可以发起关闭请求。与创建TCP连接的3次握手类似，关闭TCP连接，需要4次握手。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000116.png" alt="图片描述"><br>上图可以这么理解：</p>
+<p>客户端：“兄弟，我这边没数据要传了，咱关闭连接吧。”</p>
+<p>服务端：“收到，我看看我这边有木有数据了。”</p>
+<p>服务端：“兄弟，我这边也没数据要传你了，咱可以关闭连接了。”</p>
+<p>客户端：“好嘞。”</p>
+<h2 id="七、浏览器解析HTML"><a href="#七、浏览器解析HTML" class="headerlink" title="七、浏览器解析HTML"></a>七、浏览器解析HTML</h2><p>准确地说，浏览器需要加载解析的不仅仅是HTML，还包括CSS、JS。以及还要加载图片、视频等其他媒体资源。</p>
+<p>浏览器通过解析HTML，生成DOM树，解析CSS，生成CSS规则树，然后通过DOM树和CSS规则树生成渲染树。渲染树与DOM树不同，渲染树中并没有head、display为none等不必显示的节点。</p>
+<p>要注意的是，浏览器的解析过程并非是串连进行的，比如在解析CSS的同时，可以继续加载解析HTML，但在解析执行JS脚本时，会停止解析后续HTML，这就会出现阻塞问题，关于JS阻塞相关问题，这里不过多阐述,后面会单独开篇讲解。</p>
+<h2 id="八、浏览器布局渲染"><a href="#八、浏览器布局渲染" class="headerlink" title="八、浏览器布局渲染"></a>八、浏览器布局渲染</h2><p>根据渲染树布局，计算CSS样式，即每个节点在页面中的大小和位置等几何信息。HTML默认是流式布局的，CSS和js会打破这种布局，改变DOM的外观样式以及大小和位置。这时就要提到两个重要概念：replaint和reflow。</p>
+<p>replaint：屏幕的一部分重画，不影响整体布局，比如某个CSS的背景色变了，但元素的几何尺寸和位置不变。</p>
+<p>reflow： 意味着元件的几何尺寸变了，我们需要重新验证并计算渲染树。是渲染树的一部分或全部发生了变化。这就是Reflow，或是Layout。<br>所以我们应该尽量减少reflow和replaint，我想这也是为什么现在很少有用table布局的原因之一。</p>
+<p>最后浏览器绘制各个节点，将页面展示给用户。</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
@@ -4630,54 +4678,6 @@
       </categories>
       <tags>
         <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>浏览器输入URL后发生了什么</title>
-    <url>/2021/01/22/0037.%20%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%93%E5%85%A5%E7%BD%91%E5%9D%80/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="浏览器输入URL后发生了什么"><a href="#浏览器输入URL后发生了什么" class="headerlink" title="浏览器输入URL后发生了什么"></a>浏览器输入URL后发生了什么</h1><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235911.png" alt="图片描述"></p>
-<p>当我们在浏览器输入网址并回车后，一切从这里开始。</p>
-<h2 id="一、DNS域名解析"><a href="#一、DNS域名解析" class="headerlink" title="一、DNS域名解析"></a>一、DNS域名解析</h2><p>我们在浏览器输入网址，其实就是要向服务器请求我们想要的页面内容，所有浏览器首先要确认的是域名所对应的服务器在哪里。将域名解析成对应的服务器IP地址这项工作，是由DNS服务器来完成的。</p>
-<p>客户端收到你输入的域名地址后，它首先去找本地的hosts文件，检查在该文件中是否有相应的域名、IP对应关系，如果有，则向其IP地址发送请求，如果没有，再去找DNS服务器。一般用户很少去编辑修改hosts文件。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235914.png" alt="图片描述"><br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235926.png" alt="图片描述"></p>
-<p>浏览器客户端向本地DNS服务器发送一个含有域名<a href="http://www.cnblogs.com的dns查询报文.本地dns服务器把查询报文转发到根dns服务器,根dns服务器注意到其com后缀,于是向本地dns服务器返回comdns服务器的ip地址.本地dns服务器再次向comdns服务器发送查询请求,comdns服务器注意到其www.cnblogs.com后缀并用负责该域名的权威dns服务器的ip地址作为回应.最后,本地dns服务器将含有www.cnblogs.com的ip地址的响应报文发送给客户端./">www.cnblogs.com的DNS查询报文。本地DNS服务器把查询报文转发到根DNS服务器，根DNS服务器注意到其com后缀，于是向本地DNS服务器返回comDNS服务器的IP地址。本地DNS服务器再次向comDNS服务器发送查询请求，comDNS服务器注意到其www.cnblogs.com后缀并用负责该域名的权威DNS服务器的IP地址作为回应。最后，本地DNS服务器将含有www.cnblogs.com的IP地址的响应报文发送给客户端。</a></p>
-<p>从客户端到本地服务器属于递归查询，而DNS服务器之间的交互属于迭代查询。</p>
-<p>正常情况下，本地DNS服务器的缓存中已有comDNS服务器的地址，因此请求根域名服务器这一步不是必需的。</p>
-<h2 id="二、建立TCP链接"><a href="#二、建立TCP链接" class="headerlink" title="二、建立TCP链接"></a>二、建立TCP链接</h2><p>费了一顿周折终于拿到服务器IP了，下一步自然就是链接到该服务器。对于客户端与服务器的TCP链接，必然要说的就是『三次握手』。<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235936.png" alt="图片描述"></p>
-<p>三次握手</p>
-<p>客户端发送一个带有SYN标志的数据包给服务端，服务端收到后，回传一个带有SYN/ACK标志的数据包以示传达确认信息，最后客户端再回传一个带ACK标志的数据包，代表握手结束，连接成功。</p>
-<p>上图也可以这么理解：</p>
-<p>客户端：“你好，在家不，有你快递。”</p>
-<p>服务端：“在的，送来就行。”</p>
-<p>客户端：“好嘞。”</p>
-<h2 id="三、发送HTTP请求"><a href="#三、发送HTTP请求" class="headerlink" title="三、发送HTTP请求"></a>三、发送HTTP请求</h2><p>与服务器建立了连接后，就可以向服务器发起请求了。这里我们先看下请求报文的结构（如下图）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235942.png" alt="图片描述"></p>
-<p>在浏览器中查看报文首部（以google浏览器为例）：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330235947.png" alt="图片描述"></p>
-<p>请求行包括请求方法、URI、HTTP版本。首部字段传递重要信息，包括请求首部字段、通用首部字段和实体首部字段。我们可以从报文中看到发出的请求的具体信息。具体每个首部字段的作用，这里不做过多阐述。</p>
-<h2 id="四、服务器处理请求"><a href="#四、服务器处理请求" class="headerlink" title="四、服务器处理请求"></a>四、服务器处理请求</h2><p>服务器端收到请求后的由web服务器（准确说应该是http服务器）处理请求，诸如Apache、Ngnix、IIS等。web服务器解析用户请求，知道了需要调度哪些资源文件，再通过相应的这些资源文件处理用户请求和参数，并调用数据库信息，最后将结果通过web服务器返回给浏览器客户端。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000017.png" alt="图片描述"></p>
-<p>服务器处理请求</p>
-<h2 id="五、返回响应结果"><a href="#五、返回响应结果" class="headerlink" title="五、返回响应结果"></a>五、返回响应结果</h2><p>在HTTP里，有请求就会有响应，哪怕是错误信息。这里我们同样看下响应报文的组成结构：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000142.png" alt="图片描述"></p>
-<p>在响应结果中都会有个一个HTTP状态码，比如我们熟知的200、301、404、500等。通过这个状态码我们可以知道服务器端的处理是否正常，并能了解具体的错误。</p>
-<p>状态码由3位数字和原因短语组成。根据首位数字，状态码可以分为五类：<br><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000102.png" alt="图片描述"></p>
-<h2 id="六、关闭TCP连接"><a href="#六、关闭TCP连接" class="headerlink" title="六、关闭TCP连接"></a>六、关闭TCP连接</h2><p>为了避免服务器与客户端双方的资源占用和损耗，当双方没有请求或响应传递时，任意一方都可以发起关闭请求。与创建TCP连接的3次握手类似，关闭TCP连接，需要4次握手。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210331000116.png" alt="图片描述"><br>上图可以这么理解：</p>
-<p>客户端：“兄弟，我这边没数据要传了，咱关闭连接吧。”</p>
-<p>服务端：“收到，我看看我这边有木有数据了。”</p>
-<p>服务端：“兄弟，我这边也没数据要传你了，咱可以关闭连接了。”</p>
-<p>客户端：“好嘞。”</p>
-<h2 id="七、浏览器解析HTML"><a href="#七、浏览器解析HTML" class="headerlink" title="七、浏览器解析HTML"></a>七、浏览器解析HTML</h2><p>准确地说，浏览器需要加载解析的不仅仅是HTML，还包括CSS、JS。以及还要加载图片、视频等其他媒体资源。</p>
-<p>浏览器通过解析HTML，生成DOM树，解析CSS，生成CSS规则树，然后通过DOM树和CSS规则树生成渲染树。渲染树与DOM树不同，渲染树中并没有head、display为none等不必显示的节点。</p>
-<p>要注意的是，浏览器的解析过程并非是串连进行的，比如在解析CSS的同时，可以继续加载解析HTML，但在解析执行JS脚本时，会停止解析后续HTML，这就会出现阻塞问题，关于JS阻塞相关问题，这里不过多阐述,后面会单独开篇讲解。</p>
-<h2 id="八、浏览器布局渲染"><a href="#八、浏览器布局渲染" class="headerlink" title="八、浏览器布局渲染"></a>八、浏览器布局渲染</h2><p>根据渲染树布局，计算CSS样式，即每个节点在页面中的大小和位置等几何信息。HTML默认是流式布局的，CSS和js会打破这种布局，改变DOM的外观样式以及大小和位置。这时就要提到两个重要概念：replaint和reflow。</p>
-<p>replaint：屏幕的一部分重画，不影响整体布局，比如某个CSS的背景色变了，但元素的几何尺寸和位置不变。</p>
-<p>reflow： 意味着元件的几何尺寸变了，我们需要重新验证并计算渲染树。是渲染树的一部分或全部发生了变化。这就是Reflow，或是Layout。<br>所以我们应该尽量减少reflow和replaint，我想这也是为什么现在很少有用table布局的原因之一。</p>
-<p>最后浏览器绘制各个节点，将页面展示给用户。</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -6049,156 +6049,6 @@
       </tags>
   </entry>
   <entry>
-    <title>进程间通信方式</title>
-    <url>/2021/01/18/0033.%20%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232732.png" alt="img"></p>
-<blockquote>
-<p>除了这几个，还有一个文件锁！</p>
-</blockquote>
-<p><strong>正文</strong></p>
-<p>每个进程的用户地址空间都是独立的，一般而言是不能互相访问的，但内核空间是每个进程都共享的，所以进程之间要通信必须通过内核。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232739.png" alt="img"></p>
-<p>Linux 内核提供了不少进程间通信的机制，我们来一起瞧瞧有哪些？</p>
-<p><strong>管道</strong></p>
-<p>如果你学过 Linux 命令，那你肯定很熟悉「|」这个竖线。</p>
-<ul>
-<li>$ps auxf | grep mysql</li>
-</ul>
-<p>上面命令行里的「|」竖线就是一个管道，它的功能是将前一个命令（ps auxf）</p>
-<p>的输出，作为后一个命令（grep mysql）的输入，从这功能描述，可以看出管道传输数据是单向的，如果想相互通信，我们需要创建两个管道才行。</p>
-<p>同时，我们得知上面这种管道是没有名字，所以「|」表示的管道称为匿名管道，用完了就销毁。</p>
-<p>管道还有另外一个类型是命名管道，也被叫做 FIFO，因为数据是先进先出的传输方式。</p>
-<p>在使用命名管道前，先需要通过 mkfifo 命令来创建，并且指定管道名字：</p>
-<ul>
-<li>$mkfifo myPipe</li>
-</ul>
-<p>myPipe 就是这个管道的名称，基于 Linux 一切皆文件的理念，所以管道也是</p>
-<p>以文件的方式存在，我们可以用 ls 看一下，这个文件的类型是 p，也就是 pipe（管道） 的意思：</p>
-<ul>
-<li>$ls -l prw-r–r–. 1 root root 0 Jul 17 02:45 myPipe</li>
-</ul>
-<p>接下来，我们往 myPipe 这个管道写入数据：</p>
-<ul>
-<li>$ echo”hello”&gt; myPipe // 将数据写进管道 // 停住了 …</li>
-</ul>
-<p>你操作了后，你会发现命令执行后就停在这了，这是因为管道里的内容没有被读取，只有当管道里的数据被读完后，命令才可以正常退出。</p>
-<p>于是，我们执行另外一个命令来读取这个管道里的数据：</p>
-<ul>
-<li>$ cat &lt; myPipe // 读取管道里的数据 hello</li>
-</ul>
-<p>可以看到，管道里的内容被读取出来了，并打印在了终端上，另外一方面，echo 那个命令也正常退出了。</p>
-<p>我们可以看出，管道这种通信方式效率低，不适合进程间频繁地交换数据。当然，它的好处，自然就是简单，同时也我们很容易得知管道里的数据已经被另一个进程读取了。</p>
-<blockquote>
-<p>那管道如何创建呢，背后原理是什么？</p>
-</blockquote>
-<p>匿名管道的创建，需要通过下面这个系统调用：</p>
-<ul>
-<li>intpipe( intfd[ 2])</li>
-</ul>
-<p>这里表示创建一个匿名管道，并返回了两个描述符，一个是管道的读取端描述符</p>
-<p>fd[0]，另一个是管道的写入端描述符 fd[1]。注意，这个匿名管道是特殊的文件，只存在于内存，不存于文件系统中。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232745.png" alt="img"></p>
-<p>其实，所谓的管道，就是内核里面的一串缓存。从管道的一段写入的数据，实际上是缓存在内核中的，另一端读取，也就是从内核中读取这段数据。另外，管道传输的数据是无格式的流且大小受限。</p>
-<p>看到这，你可能会有疑问了，这两个描述符都是在一个进程里面，并没有起到进程间通信的作用，怎么样才能使得管道是跨过两个进程的呢？</p>
-<p>我们可以使用 fork 创建子进程，创建的子进程会复制父进程的文件描述符，这样就做到了两个进程各有两个「 fd[0] 与 fd[1]」，两个进程就可以通过各自的 fd 写入和读取同一个管道文件实现跨进程通信了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232758.png" alt="img"></p>
-<p>管道只能一端写入，另一端读出，所以上面这种模式容易造成混乱，因为父进程和子进程都可以同时写入，也都可以读出。那么，为了避免这种情况，通常的做法是：</p>
-<ul>
-<li>父进程关闭读取的 fd[0]，只保留写入的 fd[1]；</li>
-<li>子进程关闭写入的 fd[1]，只保留读取的 fd[0]；</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232806.png" alt="img"></p>
-<p>所以说如果需要双向通信，则应该创建两个管道。</p>
-<p>到这里，我们仅仅解析了使用管道进行父进程与子进程之间的通信，但是在我们 shell 里面并不是这样的。</p>
-<p>在 shell 里面执行 A | B命令的时候，A 进程和 B 进程都是 shell 创建出来的子进程，A 和 B 之间不存在父子关系，它俩的父进程都是 shell。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232811.png" alt="img"></p>
-<p>所以说，在 shell 里通过「|」匿名管道将多个命令连接在一起，实际上也就是创建了多个子进程，那么在我们编写 shell 脚本时，能使用一个管道搞定的事情，就不要多用一个管道，这样可以减少创建子进程的系统开销。</p>
-<p>我们可以得知，对于匿名管道，它的通信范围是存在父子关系的进程。因为管道没有实体，也就是没有管道文件，只能通过 fork 来复制父进程 fd 文件描述符，来达到通信的目的。</p>
-<p>另外，对于命名管道，它可以在不相关的进程间也能相互通信。因为命令管道，提前创建了一个类型为管道的设备文件，在进程里只要使用这个设备文件，就可以相互通信。</p>
-<p>不管是匿名管道还是命名管道，进程写入的数据都是缓存在内核中，另一个进程读取数据时候自然也是从内核中获取，同时通信数据都遵循先进先出原则，不支持 lseek 之类的文件定位操作。</p>
-<p><strong>消息队列</strong></p>
-<p>前面说到管道的通信方式是效率低的，因此管道不适合进程间频繁地交换数据。</p>
-<p>对于这个问题，消息队列的通信模式就可以解决。比如，A 进程要给 B 进程发送消息，A 进程把数据放在对应的消息队列后就可以正常返回了，B 进程需要的时候再去读取数据就可以了。同理，B 进程要给 A 进程发送消息也是如此。</p>
-<p>再来，消息队列是保存在内核中的消息链表，在发送数据时，会分成一个一个独立的数据单元，也就是消息体（数据块），消息体是用户自定义的数据类型，消息的发送方和接收方要约定好消息体的数据类型，所以每个消息体都是固定大小的存储块，不像管道是无格式的字节流数据。如果进程从消息队列中读取了消息体，内核就会把这个消息体删除。</p>
-<p>消息队列生命周期随内核，如果没有释放消息队列或者没有关闭操作系统，消息队列会一直存在，而前面提到的匿名管道的生命周期，是随进程的创建而建立，随进程的结束而销毁。</p>
-<p>消息这种模型，两个进程之间的通信就像平时发邮件一样，你来一封，我回一封，可以频繁沟通了。</p>
-<p>但邮件的通信方式存在不足的地方有两点，一是通信不及时，二是附件也有大小限制，这同样也是消息队列通信不足的点。</p>
-<p>消息队列不适合比较大数据的传输，因为在内核中每个消息体都有一个最大长度的限制，同时所有队列所包含的全部消息体的总长度也是有上限。在 Linux 内核中，会有两个宏定义 MSGMAX 和 MSGMNB，它们以字节为单位，分别定义了一条消息的最大长度和一个队列的最大长度。</p>
-<p>消息队列通信过程中，存在用户态与内核态之间的数据拷贝开销，因为进程写入数据到内核中的消息队列时，会发生从用户态拷贝数据到内核态的过程，同理另一进程读取内核中的消息数据时，会发生从内核态拷贝数据到用户态的过程。</p>
-<p><strong>共享内存</strong></p>
-<p>消息队列的读取和写入的过程，都会有发生用户态与内核态之间的消息拷贝过程。那共享内存的方式，就很好的解决了这一问题。</p>
-<p>现代操作系统，对于内存管理，采用的是虚拟内存技术，也就是每个进程都有自己独立的虚拟内存空间，不同进程的虚拟内存映射到不同的物理内存中。所以，即使进程 A 和 进程 B 的虚拟地址是一样的，其实访问的是不同的物理内存地址，对于数据的增删查改互不影响。</p>
-<p>共享内存的机制，就是拿出一块虚拟地址空间来，映射到相同的物理内存中。这样这个进程写入的东西，另外一个进程马上就能看到了，都不需要拷贝来拷贝去，传来传去，大大提高了进程间通信的速度。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232823.png" alt="img"></p>
-<p><strong>信号量</strong></p>
-<p>用了共享内存通信方式，带来新的问题，那就是如果多个进程同时修改同一个共享内存，很有可能就冲突了。例如两个进程都同时写一个地址，那先写的那个进程会发现内容被别人覆盖了。</p>
-<p>为了防止多进程竞争共享资源，而造成的数据错乱，所以需要保护机制，使得共享的资源，在任意时刻只能被一个进程访问。正好，信号量就实现了这一保护机制。</p>
-<p>信号量其实是一个整型的计数器，主要用于实现进程间的互斥与同步，而不是用于缓存进程间通信的数据。</p>
-<p>信号量表示资源的数量，控制信号量的方式有两种原子操作：</p>
-<ul>
-<li>一个是 P 操作，这个操作会把信号量减去 -1，相减后如果信号量 &lt; 0，则表明资源已被占用，进程需阻塞等待；相减后如果信号量 &gt;= 0，则表明还有资源可使用，进程可正常继续执行。</li>
-<li>另一个是 V 操作，这个操作会把信号量加上 1，相加后如果信号量 &lt;= 0，则表明当前有阻塞中的进程，于是会将该进程唤醒运行；相加后如果信号量 &gt; 0，则表明当前没有阻塞中的进程；</li>
-</ul>
-<p>P 操作是用在进入共享资源之前，V 操作是用在离开共享资源之后，这两个操作是必须成对出现的。</p>
-<p>接下来，举个例子，如果要使得两个进程互斥访问共享内存，我们可以初始化信号量为 1。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232828.png" alt="img"></p>
-<p>具体的过程如下：</p>
-<ul>
-<li>进程 A 在访问共享内存前，先执行了 P 操作，由于信号量的初始值为 1，故在进程 A 执行 P 操作后信号量变为 0，表示共享资源可用，于是进程 A 就可以访问共享内存。</li>
-<li>若此时，进程 B 也想访问共享内存，执行了 P 操作，结果信号量变为了 -1，这就意味着临界资源已被占用，因此进程 B 被阻塞。</li>
-<li>直到进程 A 访问完共享内存，才会执行 V 操作，使得信号量恢复为 0，接着就会唤醒阻塞中的线程 B，使得进程 B 可以访问共享内存，最后完成共享内存的访问后，执行 V 操作，使信号量恢复到初始值 1。</li>
-</ul>
-<p>可以发现，信号初始化为 1，就代表着是互斥信号量，它可以保证共享内存在任何时刻只有一个进程在访问，这就很好的保护了共享内存。</p>
-<p>另外，在多进程里，每个进程并不一定是顺序执行的，它们基本是以各自独立的、不可预知的速度向前推进，但有时候我们又希望多个进程能密切合作，以实现一个共同的任务。</p>
-<p>例如，进程 A 是负责生产数据，而进程 B 是负责读取数据，这两个进程是相互合作、相互依赖的，进程 A 必须先生产了数据，进程 B 才能读取到数据，所以执行是有前后顺序的。</p>
-<p>那么这时候，就可以用信号量来实现多进程同步的方式，我们可以初始化信号量为 0。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232839.png" alt="img"></p>
-<p>具体过程：</p>
-<ul>
-<li>如果进程 B 比进程 A 先执行了，那么执行到 P 操作时，由于信号量初始值为 0，故信号量会变为 -1，表示进程 A 还没生产数据，于是进程 B 就阻塞等待；</li>
-<li>接着，当进程 A 生产完数据后，执行了 V 操作，就会使得信号量变为 0，于是就会唤醒阻塞在 P 操作的进程 B；</li>
-<li>最后，进程 B 被唤醒后，意味着进程 A 已经生产了数据，于是进程 B 就可以正常读取数据了。</li>
-</ul>
-<p>可以发现，信号初始化为 0，就代表着是同步信号量，它可以保证进程 A 应在进程 B 之前执行。</p>
-<p><strong>信号</strong></p>
-<p>上面说的进程间通信，都是常规状态下的工作模式。对于异常情况下的工作模式，就需要用「信号」的方式来通知进程。</p>
-<p>信号跟信号量虽然名字相似度 66.66%，但两者用途完全不一样，就好像 Java 和 Java 的区别。</p>
-<p>在 Linux 操作系统中， 为了响应各种各样的事件，提供了几十种信号，分别代表不同的意义。我们可以通过 kill -l 命令，查看所有的信号：</p>
-<ul>
-<li>$kill-l 1) SIGHUP 2) SIGINT 3) SIGQUIT 4) SIGILL 5) SIGTRAP 6) SIGABRT 7) SIGBUS 8) SIGFPE 9) SIGKILL 10) SIGUSR1 11) SIGSEGV 12) SIGUSR2 13) SIGPIPE 14) SIGALRM 15) SIGTERM 16) SIGSTKFLT 17) SIGCHLD 18) SIGCONT 19) SIGSTOP 20) SIGTSTP 21) SIGTTIN 22) SIGTTOU 23) SIGURG 24) SIGXCPU 25) SIGXFSZ 26) SIGVTALRM 27) SIGPROF 28) SIGWINCH 29) SIGIO 30) SIGPWR 31) SIGSYS 34) SIGRTMIN 35) SIGRTMIN+1 36) SIGRTMIN+2 37) SIGRTMIN+3 38) SIGRTMIN+4 39) SIGRTMIN+5 40) SIGRTMIN+6 41) SIGRTMIN+7 42) SIGRTMIN+8 43) SIGRTMIN+9 44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13 48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12 53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9 56) SIGRTMAX-8 57) SIGRTMAX-7 58) SIGRTMAX-6 59) SIGRTMAX-5 60) SIGRTMAX-4 61) SIGRTMAX-3 62) SIGRTMAX-2 63) SIGRTMAX-1 64) SIGRTMAX</li>
-</ul>
-<p>运行在 shell 终端的进程，我们可以通过键盘输入某些组合键的时候，给进程发送信号。例如</p>
-<ul>
-<li>Ctrl+C 产生 SIGINT 信号，表示终止该进程；</li>
-<li>Ctrl+Z 产生 SIGTSTP 信号，表示停止该进程，但还未结束；</li>
-</ul>
-<p>如果进程在后台运行，可以通过 kill 命令的方式给进程发送信号，但前提需要知道运行中的进程 PID 号，例如：</p>
-<ul>
-<li>kill -9 1050 ，表示给 PID 为 1050 的进程发送 SIGKILL 信号，用来立即结束该进程；</li>
-</ul>
-<p>所以，信号事件的来源主要有硬件来源（如键盘 Cltr+C ）和软件来源（如 kill 命令）。</p>
-<p>信号是进程间通信机制中唯一的异步通信机制，因为可以在任何时候发送信号给某一进程，一旦有信号产生，我们就有下面这几种，用户进程对信号的处理方式。</p>
-<ol>
-<li>执行默认操作。Linux 对每种信号都规定了默认操作，例如，上面列表中的 SIGTERM 信号，就是终止进程的意思。Core 的意思是 Core Dump，也即终止进程后，通过 Core Dump 将当前进程的运行状态保存在文件里面，方便程序员事后进行分析问题在哪里。</li>
-<li>捕捉信号。我们 可以为信号定义一个信号处理函数。 当信号发生时，我们就执行相应的信号处理函数。</li>
-<li>忽 略信号 。 当我们不希望处理某些信号的时候，就可以忽略该信号，不做任何处理。 有两个信号是应用进程无法捕捉和忽略的，即 SIGKILL 和 SEGSTOP ，它们用于在任何时候中断或结束某一进程。</li>
-</ol>
-<p><strong>Socket</strong>前面提到的管道、消息队列、共享内存、信号量和信号都是在同一台主机上进行进程间通信，那要想跨网络与不同主机上的进程之间通信，就需要 Socket 通信了。实际上，Socket 通信不仅可以跨网络与不同主机的进程间通信，还可以在同主机上进程间通信。我们来看看创建 socket 的系统调用：intsocket( intdomain, inttype, intprotocal)三个参数分别代表：domain 参数用来指定协议族，比如 AF_INET 用于 IPV4、AF_INET6 用于 IPV6、AF_LOCAL/AF_UNIX 用于本机；type 参数用来指定通信特性，比如 SOCK_STREAM 表示的是字节流，对应 TCP、SOCK_DGRAM 表示的是数据报，对应 UDP、SOCK_RAW 表示的是原始套接字；protocal 参数原本是用来指定通信协议的，但现在基本废弃。因为协议已经通过前面两个参数指定完成，protocol 目前一般写成 0 即可；根据创建 socket 类型的不同，通信的方式也就不同：实现 TCP 字节流通信：socket 类型是 AF_INET 和 SOCK_STREAM；实现 UDP 数据报通信：socket 类型是 AF_INET 和 SOCK_DGRAM；实现本地进程间通信：「本地字节流 socket 」类型是 AF_LOCAL 和 SOCK_STREAM，「本地数据报 socket 」类型是 AF_LOCAL 和 SOCK_DGRAM。另外，AF_UNIX 和 AF_LOCAL 是等价的，所以 AF_UNIX 也属于本地 socket；接下来，简单说一下这三种通信的编程模式。针对 TCP 协议通信的 socket 编程模型</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232846.png" alt="img"></p>
-<p>服务端和客户端初始化 socket，得到文件描述符；服务端调用 bind，将绑定在 IP 地址和端口;服务端调用 listen，进行监听；服务端调用 accept，等待客户端连接；客户端调用 connect，向服务器端的地址和端口发起连接请求；服务端 accept 返回用于传输的 socket 的文件描述符；客户端调用 write 写入数据；服务端调用 read 读取数据；客户端断开连接时，会调用 close，那么服务端 read 读取数据的时候，就会读取到了 EOF，待处理完数据后，服务端调用 close，表示连接关闭。这里需要注意的是，服务端调用 accept 时，连接成功了会返回一个已完成连接的 socket，后续用来传输数据。所以，监听的 socket 和真正用来传送数据的 socket，是「两个」 socket，一个叫作监听 socket，一个叫作已完成连接 socket。成功连接建立之后，双方开始通过 read 和 write 函数来读写数据，就像往一个文件流里面写东西一样。针对 UDP 协议通信的 socket 编程模型</p>
-<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232900.png" alt="img"></p>
-<p>UDP 是没有连接的，所以不需要三次握手，也就不需要像 TCP 调用 listen 和 connect，但是 UDP 的交互仍然需要 IP 地址和端口号，因此也需要 bind。对于 UDP 来说，不需要要维护连接，那么也就没有所谓的发送方和接收方，甚至都不存在客户端和服务端的概念，只要有一个 socket 多台机器就可以任意通信，因此每一个 UDP 的 socket 都需要 bind。另外，每次通信时，调用 sendto 和 recvfrom，都要传入目标主机的 IP 地址和端口。针对本地进程间通信的 socket 编程模型本地 socket 被用于在同一台主机上进程间通信的场景：本地 socket 的编程接口和 IPv4 、IPv6 套接字编程接口是一致的，可以支持「字节流」和「数据报」两种协议；本地 socket 的实现效率大大高于 IPv4 和 IPv6 的字节流、数据报 socket 实现；对于本地字节流 socket，其 socket 类型是 AF_LOCAL 和 SOCK_STREAM。对于本地数据报 socket，其 socket 类型是 AF_LOCAL 和 SOCK_DGRAM。本地字节流 socket 和 本地数据报 socket 在 bind 的时候，不像 TCP 和 UDP 要绑定 IP 地址和端口，而是绑定一个本地文件，这也就是它们之间的最大区别。</p>
-<p><strong>总结</strong>由于每个进程的用户空间都是独立的，不能相互访问，这时就需要借助内核空间来实现进程间通信，原因很简单，每个进程都是共享一个内核空间。Linux 内核提供了不少进程间通信的方式，其中最简单的方式就是管道，管道分为「匿名管道」和「命名管道」。匿名管道顾名思义，它没有名字标识，匿名管道是特殊文件只存在于内存，没有存在于文件系统中，shell 命令中的「|」竖线就是匿名管道，通信的数据是无格式的流并且大小受限，通信的方式是单向的，数据只能在一个方向上流动，如果要双向通信，需要创建两个管道，再来匿名管道是只能用于存在父子关系的进程间通信，匿名管道的生命周期随着进程创建而建立，随着进程终止而消失。命名管道突破了匿名管道只能在亲缘关系进程间的通信限制，因为使用命名管道的前提，需要在文件系统创建一个类型为 p 的设备文件，那么毫无关系的进程就可以通过这个设备文件进行通信。另外，不管是匿名管道还是命名管道，进程写入的数据都是缓存在内核中，另一个进程读取数据时候自然也是从内核中获取，同时通信数据都遵循先进先出原则，不支持 lseek 之类的文件定位操作。消息队列克服了管道通信的数据是无格式的字节流的问题，消息队列实际上是保存在内核的「消息链表」，消息队列的消息体是可以用户自定义的数据类型，发送数据时，会被分成一个一个独立的消息体，当然接收数据时，也要与发送方发送的消息体的数据类型保持一致，这样才能保证读取的数据是正确的。消息队列通信的速度不是最及时的，毕竟每次数据的写入和读取都需要经过用户态与内核态之间的拷贝过程。共享内存可以解决消息队列通信中用户态与内核态之间数据拷贝过程带来的开销，它直接分配一个共享空间，每个进程都可以直接访问，就像访问进程自己的空间一样快捷方便，不需要陷入内核态或者系统调用，大大提高了通信的速度，享有最快的进程间通信方式之名。但是便捷高效的共享内存通信，带来新的问题，多进程竞争同个共享资源会造成数据的错乱。那么，就需要信号量来保护共享资源，以确保任何时刻只能有一个进程访问共享资源，这种方式就是互斥访问。信号量不仅可以实现访问的互斥性，还可以实现进程间的同步，信号量其实是一个计数器，表示的是资源个数，其值可以通过两个原子操作来控制，分别是 P 操作和 V 操作。与信号量名字很相似的叫信号，它俩名字虽然相似，但功能一点儿都不一样。信号是进程间通信机制中唯一的异步通信机制，信号可以在应用进程和内核之间直接交互，内核也可以利用信号来通知用户空间的进程发生了哪些系统事件，信号事件的来源主要有硬件来源（如键盘 Cltr+C ）和软件来源（如 kill 命令），一旦有信号发生，进程有三种方式响应信号 1. 执行默认操作、2. 捕捉信号、3. 忽略信号。有两个信号是应用进程无法捕捉和忽略的，即 SIGKILL 和 SEGSTOP，这是为了方便我们能在任何时候结束或停止某个进程。前面说到的通信机制，都是工作于同一台主机，如果要与不同主机的进程间通信，那么就需要 Socket 通信了。Socket 实际上不仅用于不同的主机进程间通信，还可以用于本地主机进程间通信，可根据创建 Socket 的类型不同，分为三种常见的通信方式，一个是基于 TCP 协议的通信方式，一个是基于 UDP 协议的通信方式，一个是本地进程间通信方式。以上，就是进程间通信的主要机制了。你可能会问了，那线程通信间的方式呢？同个进程下的线程之间都是共享进程的资源，只要是共享变量都可以做到线程间通信，比如全局变量，所以对于线程间关注的不是通信方式，而是关注多线程竞争共享资源的问题，信号量也同样可以在线程间实现互斥与同步：互斥的方式，可保证任意时刻只有一个线程访问共享资源；同步的方式，可保证线程 A 应在线程 B 之前执行；</p>
-<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
-      <categories>
-        <category>Linux</category>
-        <category>系统编程与网络编程</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>IPC回顾</title>
     <url>/2021/01/17/0032.%20IPC%E5%9B%9E%E9%A1%BE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="IPC回顾"><a href="#IPC回顾" class="headerlink" title="IPC回顾"></a>IPC回顾</h1><ul>
@@ -6403,6 +6253,156 @@
 <li>消息队列可以用在多个进程。</li>
 <li>也可以用在线程池，即线程中的线程都从消息队列取任务。</li>
 </ul>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>系统编程与网络编程</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程间通信方式</title>
+    <url>/2021/01/18/0033.%20%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232732.png" alt="img"></p>
+<blockquote>
+<p>除了这几个，还有一个文件锁！</p>
+</blockquote>
+<p><strong>正文</strong></p>
+<p>每个进程的用户地址空间都是独立的，一般而言是不能互相访问的，但内核空间是每个进程都共享的，所以进程之间要通信必须通过内核。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232739.png" alt="img"></p>
+<p>Linux 内核提供了不少进程间通信的机制，我们来一起瞧瞧有哪些？</p>
+<p><strong>管道</strong></p>
+<p>如果你学过 Linux 命令，那你肯定很熟悉「|」这个竖线。</p>
+<ul>
+<li>$ps auxf | grep mysql</li>
+</ul>
+<p>上面命令行里的「|」竖线就是一个管道，它的功能是将前一个命令（ps auxf）</p>
+<p>的输出，作为后一个命令（grep mysql）的输入，从这功能描述，可以看出管道传输数据是单向的，如果想相互通信，我们需要创建两个管道才行。</p>
+<p>同时，我们得知上面这种管道是没有名字，所以「|」表示的管道称为匿名管道，用完了就销毁。</p>
+<p>管道还有另外一个类型是命名管道，也被叫做 FIFO，因为数据是先进先出的传输方式。</p>
+<p>在使用命名管道前，先需要通过 mkfifo 命令来创建，并且指定管道名字：</p>
+<ul>
+<li>$mkfifo myPipe</li>
+</ul>
+<p>myPipe 就是这个管道的名称，基于 Linux 一切皆文件的理念，所以管道也是</p>
+<p>以文件的方式存在，我们可以用 ls 看一下，这个文件的类型是 p，也就是 pipe（管道） 的意思：</p>
+<ul>
+<li>$ls -l prw-r–r–. 1 root root 0 Jul 17 02:45 myPipe</li>
+</ul>
+<p>接下来，我们往 myPipe 这个管道写入数据：</p>
+<ul>
+<li>$ echo”hello”&gt; myPipe // 将数据写进管道 // 停住了 …</li>
+</ul>
+<p>你操作了后，你会发现命令执行后就停在这了，这是因为管道里的内容没有被读取，只有当管道里的数据被读完后，命令才可以正常退出。</p>
+<p>于是，我们执行另外一个命令来读取这个管道里的数据：</p>
+<ul>
+<li>$ cat &lt; myPipe // 读取管道里的数据 hello</li>
+</ul>
+<p>可以看到，管道里的内容被读取出来了，并打印在了终端上，另外一方面，echo 那个命令也正常退出了。</p>
+<p>我们可以看出，管道这种通信方式效率低，不适合进程间频繁地交换数据。当然，它的好处，自然就是简单，同时也我们很容易得知管道里的数据已经被另一个进程读取了。</p>
+<blockquote>
+<p>那管道如何创建呢，背后原理是什么？</p>
+</blockquote>
+<p>匿名管道的创建，需要通过下面这个系统调用：</p>
+<ul>
+<li>intpipe( intfd[ 2])</li>
+</ul>
+<p>这里表示创建一个匿名管道，并返回了两个描述符，一个是管道的读取端描述符</p>
+<p>fd[0]，另一个是管道的写入端描述符 fd[1]。注意，这个匿名管道是特殊的文件，只存在于内存，不存于文件系统中。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232745.png" alt="img"></p>
+<p>其实，所谓的管道，就是内核里面的一串缓存。从管道的一段写入的数据，实际上是缓存在内核中的，另一端读取，也就是从内核中读取这段数据。另外，管道传输的数据是无格式的流且大小受限。</p>
+<p>看到这，你可能会有疑问了，这两个描述符都是在一个进程里面，并没有起到进程间通信的作用，怎么样才能使得管道是跨过两个进程的呢？</p>
+<p>我们可以使用 fork 创建子进程，创建的子进程会复制父进程的文件描述符，这样就做到了两个进程各有两个「 fd[0] 与 fd[1]」，两个进程就可以通过各自的 fd 写入和读取同一个管道文件实现跨进程通信了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232758.png" alt="img"></p>
+<p>管道只能一端写入，另一端读出，所以上面这种模式容易造成混乱，因为父进程和子进程都可以同时写入，也都可以读出。那么，为了避免这种情况，通常的做法是：</p>
+<ul>
+<li>父进程关闭读取的 fd[0]，只保留写入的 fd[1]；</li>
+<li>子进程关闭写入的 fd[1]，只保留读取的 fd[0]；</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232806.png" alt="img"></p>
+<p>所以说如果需要双向通信，则应该创建两个管道。</p>
+<p>到这里，我们仅仅解析了使用管道进行父进程与子进程之间的通信，但是在我们 shell 里面并不是这样的。</p>
+<p>在 shell 里面执行 A | B命令的时候，A 进程和 B 进程都是 shell 创建出来的子进程，A 和 B 之间不存在父子关系，它俩的父进程都是 shell。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232811.png" alt="img"></p>
+<p>所以说，在 shell 里通过「|」匿名管道将多个命令连接在一起，实际上也就是创建了多个子进程，那么在我们编写 shell 脚本时，能使用一个管道搞定的事情，就不要多用一个管道，这样可以减少创建子进程的系统开销。</p>
+<p>我们可以得知，对于匿名管道，它的通信范围是存在父子关系的进程。因为管道没有实体，也就是没有管道文件，只能通过 fork 来复制父进程 fd 文件描述符，来达到通信的目的。</p>
+<p>另外，对于命名管道，它可以在不相关的进程间也能相互通信。因为命令管道，提前创建了一个类型为管道的设备文件，在进程里只要使用这个设备文件，就可以相互通信。</p>
+<p>不管是匿名管道还是命名管道，进程写入的数据都是缓存在内核中，另一个进程读取数据时候自然也是从内核中获取，同时通信数据都遵循先进先出原则，不支持 lseek 之类的文件定位操作。</p>
+<p><strong>消息队列</strong></p>
+<p>前面说到管道的通信方式是效率低的，因此管道不适合进程间频繁地交换数据。</p>
+<p>对于这个问题，消息队列的通信模式就可以解决。比如，A 进程要给 B 进程发送消息，A 进程把数据放在对应的消息队列后就可以正常返回了，B 进程需要的时候再去读取数据就可以了。同理，B 进程要给 A 进程发送消息也是如此。</p>
+<p>再来，消息队列是保存在内核中的消息链表，在发送数据时，会分成一个一个独立的数据单元，也就是消息体（数据块），消息体是用户自定义的数据类型，消息的发送方和接收方要约定好消息体的数据类型，所以每个消息体都是固定大小的存储块，不像管道是无格式的字节流数据。如果进程从消息队列中读取了消息体，内核就会把这个消息体删除。</p>
+<p>消息队列生命周期随内核，如果没有释放消息队列或者没有关闭操作系统，消息队列会一直存在，而前面提到的匿名管道的生命周期，是随进程的创建而建立，随进程的结束而销毁。</p>
+<p>消息这种模型，两个进程之间的通信就像平时发邮件一样，你来一封，我回一封，可以频繁沟通了。</p>
+<p>但邮件的通信方式存在不足的地方有两点，一是通信不及时，二是附件也有大小限制，这同样也是消息队列通信不足的点。</p>
+<p>消息队列不适合比较大数据的传输，因为在内核中每个消息体都有一个最大长度的限制，同时所有队列所包含的全部消息体的总长度也是有上限。在 Linux 内核中，会有两个宏定义 MSGMAX 和 MSGMNB，它们以字节为单位，分别定义了一条消息的最大长度和一个队列的最大长度。</p>
+<p>消息队列通信过程中，存在用户态与内核态之间的数据拷贝开销，因为进程写入数据到内核中的消息队列时，会发生从用户态拷贝数据到内核态的过程，同理另一进程读取内核中的消息数据时，会发生从内核态拷贝数据到用户态的过程。</p>
+<p><strong>共享内存</strong></p>
+<p>消息队列的读取和写入的过程，都会有发生用户态与内核态之间的消息拷贝过程。那共享内存的方式，就很好的解决了这一问题。</p>
+<p>现代操作系统，对于内存管理，采用的是虚拟内存技术，也就是每个进程都有自己独立的虚拟内存空间，不同进程的虚拟内存映射到不同的物理内存中。所以，即使进程 A 和 进程 B 的虚拟地址是一样的，其实访问的是不同的物理内存地址，对于数据的增删查改互不影响。</p>
+<p>共享内存的机制，就是拿出一块虚拟地址空间来，映射到相同的物理内存中。这样这个进程写入的东西，另外一个进程马上就能看到了，都不需要拷贝来拷贝去，传来传去，大大提高了进程间通信的速度。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232823.png" alt="img"></p>
+<p><strong>信号量</strong></p>
+<p>用了共享内存通信方式，带来新的问题，那就是如果多个进程同时修改同一个共享内存，很有可能就冲突了。例如两个进程都同时写一个地址，那先写的那个进程会发现内容被别人覆盖了。</p>
+<p>为了防止多进程竞争共享资源，而造成的数据错乱，所以需要保护机制，使得共享的资源，在任意时刻只能被一个进程访问。正好，信号量就实现了这一保护机制。</p>
+<p>信号量其实是一个整型的计数器，主要用于实现进程间的互斥与同步，而不是用于缓存进程间通信的数据。</p>
+<p>信号量表示资源的数量，控制信号量的方式有两种原子操作：</p>
+<ul>
+<li>一个是 P 操作，这个操作会把信号量减去 -1，相减后如果信号量 &lt; 0，则表明资源已被占用，进程需阻塞等待；相减后如果信号量 &gt;= 0，则表明还有资源可使用，进程可正常继续执行。</li>
+<li>另一个是 V 操作，这个操作会把信号量加上 1，相加后如果信号量 &lt;= 0，则表明当前有阻塞中的进程，于是会将该进程唤醒运行；相加后如果信号量 &gt; 0，则表明当前没有阻塞中的进程；</li>
+</ul>
+<p>P 操作是用在进入共享资源之前，V 操作是用在离开共享资源之后，这两个操作是必须成对出现的。</p>
+<p>接下来，举个例子，如果要使得两个进程互斥访问共享内存，我们可以初始化信号量为 1。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232828.png" alt="img"></p>
+<p>具体的过程如下：</p>
+<ul>
+<li>进程 A 在访问共享内存前，先执行了 P 操作，由于信号量的初始值为 1，故在进程 A 执行 P 操作后信号量变为 0，表示共享资源可用，于是进程 A 就可以访问共享内存。</li>
+<li>若此时，进程 B 也想访问共享内存，执行了 P 操作，结果信号量变为了 -1，这就意味着临界资源已被占用，因此进程 B 被阻塞。</li>
+<li>直到进程 A 访问完共享内存，才会执行 V 操作，使得信号量恢复为 0，接着就会唤醒阻塞中的线程 B，使得进程 B 可以访问共享内存，最后完成共享内存的访问后，执行 V 操作，使信号量恢复到初始值 1。</li>
+</ul>
+<p>可以发现，信号初始化为 1，就代表着是互斥信号量，它可以保证共享内存在任何时刻只有一个进程在访问，这就很好的保护了共享内存。</p>
+<p>另外，在多进程里，每个进程并不一定是顺序执行的，它们基本是以各自独立的、不可预知的速度向前推进，但有时候我们又希望多个进程能密切合作，以实现一个共同的任务。</p>
+<p>例如，进程 A 是负责生产数据，而进程 B 是负责读取数据，这两个进程是相互合作、相互依赖的，进程 A 必须先生产了数据，进程 B 才能读取到数据，所以执行是有前后顺序的。</p>
+<p>那么这时候，就可以用信号量来实现多进程同步的方式，我们可以初始化信号量为 0。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232839.png" alt="img"></p>
+<p>具体过程：</p>
+<ul>
+<li>如果进程 B 比进程 A 先执行了，那么执行到 P 操作时，由于信号量初始值为 0，故信号量会变为 -1，表示进程 A 还没生产数据，于是进程 B 就阻塞等待；</li>
+<li>接着，当进程 A 生产完数据后，执行了 V 操作，就会使得信号量变为 0，于是就会唤醒阻塞在 P 操作的进程 B；</li>
+<li>最后，进程 B 被唤醒后，意味着进程 A 已经生产了数据，于是进程 B 就可以正常读取数据了。</li>
+</ul>
+<p>可以发现，信号初始化为 0，就代表着是同步信号量，它可以保证进程 A 应在进程 B 之前执行。</p>
+<p><strong>信号</strong></p>
+<p>上面说的进程间通信，都是常规状态下的工作模式。对于异常情况下的工作模式，就需要用「信号」的方式来通知进程。</p>
+<p>信号跟信号量虽然名字相似度 66.66%，但两者用途完全不一样，就好像 Java 和 Java 的区别。</p>
+<p>在 Linux 操作系统中， 为了响应各种各样的事件，提供了几十种信号，分别代表不同的意义。我们可以通过 kill -l 命令，查看所有的信号：</p>
+<ul>
+<li>$kill-l 1) SIGHUP 2) SIGINT 3) SIGQUIT 4) SIGILL 5) SIGTRAP 6) SIGABRT 7) SIGBUS 8) SIGFPE 9) SIGKILL 10) SIGUSR1 11) SIGSEGV 12) SIGUSR2 13) SIGPIPE 14) SIGALRM 15) SIGTERM 16) SIGSTKFLT 17) SIGCHLD 18) SIGCONT 19) SIGSTOP 20) SIGTSTP 21) SIGTTIN 22) SIGTTOU 23) SIGURG 24) SIGXCPU 25) SIGXFSZ 26) SIGVTALRM 27) SIGPROF 28) SIGWINCH 29) SIGIO 30) SIGPWR 31) SIGSYS 34) SIGRTMIN 35) SIGRTMIN+1 36) SIGRTMIN+2 37) SIGRTMIN+3 38) SIGRTMIN+4 39) SIGRTMIN+5 40) SIGRTMIN+6 41) SIGRTMIN+7 42) SIGRTMIN+8 43) SIGRTMIN+9 44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13 48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12 53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9 56) SIGRTMAX-8 57) SIGRTMAX-7 58) SIGRTMAX-6 59) SIGRTMAX-5 60) SIGRTMAX-4 61) SIGRTMAX-3 62) SIGRTMAX-2 63) SIGRTMAX-1 64) SIGRTMAX</li>
+</ul>
+<p>运行在 shell 终端的进程，我们可以通过键盘输入某些组合键的时候，给进程发送信号。例如</p>
+<ul>
+<li>Ctrl+C 产生 SIGINT 信号，表示终止该进程；</li>
+<li>Ctrl+Z 产生 SIGTSTP 信号，表示停止该进程，但还未结束；</li>
+</ul>
+<p>如果进程在后台运行，可以通过 kill 命令的方式给进程发送信号，但前提需要知道运行中的进程 PID 号，例如：</p>
+<ul>
+<li>kill -9 1050 ，表示给 PID 为 1050 的进程发送 SIGKILL 信号，用来立即结束该进程；</li>
+</ul>
+<p>所以，信号事件的来源主要有硬件来源（如键盘 Cltr+C ）和软件来源（如 kill 命令）。</p>
+<p>信号是进程间通信机制中唯一的异步通信机制，因为可以在任何时候发送信号给某一进程，一旦有信号产生，我们就有下面这几种，用户进程对信号的处理方式。</p>
+<ol>
+<li>执行默认操作。Linux 对每种信号都规定了默认操作，例如，上面列表中的 SIGTERM 信号，就是终止进程的意思。Core 的意思是 Core Dump，也即终止进程后，通过 Core Dump 将当前进程的运行状态保存在文件里面，方便程序员事后进行分析问题在哪里。</li>
+<li>捕捉信号。我们 可以为信号定义一个信号处理函数。 当信号发生时，我们就执行相应的信号处理函数。</li>
+<li>忽 略信号 。 当我们不希望处理某些信号的时候，就可以忽略该信号，不做任何处理。 有两个信号是应用进程无法捕捉和忽略的，即 SIGKILL 和 SEGSTOP ，它们用于在任何时候中断或结束某一进程。</li>
+</ol>
+<p><strong>Socket</strong>前面提到的管道、消息队列、共享内存、信号量和信号都是在同一台主机上进行进程间通信，那要想跨网络与不同主机上的进程之间通信，就需要 Socket 通信了。实际上，Socket 通信不仅可以跨网络与不同主机的进程间通信，还可以在同主机上进程间通信。我们来看看创建 socket 的系统调用：intsocket( intdomain, inttype, intprotocal)三个参数分别代表：domain 参数用来指定协议族，比如 AF_INET 用于 IPV4、AF_INET6 用于 IPV6、AF_LOCAL/AF_UNIX 用于本机；type 参数用来指定通信特性，比如 SOCK_STREAM 表示的是字节流，对应 TCP、SOCK_DGRAM 表示的是数据报，对应 UDP、SOCK_RAW 表示的是原始套接字；protocal 参数原本是用来指定通信协议的，但现在基本废弃。因为协议已经通过前面两个参数指定完成，protocol 目前一般写成 0 即可；根据创建 socket 类型的不同，通信的方式也就不同：实现 TCP 字节流通信：socket 类型是 AF_INET 和 SOCK_STREAM；实现 UDP 数据报通信：socket 类型是 AF_INET 和 SOCK_DGRAM；实现本地进程间通信：「本地字节流 socket 」类型是 AF_LOCAL 和 SOCK_STREAM，「本地数据报 socket 」类型是 AF_LOCAL 和 SOCK_DGRAM。另外，AF_UNIX 和 AF_LOCAL 是等价的，所以 AF_UNIX 也属于本地 socket；接下来，简单说一下这三种通信的编程模式。针对 TCP 协议通信的 socket 编程模型</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232846.png" alt="img"></p>
+<p>服务端和客户端初始化 socket，得到文件描述符；服务端调用 bind，将绑定在 IP 地址和端口;服务端调用 listen，进行监听；服务端调用 accept，等待客户端连接；客户端调用 connect，向服务器端的地址和端口发起连接请求；服务端 accept 返回用于传输的 socket 的文件描述符；客户端调用 write 写入数据；服务端调用 read 读取数据；客户端断开连接时，会调用 close，那么服务端 read 读取数据的时候，就会读取到了 EOF，待处理完数据后，服务端调用 close，表示连接关闭。这里需要注意的是，服务端调用 accept 时，连接成功了会返回一个已完成连接的 socket，后续用来传输数据。所以，监听的 socket 和真正用来传送数据的 socket，是「两个」 socket，一个叫作监听 socket，一个叫作已完成连接 socket。成功连接建立之后，双方开始通过 read 和 write 函数来读写数据，就像往一个文件流里面写东西一样。针对 UDP 协议通信的 socket 编程模型</p>
+<p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232900.png" alt="img"></p>
+<p>UDP 是没有连接的，所以不需要三次握手，也就不需要像 TCP 调用 listen 和 connect，但是 UDP 的交互仍然需要 IP 地址和端口号，因此也需要 bind。对于 UDP 来说，不需要要维护连接，那么也就没有所谓的发送方和接收方，甚至都不存在客户端和服务端的概念，只要有一个 socket 多台机器就可以任意通信，因此每一个 UDP 的 socket 都需要 bind。另外，每次通信时，调用 sendto 和 recvfrom，都要传入目标主机的 IP 地址和端口。针对本地进程间通信的 socket 编程模型本地 socket 被用于在同一台主机上进程间通信的场景：本地 socket 的编程接口和 IPv4 、IPv6 套接字编程接口是一致的，可以支持「字节流」和「数据报」两种协议；本地 socket 的实现效率大大高于 IPv4 和 IPv6 的字节流、数据报 socket 实现；对于本地字节流 socket，其 socket 类型是 AF_LOCAL 和 SOCK_STREAM。对于本地数据报 socket，其 socket 类型是 AF_LOCAL 和 SOCK_DGRAM。本地字节流 socket 和 本地数据报 socket 在 bind 的时候，不像 TCP 和 UDP 要绑定 IP 地址和端口，而是绑定一个本地文件，这也就是它们之间的最大区别。</p>
+<p><strong>总结</strong>由于每个进程的用户空间都是独立的，不能相互访问，这时就需要借助内核空间来实现进程间通信，原因很简单，每个进程都是共享一个内核空间。Linux 内核提供了不少进程间通信的方式，其中最简单的方式就是管道，管道分为「匿名管道」和「命名管道」。匿名管道顾名思义，它没有名字标识，匿名管道是特殊文件只存在于内存，没有存在于文件系统中，shell 命令中的「|」竖线就是匿名管道，通信的数据是无格式的流并且大小受限，通信的方式是单向的，数据只能在一个方向上流动，如果要双向通信，需要创建两个管道，再来匿名管道是只能用于存在父子关系的进程间通信，匿名管道的生命周期随着进程创建而建立，随着进程终止而消失。命名管道突破了匿名管道只能在亲缘关系进程间的通信限制，因为使用命名管道的前提，需要在文件系统创建一个类型为 p 的设备文件，那么毫无关系的进程就可以通过这个设备文件进行通信。另外，不管是匿名管道还是命名管道，进程写入的数据都是缓存在内核中，另一个进程读取数据时候自然也是从内核中获取，同时通信数据都遵循先进先出原则，不支持 lseek 之类的文件定位操作。消息队列克服了管道通信的数据是无格式的字节流的问题，消息队列实际上是保存在内核的「消息链表」，消息队列的消息体是可以用户自定义的数据类型，发送数据时，会被分成一个一个独立的消息体，当然接收数据时，也要与发送方发送的消息体的数据类型保持一致，这样才能保证读取的数据是正确的。消息队列通信的速度不是最及时的，毕竟每次数据的写入和读取都需要经过用户态与内核态之间的拷贝过程。共享内存可以解决消息队列通信中用户态与内核态之间数据拷贝过程带来的开销，它直接分配一个共享空间，每个进程都可以直接访问，就像访问进程自己的空间一样快捷方便，不需要陷入内核态或者系统调用，大大提高了通信的速度，享有最快的进程间通信方式之名。但是便捷高效的共享内存通信，带来新的问题，多进程竞争同个共享资源会造成数据的错乱。那么，就需要信号量来保护共享资源，以确保任何时刻只能有一个进程访问共享资源，这种方式就是互斥访问。信号量不仅可以实现访问的互斥性，还可以实现进程间的同步，信号量其实是一个计数器，表示的是资源个数，其值可以通过两个原子操作来控制，分别是 P 操作和 V 操作。与信号量名字很相似的叫信号，它俩名字虽然相似，但功能一点儿都不一样。信号是进程间通信机制中唯一的异步通信机制，信号可以在应用进程和内核之间直接交互，内核也可以利用信号来通知用户空间的进程发生了哪些系统事件，信号事件的来源主要有硬件来源（如键盘 Cltr+C ）和软件来源（如 kill 命令），一旦有信号发生，进程有三种方式响应信号 1. 执行默认操作、2. 捕捉信号、3. 忽略信号。有两个信号是应用进程无法捕捉和忽略的，即 SIGKILL 和 SEGSTOP，这是为了方便我们能在任何时候结束或停止某个进程。前面说到的通信机制，都是工作于同一台主机，如果要与不同主机的进程间通信，那么就需要 Socket 通信了。Socket 实际上不仅用于不同的主机进程间通信，还可以用于本地主机进程间通信，可根据创建 Socket 的类型不同，分为三种常见的通信方式，一个是基于 TCP 协议的通信方式，一个是基于 UDP 协议的通信方式，一个是本地进程间通信方式。以上，就是进程间通信的主要机制了。你可能会问了，那线程通信间的方式呢？同个进程下的线程之间都是共享进程的资源，只要是共享变量都可以做到线程间通信，比如全局变量，所以对于线程间关注的不是通信方式，而是关注多线程竞争共享资源的问题，信号量也同样可以在线程间实现互斥与同步：互斥的方式，可保证任意时刻只有一个线程访问共享资源；同步的方式，可保证线程 A 应在线程 B 之前执行；</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>]]></content>
       <categories>
         <category>Linux</category>
