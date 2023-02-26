@@ -28,13 +28,13 @@
 <meta property="og:site_name" content="Alin&#39;s Blog">
 <meta property="og:description" content="动机 在软件系统中，由于应用环境的变化，常常需要将“一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的。 如何应对这种“迁移的变化”？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？  模式定义 将一个类的接口转换成客户希望的另一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。  示例代码12345678910">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222224240.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226180809.png">
 <meta property="article:published_time" content="2023-02-25T06:30:00.000Z">
-<meta property="article:modified_time" content="2023-02-26T09:55:55.179Z">
+<meta property="article:modified_time" content="2023-02-26T10:09:08.051Z">
 <meta property="article:author" content="Alin">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222224240.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226180809.png">
 
 <link rel="canonical" href="http://example.com/2023/02/25/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/">
 
@@ -242,7 +242,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-26 17:55:55" itemprop="dateModified" datetime="2023-02-26T17:55:55+08:00">2023-02-26</time>
+                <time title="修改时间：2023-02-26 18:09:08" itemprop="dateModified" datetime="2023-02-26T18:09:08+08:00">2023-02-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -309,7 +309,7 @@
 <li>将一个类的接口转换成客户希望的另一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</li>
 </ul>
 <h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;目标接口（新接口）</span><br><span class="line">class ITarget&#123;</span><br><span class="line">public:</span><br><span class="line">    virtual void process()&#x3D;0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;遗留接口（老接口）</span><br><span class="line">class IAdaptee&#123;</span><br><span class="line">public:</span><br><span class="line">    virtual void foo(int data)&#x3D;0;</span><br><span class="line">    virtual int bar()&#x3D;0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;遗留类型</span><br><span class="line">class OldClass: public IAdaptee&#123;</span><br><span class="line">    &#x2F;&#x2F;....</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;对象适配器</span><br><span class="line">class Adapter: public ITarget&#123; &#x2F;&#x2F;继承</span><br><span class="line">protected:</span><br><span class="line">    IAdaptee* pAdaptee;&#x2F;&#x2F;组合</span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    </span><br><span class="line">    Adapter(IAdaptee* pAdaptee)&#123;</span><br><span class="line">        this-&gt;pAdaptee&#x3D;pAdaptee;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    virtual void process()&#123;</span><br><span class="line">        int data&#x3D;pAdaptee-&gt;bar();</span><br><span class="line">        pAdaptee-&gt;foo(data);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;类适配器</span><br><span class="line">class Adapter: public ITarget,</span><br><span class="line">               protected OldClass&#123; &#x2F;&#x2F;多继承</span><br><span class="line">               </span><br><span class="line">               </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    IAdaptee* pAdaptee&#x3D;new OldClass();</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    ITarget* pTarget&#x3D;new Adapter(pAdaptee);</span><br><span class="line">    pTarget-&gt;process();</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class stack&#123;</span><br><span class="line">    deqeue container;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class queue&#123;</span><br><span class="line">    deqeue container;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222224240.png" alt="image-20230222224240326"></p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226180809.png" alt="image-20230226180809558"></p>
 <h2 id="要点总结"><a href="#要点总结" class="headerlink" title="要点总结"></a>要点总结</h2><ol>
 <li>Adapter模式主要应用与“希望复用一些现存的类，但是接口又与复用环境不一致的情况”，在遗留代码复用、类库迁移等方面非常有用。</li>
 <li>GoF 23定义了两种Adapter模式的实现结构：对象适配器和类适配器。但类适配器采用“多继承”的实现方式，一般不推荐使用。对象适配器采用“对象组合”的方式，更符合松耦合精神。</li>
@@ -434,14 +434,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
