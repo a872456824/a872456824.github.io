@@ -21,23 +21,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="系统间耦合的复杂度 动机 上述A方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的稠合，随着外部客户程序和各子系统的演化，这种过多的精台面临很多变化的挑战。 如何简化外部客户程序和系统间的交亘接口？如何将外部客户程序的演化和内部子系统的变化之间的依赖相互解耦？  模式定义 为子系统中的一组接口提供一个一致（稳定）的界面，Facade模式定义了一个高层接口，这个接口使得这一子系统更加容易使用">
+  <meta name="description" content="动机 在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。 如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧稠台？  模式定义 允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。  示例代码改版前12345678910111213141516171">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式--代理模式">
-<meta property="og:url" content="http://example.com/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:title" content="设计模式--状态模式">
+<meta property="og:url" content="http://example.com/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Alin&#39;s Blog">
-<meta property="og:description" content="系统间耦合的复杂度 动机 上述A方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的稠合，随着外部客户程序和各子系统的演化，这种过多的精台面临很多变化的挑战。 如何简化外部客户程序和系统间的交亘接口？如何将外部客户程序的演化和内部子系统的变化之间的依赖相互解耦？  模式定义 为子系统中的一组接口提供一个一致（稳定）的界面，Facade模式定义了一个高层接口，这个接口使得这一子系统更加容易使用">
+<meta property="og:description" content="动机 在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。 如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧稠台？  模式定义 允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。  示例代码改版前12345678910111213141516171">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222221703.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222222115.png">
-<meta property="article:published_time" content="2023-02-19T05:30:00.000Z">
-<meta property="article:modified_time" content="2023-02-22T14:24:40.069Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226175657.png">
+<meta property="article:published_time" content="2023-02-26T07:30:00.000Z">
+<meta property="article:modified_time" content="2023-02-26T09:57:07.912Z">
 <meta property="article:author" content="Alin">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222221703.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226175657.png">
 
-<link rel="canonical" href="http://example.com/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/">
+<link rel="canonical" href="http://example.com/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">
 
 
 <script id="page-configurations">
@@ -50,7 +49,7 @@
   };
 </script>
 
-  <title>设计模式--代理模式 | Alin's Blog</title>
+  <title>设计模式--状态模式 | Alin's Blog</title>
   
 
 
@@ -213,7 +212,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -226,7 +225,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          设计模式--代理模式
+          设计模式--状态模式
         </h1>
 
         <div class="post-meta">
@@ -235,16 +234,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2023-02-19 13:30:00" itemprop="dateCreated datePublished" datetime="2023-02-19T13:30:00+08:00">2023-02-19</time>
+              <time title="创建时间：2023-02-26 15:30:00 / 修改时间：17:57:07" itemprop="dateCreated datePublished" datetime="2023-02-26T15:30:00+08:00">2023-02-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-22 22:24:40" itemprop="dateModified" datetime="2023-02-22T22:24:40+08:00">2023-02-22</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -255,16 +248,16 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/" itemprop="url" rel="index"><span itemprop="name">接口隔离</span></a>
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E5%8F%98%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">状态变化</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F-Facade/" itemprop="url" rel="index"><span itemprop="name">代理模式(Façade)</span></a>
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E5%8F%98%E5%8C%96/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F-State/" itemprop="url" rel="index"><span itemprop="name">状态模式(State)</span></a>
                 </span>
             </span>
 
           
-            <span id="/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--代理模式" title="阅读次数">
+            <span id="/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--状态模式" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -286,8 +279,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
+    <a title="valine" href="/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -302,20 +295,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="系统间耦合的复杂度"><a href="#系统间耦合的复杂度" class="headerlink" title="系统间耦合的复杂度"></a>系统间耦合的复杂度</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222221703.png" alt="image-20230222221656632"></p>
-<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><ol>
-<li>上述A方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的稠合，随着外部客户程序和各子系统的演化，这种过多的精台面临很多变化的挑战。</li>
-<li>如何简化外部客户程序和系统间的交亘接口？如何将外部客户程序的演化和内部子系统的变化之间的依赖相互解耦？</li>
+        <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><ol>
+<li>在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。</li>
+<li>如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧稠台？</li>
 </ol>
 <h2 id="模式定义"><a href="#模式定义" class="headerlink" title="模式定义"></a>模式定义</h2><ul>
-<li>为子系统中的一组接口提供一个一致（稳定）的界面，Facade模式定义了一个高层接口，这个接口使得这一子系统更加容易使用（复用）。</li>
+<li>允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。</li>
 </ul>
-<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222222115.png" alt="image-20230222222115221"></p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><h3 id="改版前"><a href="#改版前" class="headerlink" title="改版前"></a>改版前</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">enum NetworkState</span><br><span class="line">&#123;</span><br><span class="line">    Network_Open,</span><br><span class="line">    Network_Close,</span><br><span class="line">    Network_Connect,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class NetworkProcessor&#123;</span><br><span class="line">    </span><br><span class="line">    NetworkState state;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    </span><br><span class="line">    void Operation1()&#123;</span><br><span class="line">        if (state &#x3D;&#x3D; Network_Open)&#123;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;**********</span><br><span class="line">            state &#x3D; Network_Close;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (state &#x3D;&#x3D; Network_Close)&#123;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;..........</span><br><span class="line">            state &#x3D; Network_Connect;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (state &#x3D;&#x3D; Network_Connect)&#123;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;$$$$$$$$$$</span><br><span class="line">            state &#x3D; Network_Open;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void Operation2()&#123;</span><br><span class="line"></span><br><span class="line">        if (state &#x3D;&#x3D; Network_Open)&#123;</span><br><span class="line">            </span><br><span class="line">            &#x2F;&#x2F;**********</span><br><span class="line">            state &#x3D; Network_Connect;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (state &#x3D;&#x3D; Network_Close)&#123;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;.....</span><br><span class="line">            state &#x3D; Network_Open;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (state &#x3D;&#x3D; Network_Connect)&#123;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;$$$$$$$$$$</span><br><span class="line">            state &#x3D; Network_Close;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void Operation3()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="改版后"><a href="#改版后" class="headerlink" title="改版后"></a>改版后</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">class NetworkState&#123;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    NetworkState* pNext;</span><br><span class="line">    virtual void Operation1()&#x3D;0;</span><br><span class="line">    virtual void Operation2()&#x3D;0;</span><br><span class="line">    virtual void Operation3()&#x3D;0;</span><br><span class="line"></span><br><span class="line">    virtual ~NetworkState()&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class OpenState :public NetworkState&#123;</span><br><span class="line">    </span><br><span class="line">    static NetworkState* m_instance;</span><br><span class="line">public:</span><br><span class="line">    static NetworkState* getInstance()&#123;</span><br><span class="line">        if (m_instance &#x3D;&#x3D; nullptr) &#123;</span><br><span class="line">            m_instance &#x3D; new OpenState();</span><br><span class="line">        &#125;</span><br><span class="line">        return m_instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void Operation1()&#123;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;**********</span><br><span class="line">        pNext &#x3D; CloseState::getInstance();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void Operation2()&#123;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;..........</span><br><span class="line">        pNext &#x3D; ConnectState::getInstance();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void Operation3()&#123;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;$$$$$$$$$$</span><br><span class="line">        pNext &#x3D; OpenState::getInstance();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class CloseState:public NetworkState&#123; &#125;</span><br><span class="line">&#x2F;&#x2F;...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class NetworkProcessor&#123;</span><br><span class="line">    </span><br><span class="line">    NetworkState* pState;</span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    </span><br><span class="line">    NetworkProcessor(NetworkState* pState)&#123;</span><br><span class="line">        </span><br><span class="line">        this-&gt;pState &#x3D; pState;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void Operation1()&#123;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">        pState-&gt;Operation1();</span><br><span class="line">        pState &#x3D; pState-&gt;pNext;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void Operation2()&#123;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">        pState-&gt;Operation2();</span><br><span class="line">        pState &#x3D; pState-&gt;pNext;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void Operation3()&#123;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">        pState-&gt;Operation3();</span><br><span class="line">        pState &#x3D; pState-&gt;pNext;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226175657.png" alt="image-20230226175657615"></p>
 <h2 id="要点总结"><a href="#要点总结" class="headerlink" title="要点总结"></a>要点总结</h2><ol>
-<li>从客户程序的角度来看，Facade模式简化了整个组件系统的接口，对于组件内部与外部客户程序来说，达到了一种“解耦”的效果——内部子系统的任何变化不会影响到Facade接口的变化。</li>
-<li>Facade设计模式更注重从架构的层次去看整个系统，而不是单个类的层次。Facade很多时候更是一种架构设计模式。</li>
-<li>Facade设计模式并非一个集装箱，可以任意地放进任何多个对象。Facade模式中组件的内部应该是“相互耦合关系比较大的一系列组件”，而不是一个简单的功能集合。</li>
+<li>State模式将所有与一个特定状态相关的行为都放入一个State的子类对象中，在对象状态切换时，切换相应的对象；但同时维持State的接口，这样实现了具体操作与状态转换之间的解耦。</li>
+<li>为不同的状态引入不同的对象使得状态转换变得更加明确，而且可以保证不会出现状态不一致的情况，因为转换是原子性的——即要么彻底转换过来，要么不转换。</li>
+<li>如果State对象没有实例变量，那么各个上下文可以共享同一个State对象，从而节省对象开销。</li>
 </ol>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
     </div>
@@ -334,7 +327,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2023/02/19/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" title="设计模式--代理模式">http://example.com/2023/02/19/0058.面向对象_门面模式/</a>
+    <a href="http://example.com/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" title="设计模式--状态模式">http://example.com/2023/02/26/0062.面向对象_状态模式/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -354,12 +347,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/02/19/0057.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式--享元模式">
-      <i class="fa fa-chevron-left"></i> 设计模式--享元模式
+    <a href="/2023/02/25/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/" rel="prev" title="设计模式--适配器">
+      <i class="fa fa-chevron-left"></i> 设计模式--适配器
     </a></div>
       <div class="post-nav-item">
-    <a href="/2023/02/19/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式--门面模式">
-      设计模式--门面模式 <i class="fa fa-chevron-right"></i>
+    <a href="/2023/02/26/0063.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E5%A4%87%E5%BF%98%E5%BD%95/" rel="next" title="设计模式--备忘录">
+      设计模式--备忘录 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -420,7 +413,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E9%97%B4%E8%80%A6%E5%90%88%E7%9A%84%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">系统间耦合的复杂度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">3.</span> <span class="nav-text">模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">5.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">要点总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">示例代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E7%89%88%E5%89%8D"><span class="nav-number">3.1.</span> <span class="nav-text">改版前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E7%89%88%E5%90%8E"><span class="nav-number">3.2.</span> <span class="nav-text">改版后</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">要点总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -436,14 +429,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-count">36</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">

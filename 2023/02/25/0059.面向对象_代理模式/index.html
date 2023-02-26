@@ -21,22 +21,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="动机 在软件系统中，由于应用环境的变化，常常需要将“一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的。 如何应对这种“迁移的变化”？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？  模式定义 将一个类的接口转换成客户希望的另一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。  示例代码1 结构 要点总结 A">
+  <meta name="description" content="动机 在面向对象系统中，高些对象由于某种原因（比如对象创建的开销很大，或者某些操作需要安全控制，或者需要进程外的访问等），直接访问会给使用者、 或者系统结构带来很多麻烦。 如何在不失去透明操作对象的同时来管理／控制这些对象特奇的复杂性？增加一层间接层是软件开发中常见的解决方式。  模式定义 为其他对象提供一种代理以控制（隔离，使用接口）对这个对象的访问。  示例代码client1234567891">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式--适配器">
-<meta property="og:url" content="http://example.com/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/index.html">
+<meta property="og:title" content="设计模式--门面模式">
+<meta property="og:url" content="http://example.com/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Alin&#39;s Blog">
-<meta property="og:description" content="动机 在软件系统中，由于应用环境的变化，常常需要将“一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的。 如何应对这种“迁移的变化”？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？  模式定义 将一个类的接口转换成客户希望的另一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。  示例代码1 结构 要点总结 A">
+<meta property="og:description" content="动机 在面向对象系统中，高些对象由于某种原因（比如对象创建的开销很大，或者某些操作需要安全控制，或者需要进程外的访问等），直接访问会给使用者、 或者系统结构带来很多麻烦。 如何在不失去透明操作对象的同时来管理／控制这些对象特奇的复杂性？增加一层间接层是软件开发中常见的解决方式。  模式定义 为其他对象提供一种代理以控制（隔离，使用接口）对这个对象的访问。  示例代码client1234567891">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222224240.png">
-<meta property="article:published_time" content="2023-02-19T06:30:00.000Z">
-<meta property="article:modified_time" content="2023-02-22T14:46:40.277Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222222744.png">
+<meta property="article:published_time" content="2023-02-25T06:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-26T09:55:59.209Z">
 <meta property="article:author" content="Alin">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222224240.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222222744.png">
 
-<link rel="canonical" href="http://example.com/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/">
+<link rel="canonical" href="http://example.com/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
 
 
 <script id="page-configurations">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>设计模式--适配器 | Alin's Blog</title>
+  <title>设计模式--门面模式 | Alin's Blog</title>
   
 
 
@@ -212,7 +212,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -225,7 +225,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          设计模式--适配器
+          设计模式--门面模式
         </h1>
 
         <div class="post-meta">
@@ -235,14 +235,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-02-19 14:30:00" itemprop="dateCreated datePublished" datetime="2023-02-19T14:30:00+08:00">2023-02-19</time>
+              <time title="创建时间：2023-02-25 14:00:00" itemprop="dateCreated datePublished" datetime="2023-02-25T14:00:00+08:00">2023-02-25</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-22 22:46:40" itemprop="dateModified" datetime="2023-02-22T22:46:40+08:00">2023-02-22</time>
+                <time title="修改时间：2023-02-26 17:55:59" itemprop="dateModified" datetime="2023-02-26T17:55:59+08:00">2023-02-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,12 +258,12 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/%E9%80%82%E9%85%8D%E5%99%A8-Adapter/" itemprop="url" rel="index"><span itemprop="name">适配器(Adapter)</span></a>
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F-Proxy/" itemprop="url" rel="index"><span itemprop="name">享元模式(Proxy)</span></a>
                 </span>
             </span>
 
           
-            <span id="/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--适配器" title="阅读次数">
+            <span id="/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--门面模式" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -285,8 +285,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/" itemprop="commentCount"></span>
+    <a title="valine" href="/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -302,18 +302,19 @@
 
       
         <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><ol>
-<li>在软件系统中，由于应用环境的变化，常常需要将“一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的。</li>
-<li>如何应对这种“迁移的变化”？如何既能利用现有对象的良好实现，同时又能满足新的应用环境所要求的接口？</li>
+<li>在面向对象系统中，高些对象由于某种原因（比如<strong>对象创建的开销很大</strong>，或者<strong>某些操作需要安全控制</strong>，或者<strong>需要进程外的访问</strong>等），直接访问会给使用者、 或者系统结构带来很多麻烦。</li>
+<li>如何在不失去<strong>透明操作</strong>对象的同时来管理／控制这些对象特奇的复杂性？增加一层间接层是软件开发中常见的解决方式。</li>
 </ol>
 <h2 id="模式定义"><a href="#模式定义" class="headerlink" title="模式定义"></a>模式定义</h2><ul>
-<li>将一个类的接口转换成客户希望的另一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</li>
+<li>为其他对象提供一种代理以<strong>控制（隔离，使用接口）</strong>对这个对象的访问。</li>
 </ul>
-<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222224240.png" alt="image-20230222224240326"></p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><h3 id="client"><a href="#client" class="headerlink" title="client"></a>client</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">class ISubject&#123;</span><br><span class="line">public:</span><br><span class="line">    virtual void process();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class RealSubject: public ISubject&#123;</span><br><span class="line">public:</span><br><span class="line">    virtual void process()&#123;</span><br><span class="line">        &#x2F;&#x2F;....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class ClientApp&#123;</span><br><span class="line">    </span><br><span class="line">    ISubject* subject;</span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    </span><br><span class="line">    ClientApp()&#123;</span><br><span class="line">        subject&#x3D;new RealSubject();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void DoTask()&#123;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">        subject-&gt;process();</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="proxy"><a href="#proxy" class="headerlink" title="proxy"></a>proxy</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">class ISubject&#123;</span><br><span class="line">public:</span><br><span class="line">    virtual void process();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Proxy的设计</span><br><span class="line">class SubjectProxy: public ISubject&#123;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    virtual void process()&#123;</span><br><span class="line">        &#x2F;&#x2F;对RealSubject的一种间接访问</span><br><span class="line">        &#x2F;&#x2F;....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class ClientApp&#123;</span><br><span class="line">    </span><br><span class="line">    ISubject* subject;</span><br><span class="line">    </span><br><span class="line">public:</span><br><span class="line">    </span><br><span class="line">    ClientApp()&#123;</span><br><span class="line">        subject&#x3D;new SubjectProxy();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void DoTask()&#123;</span><br><span class="line">        &#x2F;&#x2F;...</span><br><span class="line">        subject-&gt;process();</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230222222744.png" alt="image-20230222222744458"></p>
 <h2 id="要点总结"><a href="#要点总结" class="headerlink" title="要点总结"></a>要点总结</h2><ol>
-<li>Adapter模式主要应用与“希望复用一些现存的类，但是接口又与复用环境不一致的情况”，在遗留代码复用、类库迁移等方面非常有用。</li>
-<li>GoF 23定义了两种Adapter模式的实现结构：对象适配器和类适配器。但类适配器采用“多继承”的实现方式，一般不推荐使用。对象适配器采用“对象组合”的方式，更符合松耦合精神。</li>
-<li>Adapter模式可以实现的非常灵活，不必拘泥于GoF23中定义的两种结构。例如，完全可以将Adapter模式中的“现存对象”作为新的接口方法参数，来达到适配的目的。</li>
+<li>“增加一层间接层”是软件系统中对许多复杂问题的一种常见解决方法。在面向对象系统中，直接使用某些对象会带来很多问题，作为间接层的proxy对象便是解决这一问题的常用手段。</li>
+<li>具体proxy设计模式的实现方法、实现粒度都相差很大，有些可能对单个对象做细粒度的控制，如copy-on-write技术，有些可能对组件模块提供抽象代理层，在架构层次对对象做proxy。</li>
+<li>proxy并不一定要求保持接口完整的一致性，只要能够实现间接控制，有时候损及一些透明性是可以接受的。</li>
 </ol>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
     </div>
@@ -332,7 +333,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2023/02/19/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/" title="设计模式--适配器">http://example.com/2023/02/19/0060.面向对象_适配器/</a>
+    <a href="http://example.com/2023/02/25/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" title="设计模式--门面模式">http://example.com/2023/02/25/0059.面向对象_代理模式/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -352,12 +353,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/02/19/0059.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式--门面模式">
-      <i class="fa fa-chevron-left"></i> 设计模式--门面模式
+    <a href="/2023/02/25/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式--代理模式">
+      <i class="fa fa-chevron-left"></i> 设计模式--代理模式
     </a></div>
       <div class="post-nav-item">
-    <a href="/2023/02/19/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/" rel="next" title="设计模式--中介者">
-      设计模式--中介者 <i class="fa fa-chevron-right"></i>
+    <a href="/2023/02/25/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/" rel="next" title="设计模式--适配器">
+      设计模式--适配器 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -418,7 +419,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">要点总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">示例代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#client"><span class="nav-number">3.1.</span> <span class="nav-text">client</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proxy"><span class="nav-number">3.2.</span> <span class="nav-text">proxy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">要点总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -434,14 +435,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-count">36</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
