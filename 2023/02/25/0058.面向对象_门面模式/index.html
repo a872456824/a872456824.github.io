@@ -23,7 +23,7 @@
 
   <meta name="description" content="系统间耦合的复杂度 动机 上述A方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的稠合，随着外部客户程序和各子系统的演化，这种过多的精台面临很多变化的挑战。 如何简化外部客户程序和系统间的交亘接口？如何将外部客户程序的演化和内部子系统的变化之间的依赖相互解耦？  模式定义 为子系统中的一组接口提供一个一致（稳定）的界面，Facade模式定义了一个高层接口，这个接口使得这一子系统更加容易使用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式--代理模式">
+<meta property="og:title" content="设计模式--门面模式">
 <meta property="og:url" content="http://example.com/2023/02/25/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Alin&#39;s Blog">
 <meta property="og:description" content="系统间耦合的复杂度 动机 上述A方案的问题在于组件的客户和组件中各种复杂的子系统有了过多的稠合，随着外部客户程序和各子系统的演化，这种过多的精台面临很多变化的挑战。 如何简化外部客户程序和系统间的交亘接口？如何将外部客户程序的演化和内部子系统的变化之间的依赖相互解耦？  模式定义 为子系统中的一组接口提供一个一致（稳定）的界面，Facade模式定义了一个高层接口，这个接口使得这一子系统更加容易使用">
@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226180930.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226180958.png">
 <meta property="article:published_time" content="2023-02-25T05:30:00.000Z">
-<meta property="article:modified_time" content="2023-02-26T10:10:03.666Z">
+<meta property="article:modified_time" content="2023-08-21T13:39:09.968Z">
 <meta property="article:author" content="Alin">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>设计模式--代理模式 | Alin's Blog</title>
+  <title>设计模式--门面模式 | Alin's Blog</title>
   
 
 
@@ -226,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          设计模式--代理模式
+          设计模式--门面模式
         </h1>
 
         <div class="post-meta">
@@ -243,7 +243,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-26 18:10:03" itemprop="dateModified" datetime="2023-02-26T18:10:03+08:00">2023-02-26</time>
+                <time title="修改时间：2023-08-21 21:39:09" itemprop="dateModified" datetime="2023-08-21T21:39:09+08:00">2023-08-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,12 +259,12 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F-Facade/" itemprop="url" rel="index"><span itemprop="name">代理模式(Facade)</span></a>
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F-Facade/" itemprop="url" rel="index"><span itemprop="name">门面模式(Facade)</span></a>
                 </span>
             </span>
 
           
-            <span id="/2023/02/25/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--代理模式" title="阅读次数">
+            <span id="/2023/02/25/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--门面模式" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -333,7 +333,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2023/02/25/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" title="设计模式--代理模式">http://example.com/2023/02/25/0058.面向对象_门面模式/</a>
+    <a href="http://example.com/2023/02/25/0058.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F/" title="设计模式--门面模式">http://example.com/2023/02/25/0058.面向对象_门面模式/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
