@@ -21,17 +21,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="好好享受生活，慢慢来，一切都会变好的！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alin&#39;s Blog">
-<meta property="og:url" content="http://example.com/archives/2021/01/index.html">
+  <meta name="description" content="动机 在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。 在这种情况下，我们可使用一个 “中介对象”来管理对象间的关联关系 ，避免相互交互的对象之间的紧稠合引用关系，从而更好地抵御变化。  模式定义 用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式--中介者">
+<meta property="og:url" content="http://example.com/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/index.html">
 <meta property="og:site_name" content="Alin&#39;s Blog">
-<meta property="og:description" content="好好享受生活，慢慢来，一切都会变好的！">
+<meta property="og:description" content="动机 在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。 在这种情况下，我们可使用一个 “中介对象”来管理对象间的关联关系 ，避免相互交互的对象之间的紧稠合引用关系，从而更好地抵御变化。  模式定义 用一个中介对象来封装（封装变化）一系列的对象交互。中介者使各对象不需要显式的相互引用（编译时依赖">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226171624.png">
+<meta property="article:published_time" content="2023-02-25T07:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-21T15:16:45.330Z">
 <meta property="article:author" content="Alin">
+<meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226171624.png">
 
-<link rel="canonical" href="http://example.com/archives/2021/01/">
+<link rel="canonical" href="http://example.com/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/">
 
 
 <script id="page-configurations">
@@ -39,12 +44,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | Alin's Blog</title>
+  <title>设计模式--中介者 | Alin's Blog</title>
   
 
 
@@ -200,240 +205,172 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Alin">
+      <meta itemprop="description" content="好好享受生活，慢慢来，一切都会变好的！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计模式--中介者
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-25 15:00:00" itemprop="dateCreated datePublished" datetime="2023-02-25T15:00:00+08:00">2023-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-21 23:16:45" itemprop="dateModified" datetime="2023-08-21T23:16:45+08:00">2023-08-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/" itemprop="url" rel="index"><span itemprop="name">接口隔离</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB/%E4%B8%AD%E4%BB%8B%E8%80%85-Mediator/" itemprop="url" rel="index"><span itemprop="name">中介者(Mediator)</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/" class="post-meta-item leancloud_visitors" data-flag-title="设计模式--中介者" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
   
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">不错! 目前共计 70 篇日志。 继续努力。</span>
-      </div>
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
+        <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><ol>
+<li>在软件构建过程中，经常会出现<strong>多个对象</strong>互相关联<strong>交互</strong>的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断的变化。</li>
+<li>在这种情况下，我们可使用一个 “中介对象”来管理对象间的关联关系 ，避免相互交互的对象之间的紧稠合引用关系，从而更好地抵御变化。</li>
+</ol>
+<h2 id="模式定义"><a href="#模式定义" class="headerlink" title="模式定义"></a>模式定义</h2><ul>
+<li>用一个中介对象来封装（<strong>封装变化</strong>）一系列的对象交互。中介者使各对象不需要<strong>显式的相互引用</strong>（编译时依赖-&gt;运行时依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互。</li>
+</ul>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20230226171624.png" alt="image-20230226171617304"></p>
+<h2 id="要点总结"><a href="#要点总结" class="headerlink" title="要点总结"></a>要点总结</h2><ol>
+<li>将多个对象间复杂的关联关系解耦，Mediator模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联”为“多个对象和一个中介者关联”，简化了系统的维护，抵御了可能的变化。</li>
+<li>随着控制逻辑的复杂化，Mediator具体对象的实现可能相当复杂。这时候可以对Mediator对象进行分解处理。</li>
+<li>Facade模式解耦系统间（单向）的对象关联关系；Mediator模式是解耦系统内各个对象之间（双向）的关联关系。</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-22T11:32:25+08:00"
-              content="2021-01-22">
-          01-22
-        </time>
-      </div>
+    
+        
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/22/0037.%20%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%93%E5%85%A5%E7%BD%91%E5%9D%80/" itemprop="url">
-            <span itemprop="name">浏览器输入URL后发生了什么</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-21T11:32:25+08:00"
-              content="2021-01-21">
-          01-21
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/21/0036.%20http%E4%B8%8Ehttps/" itemprop="url">
-            <span itemprop="name">http与https</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-20T11:32:25+08:00"
-              content="2021-01-20">
-          01-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/20/0035.%20%E6%AD%BB%E9%94%81/" itemprop="url">
-            <span itemprop="name">死锁</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-19T11:32:25+08:00"
-              content="2021-01-19">
-          01-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/19/0034.TCP%E3%80%81IP%E5%8D%8F%E8%AE%AE%E6%A0%88/" itemprop="url">
-            <span itemprop="name">TCP/IP协议栈</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-18T11:32:25+08:00"
-              content="2021-01-18">
-          01-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/18/0033.%20%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BB%93/" itemprop="url">
-            <span itemprop="name">进程间通信方式</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-17T11:32:25+08:00"
-              content="2021-01-17">
-          01-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/17/0032.%20IPC%E5%9B%9E%E9%A1%BE/" itemprop="url">
-            <span itemprop="name">IPC回顾</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-16T11:32:25+08:00"
-              content="2021-01-16">
-          01-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/16/0031.%20%E6%96%87%E4%BB%B6%E7%9A%84%E4%BC%A0%E8%BE%93/" itemprop="url">
-            <span itemprop="name">文件的传输</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-15T11:32:25+08:00"
-              content="2021-01-15">
-          01-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/15/0030.%20IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" itemprop="url">
-            <span itemprop="name">IO多路复用</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-14T11:32:25+08:00"
-              content="2021-01-14">
-          01-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/14/0015.%20%E5%8F%8C%E6%95%B0%E7%BB%84%E5%AD%97%E5%85%B8%E6%A0%91/" itemprop="url">
-            <span itemprop="name">双数组字典树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-14T11:32:25+08:00"
-              content="2021-01-14">
-          01-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/14/0029.%20%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" itemprop="url">
-            <span itemprop="name">数据链路层</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Alin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/02/25/0061.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E4%B8%AD%E4%BB%8B%E8%80%85/" title="设计模式--中介者">http://example.com/2023/02/25/0061.面向对象_中介者/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
 
 
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/25/0060.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E9%80%82%E9%85%8D%E5%99%A8/" rel="prev" title="设计模式--适配器">
+      <i class="fa fa-chevron-left"></i> 设计模式--适配器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/26/0062.%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式--状态模式">
+      设计模式--状态模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-  </div>
+      </footer>
+    
+  </article>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2021/01/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2021/01/page/4/">4</a><a class="extend next" rel="next" href="/archives/2021/01/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -480,6 +417,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">模式定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">要点总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
