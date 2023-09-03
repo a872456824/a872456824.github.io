@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
@@ -21,12 +21,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="深入浅出 TCP&#x2F;IP 协议栈TCP&#x2F;IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP&#x2F;IP 协议采用4层结构，分别是应用层、传输层、网络层和链路层，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复杂庞大，入门门槛高，因此很难搞">
+  <meta name="description" content="深入浅出 TCP&#x2F;IP 协议栈TCP&#x2F;IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP&#x2F;IP 协议采用4层结构，分别是应用层、传输层、网络层和链路层，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP&#x2F;IP协议栈">
 <meta property="og:url" content="http://example.com/2021/01/19/0034.TCP%E3%80%81IP%E5%8D%8F%E8%AE%AE%E6%A0%88/index.html">
 <meta property="og:site_name" content="Alin&#39;s Blog">
-<meta property="og:description" content="深入浅出 TCP&#x2F;IP 协议栈TCP&#x2F;IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP&#x2F;IP 协议采用4层结构，分别是应用层、传输层、网络层和链路层，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复杂庞大，入门门槛高，因此很难搞">
+<meta property="og:description" content="深入浅出 TCP&#x2F;IP 协议栈TCP&#x2F;IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP&#x2F;IP 协议采用4层结构，分别是应用层、传输层、网络层和链路层，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232913.jpeg">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232917.png">
@@ -307,11 +307,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="深入浅出-TCP-IP-协议栈"><a href="#深入浅出-TCP-IP-协议栈" class="headerlink" title="深入浅出 TCP/IP 协议栈"></a>深入浅出 TCP/IP 协议栈</h1><p>TCP/IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP/IP 协议采用4层结构，分别是<strong>应用层、传输层、网络层和链路层</strong>，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复杂庞大，入门门槛高，因此很难搞清楚TCP/IP的工作原理，通俗一点讲就是，<strong>一个主机的数据要经过哪些过程才能发送到对方的主机上</strong>。 接下来，我们就来探索一下这个过程。</p>
+        <h1 id="深入浅出-TCP-IP-协议栈"><a href="#深入浅出-TCP-IP-协议栈" class="headerlink" title="深入浅出 TCP&#x2F;IP 协议栈"></a>深入浅出 TCP&#x2F;IP 协议栈</h1><p>TCP&#x2F;IP 协议栈是一系列网络协议的总和，是构成网络通信的核心骨架，它定义了电子设备如何连入因特网，以及数据如何在它们之间进行传输。TCP&#x2F;IP 协议采用4层结构，分别是<strong>应用层、传输层、网络层和链路层</strong>，每一层都呼叫它的下一层所提供的协议来完成自己的需求。由于我们大部分时间都工作在应用层，下层的事情不用我们操心；其次网络协议体系本身就很复杂庞大，入门门槛高，因此很难搞清楚TCP&#x2F;IP的工作原理，通俗一点讲就是，<strong>一个主机的数据要经过哪些过程才能发送到对方的主机上</strong>。 接下来，我们就来探索一下这个过程。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232913.jpeg" alt="img"></p>
 <h3 id="0、物理介质"><a href="#0、物理介质" class="headerlink" title="0、物理介质"></a><strong>0、物理介质</strong></h3><p>物理介质就是把电脑连接起来的物理手段，常见的有光纤、双绞线，以及无线电波，它决定了电信号(0和1)的传输方式，物理介质的不同决定了电信号的传输带宽、速率、传输距离以及抗干扰性等等。</p>
-<p>TCP/IP协议栈分为四层，每一层都由特定的协议与对方进行通信，而<strong>协议之间的通信最终都要转化为 0 和 1 的电信号，通过物理介质进行传输才能到达对方的电脑</strong>，因此物理介质是网络通信的基石。</p>
-<p>下面我们通过一张图先来大概了解一下TCP/IP协议的基本框架：</p>
+<p>TCP&#x2F;IP协议栈分为四层，每一层都由特定的协议与对方进行通信，而<strong>协议之间的通信最终都要转化为 0 和 1 的电信号，通过物理介质进行传输才能到达对方的电脑</strong>，因此物理介质是网络通信的基石。</p>
+<p>下面我们通过一张图先来大概了解一下TCP&#x2F;IP协议的基本框架：</p>
 <p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232917.png" alt="img"></p>
 <p>当通过http发起一个请求时，应用层、传输层、网络层和链路层的相关协议依次对该请求进行包装并携带对应的<strong>首部</strong>，最终在链路层生成<strong>以太网数据包</strong>，以太网数据包通过物理介质传输给对方主机，对方接收到数据包以后，然后再一层一层采用对应的协议进行拆包，最后把应用层数据交给应用程序处理。</p>
 <p>网络通信就好比送快递，商品外面的一层层包裹就是各种协议，协议包含了商品信息、收货地址、收件人、联系方式等，然后还需要配送车、配送站、快递员，商品才能最终到达用户手中。</p>
@@ -358,7 +358,7 @@
 <p>经过三次对话之后，主机A才会向主机B发送正式数据，而UDP是面向非连接的协议，它不与对方建立连接，而是直接就把数据包发过去了。所以 TCP 能够保证数据包在传输过程中不被丢失，但美好的事物必然是要付出代价的，相比 UDP，TCP 实现过程复杂，消耗连接资源多，传输速度慢。</p>
 <p>TCP 数据包和 UDP 一样，都是由首部和数据两部分组成，唯一不同的是，TCP 数据包没有长度限制，理论上可以无限长，但是为了保证网络的效率，通常 TCP 数据包的长度不会超过IP数据包的长度，以确保单个 TCP 数据包不必再分割。</p>
 <p>总结一下，传输层的主要工作是<strong>定义端口，标识应用程序身份，实现端口到端口的通信，TCP协议可以保证数据传输的可靠性</strong>。</p>
-<h3 id="4、应用层"><a href="#4、应用层" class="headerlink" title="4、应用层"></a>4、应用层</h3><p>理论上讲，有了以上三层协议的支持，数据已经可以从一个主机上的应用程序传输到另一台主机的应用程序了，但此时传过来的数据是字节流，不能很好的被程序识别，操作性差。因此，应用层定义了各种各样的协议来规范数据格式，常见的有 HTTP、FTP、SMTP 等，HTTP 是一种比较常用的应用层协议，主要用于B/S架构之间的数据通信，其报文格式如下：</p>
+<h3 id="4、应用层"><a href="#4、应用层" class="headerlink" title="4、应用层"></a>4、应用层</h3><p>理论上讲，有了以上三层协议的支持，数据已经可以从一个主机上的应用程序传输到另一台主机的应用程序了，但此时传过来的数据是字节流，不能很好的被程序识别，操作性差。因此，应用层定义了各种各样的协议来规范数据格式，常见的有 HTTP、FTP、SMTP 等，HTTP 是一种比较常用的应用层协议，主要用于B&#x2F;S架构之间的数据通信，其报文格式如下：</p>
 <p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210330232945.png" alt="img"></p>
 <p>在 Resquest Headers 中，Accept 表示客户端期望接收的数据格式，而 ContentType 则表示客户端发送的数据格式；在 Response Headers 中，ContentType 表示服务端响应的数据格式，这里定义的格式，一般是和 Resquest Headers 中 Accept 定义的格式是一致的。</p>
 <p>有了这个规范以后，服务端收到请求以后，就能正确的解析客户端发来的数据，当请求处理完以后，再按照客户端要求的格式返回，客户端收到结果后，按照服务端返回的格式进行解析。</p>
@@ -374,7 +374,7 @@
 <blockquote>
 <p>当你输入一个网址并按下回车键的时候，首先，应用层协议对该请求包做了格式定义；紧接着传输层协议加上了双方的端口号，确认了双方通信的应用程序；然后网络协议加上了双方的IP地址，确认了双方的网络位置；最后链路层协议加上了双方的MAC地址，确认了双方的物理位置，同时将数据进行分组，形成数据帧，采用广播方式，通过传输介质发送给对方主机。而对于不同网段，该数据包首先会转发给网关路由器，经过多次转发后，最终被发送到目标主机。目标机接收到数据包后，采用对应的协议，对帧数据进行组装，然后再通过一层一层的协议进行解析，最终被应用层的协议解析并交给服务器处理。</p>
 </blockquote>
-<h3 id="6、总结"><a href="#6、总结" class="headerlink" title="6、总结"></a>6、总结</h3><p>以上内容是对TCP/IP四层模型做了简单的介绍，而实际上每一层模型都有很多协议，每个协议要做的事情也很多，但我们首先得有一个清晰的脉络结构，掌握每一层模型最基本的作用，然后再去丰富细枝末节的东西，也许会更容易理解。</p>
+<h3 id="6、总结"><a href="#6、总结" class="headerlink" title="6、总结"></a>6、总结</h3><p>以上内容是对TCP&#x2F;IP四层模型做了简单的介绍，而实际上每一层模型都有很多协议，每个协议要做的事情也很多，但我们首先得有一个清晰的脉络结构，掌握每一层模型最基本的作用，然后再去丰富细枝末节的东西，也许会更容易理解。</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
     </div>
 

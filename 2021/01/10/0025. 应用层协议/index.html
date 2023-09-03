@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
@@ -421,7 +421,7 @@
 </li>
 <li><p>客户程序和服务器程序运行在不同的端系统中，通过交换<code>HTTP</code>报文进行会话 </p>
 <blockquote>
-<p>上网用的就是<code>HTTP</code>或者<code>HTTPS</code>。 </p>
+<p>上网用的就是<code>HTTP</code>或者<code>HTTPS</code>。</p>
 </blockquote>
 </li>
 </ul>
@@ -489,7 +489,7 @@
 </li>
 <li><p>方法：请求方法，包括<code>get获取数据</code>，<code>post提交表单</code>，<code>head测试</code>，<code>put把本地数据放在远端</code>，<code>delete从远端删除数据 </code></p>
 </li>
-<li><p> <code>url</code>：要处理的资源的具体连接</p>
+<li><p><code>url</code>：要处理的资源的具体连接</p>
 </li>
 <li><p>版本：当前协议的版本 </p>
 </li>
@@ -506,9 +506,7 @@
 </li>
 <li><p>状态码：比如<code>404没有找到</code>，<code>200找到数据</code></p>
 </li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223719.png" alt="image-20210213213819803" style="zoom:50%;">
-
-</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223719.png" alt="image-20210213213819803" style="zoom:50%;"></li>
 </ul>
 <h3 id="用户与服务器的交互——COOKIE"><a href="#用户与服务器的交互——COOKIE" class="headerlink" title="用户与服务器的交互——COOKIE"></a>用户与服务器的交互——COOKIE</h3><ul>
 <li><p>在<code>HTTP</code>响应报文中的一个<code>cookie</code>首部行</p>
@@ -522,9 +520,7 @@
 <p>由于<code>cookie</code>，导致当你一开始搜索一个话题时，后续几天系统会不断自动推送与之相关的话题链接或者广告</p>
 </blockquote>
 </li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223749.png" alt="image-20210213214339303" style="zoom:50%;">
-
-</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223749.png" alt="image-20210213214339303" style="zoom:50%;"></li>
 </ul>
 <blockquote>
 <p>比如第一次进京东浏览书籍的时候，如果没有登录，京东服务器发现自身并无该账户的信息，则会发响应报文，并为该账户建立一个初始的<code>cookie</code>8888，并保存在本地中，当下次再进入京东的时候，<code>cookie</code>会自动检索本地中该账户的相关信息，包括曾经做过的所有操作，浏览了什么商品等等，然后针对这些操作为该账户推送相关的内容。然后这个时候如果注册并登录了账户，则该账户会与该<code>cookie8888</code>绑定在一起，该账户的所有信息都会与<code>cookie8888</code>绑定在一起。</p>
@@ -570,9 +566,7 @@
 <li><code>HTTP</code>是一个短连接，数据传输完成后就会立马断开连接，一问一答。</li>
 <li>每建立一个连接都会消耗一点资源，而如果在类似<code>百度</code>这种大型网站的情况下，一秒钟可能会建立<code>上亿</code>的连接，这样就会浪费极大的资源，这种情况可以考虑一条连接在数据传输完成后不会立马断开连接，使得后面如果其他客户端也要建立连接，可以直接使用该连接，而不用重新建立，浪费资源。</li>
 <li><code>http/2</code>把多个对象封装在一起，由一条<code>TCP</code>直接连接传输过去，交给对方去解析。</li>
-<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223836.png" alt="image-20210214105812431" style="zoom:33%;">
-
-</li>
+<li><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210305223836.png" alt="image-20210214105812431" style="zoom:33%;"></li>
 </ul>
 <h2 id="FTP协议"><a href="#FTP协议" class="headerlink" title="FTP协议"></a>FTP协议</h2><ul>
 <li>现在使用较少，主要用在本地局域网。</li>
@@ -698,7 +692,7 @@
 <li>该记录会保存一段时间，这段时间内都可以直接使用，如果超过该时间，则记录会被清除，请求主机如果想再次拿到该域名，需要重新查找。</li>
 </ul>
 <h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><ul>
-<li>如何通过应用层协议做到进程间通信/远程通信？</li>
+<li>如何通过应用层协议做到进程间通信&#x2F;远程通信？</li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
     </div>

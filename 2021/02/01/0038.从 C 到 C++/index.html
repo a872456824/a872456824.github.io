@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
@@ -393,7 +393,7 @@
 <li><p>lambda</p>
 </li>
 </ul>
-<h3 id="条款02：尽量以-const-enum-inline-替换-define"><a href="#条款02：尽量以-const-enum-inline-替换-define" class="headerlink" title="条款02：尽量以 const/enum/inline 替换 #define"></a>条款02：尽量以 const/enum/inline 替换 #define</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306111608.png" alt="image-20210228092627183"></p>
+<h3 id="条款02：尽量以-const-enum-inline-替换-define"><a href="#条款02：尽量以-const-enum-inline-替换-define" class="headerlink" title="条款02：尽量以 const&#x2F;enum&#x2F;inline 替换 #define"></a>条款02：尽量以 const&#x2F;enum&#x2F;inline 替换 #define</h3><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306111608.png" alt="image-20210228092627183"></p>
 <ul>
 <li>C++ 出bug的时候，需要用到调试工具，而调试工具对<code>编译器</code>具有强烈的依赖性（g++  -g），而宏是在预编译阶段，在调试bug的时候，对于宏，很难定位到错误之处，所以需要把 define 替换成编译器可见的元素，方便后续调试</li>
 </ul>
@@ -401,7 +401,7 @@
 <ul>
 <li><p>数据意义上的 const ：</p>
 <ul>
-<li><p> 数据本身不可以修改，一修改，编译器就报错，如下例，a = 1，就是数据意义上的 const </p>
+<li><p>数据本身不可以修改，一修改，编译器就报错，如下例，a &#x3D; 1，就是数据意义上的 const </p>
 </li>
 <li><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306111619.png" alt="image-20210228095552201"></p>
 </li>
@@ -443,7 +443,7 @@
 <li>逻辑上没有任何问题，但实际上，无论怎么写，都会先初始化 x，再初始化 y，所以这个程序一运行，x 的值就是奇奇怪怪的值。</li>
 </ul>
 </li>
-<li><p>跨编译单元之初始化次序：比如 A 文件中有个静态变量 a，B 文件中有个静态变量 b，如果 b 是依赖 a 来初始化的，则如果不能保证 a 先初始化的话，b 可能会出错，应该把 a 移到 B 文件中，尽量避免跨文件的初始化依赖关系。 </p>
+<li><p>跨编译单元之初始化次序：比如 A 文件中有个静态变量 a，B 文件中有个静态变量 b，如果 b 是依赖 a 来初始化的，则如果不能保证 a 先初始化的话，b 可能会出错，应该把 a 移到 B 文件中，尽量避免跨文件的初始化依赖关系。</p>
 </li>
 </ul>
 <h2 id="C-STL-刷题"><a href="#C-STL-刷题" class="headerlink" title="C++  STL 刷题"></a>C++  STL 刷题</h2><h3 id="HZOJ256"><a href="#HZOJ256" class="headerlink" title="HZOJ256"></a>HZOJ256</h3><h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><ul>
@@ -451,19 +451,19 @@
 </li>
 <li><p><img src="https://cdn.jsdelivr.net/gh/a872456824/ImgHosting/Alin-PIC/20210306111704.png" alt="image-20210228163503783"></p>
 </li>
-<li><p>金币数量$ C_i = A_{i - 1} / b_i $</p>
+<li><p>金币数量$ C_i &#x3D; A_{i - 1} &#x2F; b_i $</p>
 </li>
 <li><p>假设$ C_i $最多，当与$ C_{i - 1} $的位置交换之后，$ C_i $得到的金币数量为$ C_i’ $，$ C_{i - 1} $得到的金币数量为$ C_{i - 1} ‘ $，如果满足$ C_i  &gt; C_i’ ，C_i  &gt; C_{i - 1}’$的话，则新排列的所有值都小于$ C_i $</p>
 </li>
-<li><p>$ C_i’ = A_{i - 2} / b_i $</p>
+<li><p>$ C_i’ &#x3D; A_{i - 2} &#x2F; b_i $</p>
 </li>
-<li><p>$ C_{i - 1}’ = A_{i - 2} / b_{i - 1} $</p>
+<li><p>$ C_{i - 1}’ &#x3D; A_{i - 2} &#x2F; b_{i - 1} $</p>
 </li>
 <li><p>因为没有小数，所以$ C_i &gt; C_i’ $</p>
 </li>
-<li><p>所以只需求 $ C_i &gt; C_{i - 1}’ $，即$ C_{i - 1}’ = A_{i - 2} / b_{i - 1} &lt; A_{i - 2} * a_i/ b_i $，即$ a_i * b_i &lt; a_{i - 1} * b {i - 1}$</p>
+<li><p>所以只需求 $ C_i &gt; C_{i - 1}’ $，即$ C_{i - 1}’ &#x3D; A_{i - 2} &#x2F; b_{i - 1} &lt; A_{i - 2} * a_i&#x2F; b_i $，即$ a_i * b_i &lt; a_{i - 1} * b {i - 1}$</p>
 </li>
-<li><p>即只要当前左右两个数的乘积小于前一个人左右两个数的乘积，两个人的位置交换，这就是排序依据  </p>
+<li><p>即只要当前左右两个数的乘积小于前一个人左右两个数的乘积，两个人的位置交换，这就是排序依据</p>
 </li>
 </ul>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>

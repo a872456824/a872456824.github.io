@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jfif">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jfif">
@@ -332,7 +332,7 @@
 </li>
 <li><p>第二个设备（链路交换机）：判断这个数据包需要去哪个地方，即拿出<code>mark地址</code>，从而知道了是去<code>出口路由器</code>。</p>
 <blockquote>
-<p>​         比方在局域网中，当前主机的<code>IP地址</code>为<code>192.168.0.3</code>，目的地是谷歌的<code>DNS服务:8.8.8.8的80端口</code>，所以，第一个设备的传输层是贴上<code>80端口</code>标签，网络层贴上<code>8.8.8.8</code>标签；然后到链路层，由于<code>本机</code>不知道<code>8.8.8.8</code>在哪，所以只能借助其他的网络连接。</p>
+<p>​		 比方在局域网中，当前主机的<code>IP地址</code>为<code>192.168.0.3</code>，目的地是谷歌的<code>DNS服务:8.8.8.8的80端口</code>，所以，第一个设备的传输层是贴上<code>80端口</code>标签，网络层贴上<code>8.8.8.8</code>标签；然后到链路层，由于<code>本机</code>不知道<code>8.8.8.8</code>在哪，所以只能借助其他的网络连接。</p>
 <p>本地局域网，相当于本地所有的机器都连在一起，本地通信靠在局域网内喊一声，如果有回应，说明对方就是要找的目标，就可以开始与对方通信。</p>
 <p>子网掩码 &amp; 目标<code>IP地址</code>，如果得到的地址与自己的一样，说明当前机子是在本地局域网内，否则则说明当前机子不是在本地局域网，这个时候就需要给网关（<code>初始路由</code>）发信息说<code>目的地址</code>不在局域网内（不在交换机所连接的机器中，不能靠”吼”一嗓子就可以传达信息）。所以这个时候需要通过第三个设备<code>路由器</code>来实施了。</p>
 </blockquote>
@@ -343,8 +343,6 @@
 <p>图中属于简化路线图，真正的情况是极有可能需要经过好几个路由器，一层一层找，才能到达目标主机。</p>
 </blockquote>
 </li>
-</ul>
-<ul>
 <li><p>分层带来的好处：</p>
 <ul>
 <li>各层之间是独立的</li>
@@ -355,12 +353,12 @@
 </ul>
 </li>
 <li><p>各层的功能：（各层都可能提供这样的服务）</p>
-<ul>
+</li>
 <li><p>差错控制：对传入数据的正误进行判断</p>
 </li>
 <li><p>流量控制：针对对端的数据容量大小，进行数据传输量的控制。</p>
 <blockquote>
-<p>​          己端发送数据给对端时，对端发回来的信息中会包含有对端容量剩余量的信息，己端根据当前已经发送的数据量判断当前发送量是否已经超过对端数据容量，从而决定是否还要发送数据。</p>
+<p>​		  己端发送数据给对端时，对端发回来的信息中会包含有对端容量剩余量的信息，己端根据当前已经发送的数据量判断当前发送量是否已经超过对端数据容量，从而决定是否还要发送数据。</p>
 </blockquote>
 </li>
 <li><p>分段和复用</p>
@@ -373,11 +371,9 @@
 </li>
 <li><p>连接建立和释放</p>
 <blockquote>
-<p>​          所有的网络，并无存在真实的连接。所有的连接，都是两端维护一些变量，通过这些变量的变化来确认连接的好坏。 </p>
-<p>​          如果己端发送断连信息，对端没有任何回应，就属于半连接状态。</p>
+<p>​		  所有的网络，并无存在真实的连接。所有的连接，都是两端维护一些变量，通过这些变量的变化来确认连接的好坏。 </p>
+<p>​		  如果己端发送断连信息，对端没有任何回应，就属于半连接状态。</p>
 </blockquote>
-</li>
-</ul>
 </li>
 </ul>
 <h3 id="网络协议的组成要素"><a href="#网络协议的组成要素" class="headerlink" title="网络协议的组成要素"></a>网络协议的组成要素</h3><ul>
